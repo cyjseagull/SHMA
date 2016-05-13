@@ -44,6 +44,6 @@ Setup and Compiling
 
 Memory Management and TLB Simulation Modules
 -----------------------
-![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/zsim_modification.png)
+Main modification of SHMA to zsim is shown as following:![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/zsim_modification.png)
 
 
