@@ -1,0 +1,1 @@
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/chenyujie/zsim-nvmain/pin_kit/intel64/lib:/home/chenyujie/zsim-nvmain/pin_kit/intel64/runtime:/home/chenyujie/zsim-nvmain/pin_kit/intel64/lib:/home/chenyujie/zsim-nvmain/pin_kit/intel64/runtime

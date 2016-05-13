@@ -1,0 +1,48 @@
+./tags:1526:ProcessRefreshPulse	src/MemoryController.cpp	/^void MemoryController::ProcessRefreshPulse( NVMainRequest* refresh )$/;"	f	class:MemoryController
+./tags:1527:ProcessRefreshPulse	src/bk/MemoryController.cpp	/^void MemoryController::ProcessRefreshPulse( NVMainRequest* refresh )$/;"	f	class:MemoryController
+./test:1:./tags:1526:ProcessRefreshPulse	src/MemoryController.cpp	/^void MemoryController::ProcessRefreshPulse( NVMainRequest* refresh )$/;"	f	class:MemoryController
+./test:2:./tags:1527:ProcessRefreshPulse	src/bk/MemoryController.cpp	/^void MemoryController::ProcessRefreshPulse( NVMainRequest* refresh )$/;"	f	class:MemoryController
+./test:4:./MemControl/RBLA-Dyn/RBLA_DRAMCache.cpp:244:			ProcessRefreshPulse( req );
+./test:5:./MemControl/HierDRAMCache/HierDRAMCache.cpp:425:		ProcessRefreshPulse(req);
+./test:6:./MemControl/FineCache/RBLA_DRAMCache.cpp:244:			ProcessRefreshPulse( req );
+./test:7:./MemControl/PredictorDRC/PredictorDRC.cpp:135:        ProcessRefreshPulse( req );
+./test:8:./MemControl/HierCache/HierCache.cpp:199:		ProcessRefreshPulse(req);
+./test:9:./MemControl/HierCache/bk/HierCache.cpp:175:		ProcessRefreshPulse(req);
+./test:10:./MemControl/LO-Cache/LO-Cache.cpp:264:        ProcessRefreshPulse( req );
+./test:11:./MemControl/DRAMCache/DRAMCache.cpp:247:		ProcessRefreshPulse( req );
+./test:12:./MemControl/DRAMCache/bk/DRAMCache.cpp:239:        ProcessRefreshPulse( req );
+./test:13:./MemControl/LH-Cache/LH-Cache.cpp:380:        ProcessRefreshPulse( req );
+./test:14:./src/MemoryController.cpp:332:        ProcessRefreshPulse( request );
+./test:15:./src/MemoryController.cpp:340:        ProcessRefreshPulse( request );
+./test:16:./src/MemoryController.cpp:827:void MemoryController::ProcessRefreshPulse( NVMainRequest* refresh )
+./test:17:./src/bk/MemoryController.cpp:321:        ProcessRefreshPulse( request );
+./test:18:./src/bk/MemoryController.cpp:329:        ProcessRefreshPulse( request );
+./test:19:./src/bk/MemoryController.cpp:350:    //    ProcessRefreshPulse( request );
+./test:20:./src/bk/MemoryController.cpp:794:void MemoryController::ProcessRefreshPulse( NVMainRequest* refresh )
+./test:21:./src/bk/MemoryController.h:228:    void ProcessRefreshPulse( NVMainRequest* ); 
+./test:22:./src/MemoryController.h:238:    void ProcessRefreshPulse( NVMainRequest* ); 
+./NVM/HierDRAMCache/HierDRAMCache.cpp.bk:433:		ProcessRefreshPulse( req );
+Binary file ./nvmain.o matches
+./MemControl/FRFCFS-WQF/FRFCFS-WQF.cpp:278:		ProcessRefreshPulse(request);
+./MemControl/RBLA-Dyn/RBLA_DRAMCache.cpp:244:			ProcessRefreshPulse( req );
+./MemControl/FCFS/FCFS.cpp:113:		ProcessRefreshPulse(request);
+./MemControl/HierDRAMCache/HierDRAMCache.cpp:425:		ProcessRefreshPulse(req);
+./MemControl/FineCache/RBLA_DRAMCache.cpp:244:			ProcessRefreshPulse( req );
+./MemControl/PredictorDRC/PredictorDRC.cpp:135:        ProcessRefreshPulse( req );
+./MemControl/HierCache/HierCache.cpp:199:		ProcessRefreshPulse(req);
+./MemControl/HierCache/bk/HierCache.cpp:175:		ProcessRefreshPulse(req);
+./MemControl/LO-Cache/LO-Cache.cpp:264:        ProcessRefreshPulse( req );
+./MemControl/FRFCFS/FRFCFS.cpp:170:		ProcessRefreshPulse(request);
+./MemControl/DRAMCache/DRAMCache.cpp:247:		ProcessRefreshPulse( req );
+./MemControl/DRAMCache/bk/DRAMCache.cpp:239:        ProcessRefreshPulse( req );
+./MemControl/LH-Cache/LH-Cache.cpp:380:        ProcessRefreshPulse( req );
+./src/MemoryController.cpp:330:        ProcessRefreshPulse( request );
+./src/MemoryController.cpp:338:        ProcessRefreshPulse( request );
+./src/MemoryController.cpp:826:void MemoryController::ProcessRefreshPulse( NVMainRequest* refresh )
+./src/bk/MemoryController.cpp:321:        ProcessRefreshPulse( request );
+./src/bk/MemoryController.cpp:329:        ProcessRefreshPulse( request );
+./src/bk/MemoryController.cpp:350:    //    ProcessRefreshPulse( request );
+./src/bk/MemoryController.cpp:794:void MemoryController::ProcessRefreshPulse( NVMainRequest* refresh )
+./src/bk/MemoryController.h:228:    void ProcessRefreshPulse( NVMainRequest* ); 
+./src/MemoryController.h:238:    void ProcessRefreshPulse( NVMainRequest* ); 
+Binary file ./libnvmain.a matches

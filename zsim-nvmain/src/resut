@@ -1,0 +1,24 @@
+./timing_core.cpp:104:    curCycle = l1d->store(addr, curCycle);
+./decoder.cpp:139:void Decoder::emitStore(Instr& instr, uint32_t idx, DynUopVec& uops, uint32_t srcReg) {
+./decoder.cpp:184:        emitStore(instr, i, uops);
+./decoder.cpp:222:        emitStore(instr, 0, uops, inReg);
+./decoder.cpp:225:        emitStore(instr, 0, uops, REG_LOAD_TEMP /*chain with load*/);
+./decoder.cpp:238:        emitStore(instr, 0, uops, REG_EXEC_TEMP); //temp -> out
+./decoder.cpp:1089:                    emitStore(instr, 0, uops, REG_RAX);
+./decoder.cpp:1107:                    emitStore(instr, 0, uops, REG_RAX);
+./ooo_core.h:486:        inline void store(Address addr);
+./filter_cache.h:108:			std::cout<<"store( "<<std::hex<<vLineAddr<<" , "<<srcId<<" )"<<std::endl;
+./filter_cache.h:120:        inline uint64_t store(Address vAddr, uint64_t curCycle) {
+./filter_cache.h:123:			std::cout<<"store( "<<std::hex<<vLineAddr<<" , "<<srcId<<" )"<<std::endl;
+./nvmain_mem_ctrl.cpp:463:				std::vector<PAIR> period_touch_store( period_touch_vec[0].begin(),period_touch_vec[0].end());
+./ooo_core.cpp:176:void OOOCore::store(Address addr) {
+./ooo_core.cpp:354:                    uint64_t reqSatisfiedCycle = l1d->store(addr, dispatchCycle) + L1D_LAT;
+./ooo_core.cpp:620:void OOOCore::StoreFunc(THREADID tid, ADDRINT addr) {static_cast<OOOCore*>(cores[tid])->store(addr);}
+./ooo_core.cpp:630:    if (pred) core->store(addr);
+./nvmain_mem_ctrl.cpp.bk:451:				std::vector<PAIR> period_touch_store( period_touch_vec[0].begin(),period_touch_vec[0].end());
+./simple_core.cpp:60:void SimpleCore::store(Address addr) {
+./simple_core.cpp:61:    curCycle = l1d->store(addr, curCycle);
+./simple_core.cpp:106:    static_cast<SimpleCore*>(cores[tid])->store(addr);
+./simple_core.cpp:114:    if (pred) static_cast<SimpleCore*>(cores[tid])->store(addr);
+./simple_core.h:65:        inline void store(Address addr);
+./decoder.h:144:        static void emitStore(Instr& instr, uint32_t idx, DynUopVec& uops, uint32_t srcReg = 0);

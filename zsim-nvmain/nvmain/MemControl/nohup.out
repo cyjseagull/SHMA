@@ -1,0 +1,32 @@
+Loaded plugins: aliases, changelog, downloadonly, kabi, presto, product-id,
+              : refresh-packagekit, security, subscription-manager, tmprepo,
+              : verify, versionlock
+Updating certificate-based repositories.
+Loading support for Red Hat kernel ABI
+Setting up Install Process
+Resolving Dependencies
+--> Running transaction check
+---> Package kernel-debuginfo.x86_64 0:2.6.32-220.el6 will be installed
+--> Processing Dependency: kernel-debuginfo-common-x86_64 = 2.6.32-220.el6 for package: kernel-debuginfo-2.6.32-220.el6.x86_64
+--> Running transaction check
+---> Package kernel-debuginfo-common-x86_64.x86_64 0:2.6.32-220.el6 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+================================================================================
+ Package                           Arch      Version             Repository
+                                                                           Size
+================================================================================
+Installing:
+ kernel-debuginfo                  x86_64    2.6.32-220.el6      debug    233 M
+Installing for dependencies:
+ kernel-debuginfo-common-x86_64    x86_64    2.6.32-220.el6      debug     35 M
+
+Transaction Summary
+================================================================================
+Install       2 Package(s)
+
+Total download size: 268 M
+Installed size: 1.5 G
+Is this ok [y/N]: Exiting on user Command

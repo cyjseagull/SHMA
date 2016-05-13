@@ -1,0 +1,647 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ACCESS_TYPE	dcache.H	/^    } ACCESS_TYPE;$/;"	t	class:CACHE_BASE	typeref:enum:CACHE_BASE::__anon3
+ACCESS_TYPE_LOAD	dcache.H	/^        ACCESS_TYPE_LOAD,$/;"	e	enum:CACHE_BASE::__anon3
+ACCESS_TYPE_NUM	dcache.H	/^        ACCESS_TYPE_NUM$/;"	e	enum:CACHE_BASE::__anon3
+ACCESS_TYPE_STORE	dcache.H	/^        ACCESS_TYPE_STORE,$/;"	e	enum:CACHE_BASE::__anon3
+ADDR_CNT_MAP	toprtn.cpp	/^typedef  map<ADDRINT,UINT64> ADDR_CNT_MAP;$/;"	t	file:
+ALL_BBL	flowgraph.py	/^ALL_BBL = {}$/;"	v
+ALL_EDG	callgraph.py	/^ALL_EDG = []$/;"	v
+ALL_EDG	flowgraph.py	/^ALL_EDG = []$/;"	v
+ALL_INS	flowgraph.py	/^ALL_INS = {}$/;"	v
+ALL_RTN	callgraph.py	/^ALL_RTN = {}$/;"	v
+Access	dcache.H	/^bool CACHE<SET,MAX_SETS,STORE_ALLOCATION>::Access(ADDRINT addr, UINT32 size, ACCESS_TYPE accessType)$/;"	f	class:CACHE
+AccessSingleLine	dcache.H	/^bool CACHE<SET,MAX_SETS,STORE_ALLOCATION>::AccessSingleLine(ADDRINT addr, ACCESS_TYPE accessType)$/;"	f	class:CACHE
+Accesses	dcache.H	/^    CACHE_STATS Accesses() const { return Hits() + Misses();}$/;"	f	class:CACHE_BASE
+Accesses	dcache.H	/^    CACHE_STATS Accesses(ACCESS_TYPE accessType) const { return Hits(accessType) + Misses(accessType);}$/;"	f	class:CACHE_BASE
+Addr2Offset	fence.cpp	/^    ADDRINT Addr2Offset(const char * addr)$/;"	f	class:SANDBOX	file:
+Addr2Page	fence.cpp	/^    const char * Addr2Page(const char * addr)$/;"	f	class:SANDBOX	file:
+AddrMap	fence.cpp	/^    typedef map<const char *, const char *> AddrMap;$/;"	t	class:SANDBOX	file:
+AddressHighNibble	edgcnt.cpp	/^inline INT32 AddressHighNibble(ADDRINT addr)$/;"	f
+AllocatePage	fence.cpp	/^const char * SANDBOX::AllocatePage(const char * page)$/;"	f	class:SANDBOX
+Arg1Before	malloctrace.cpp	/^VOID Arg1Before(CHAR * name, ADDRINT size)$/;"	f
+Associativity	dcache.H	/^    UINT32 Associativity() const { return _associativity; }$/;"	f	class:CACHE_BASE
+BBL	flowgraph.py	/^class BBL:$/;"	c
+BBLSTATS	catmix.cpp	/^    BBLSTATS(UINT16 * stats) : _stats(stats),_counter(0) {};$/;"	f	class:BBLSTATS
+BBLSTATS	catmix.cpp	/^class BBLSTATS$/;"	c	file:
+BBLSTATS	coco.cpp	/^    BBLSTATS(ADDRINT start, USIZE size) : _start(start),_size(size),_executed(0) {};$/;"	f	class:BBLSTATS
+BBLSTATS	coco.cpp	/^class BBLSTATS$/;"	c	file:
+BBLSTATS	extmix.cpp	/^    BBLSTATS(UINT16 * stats) : _stats(stats),_counter(0) {};$/;"	f	class:BBLSTATS
+BBLSTATS	extmix.cpp	/^class BBLSTATS$/;"	c	file:
+BBLSTATS	ilenmix.cpp	/^    BBLSTATS(UINT16 * stats) : _stats(stats),_counter(0) {};$/;"	f	class:BBLSTATS
+BBLSTATS	ilenmix.cpp	/^class BBLSTATS$/;"	c	file:
+BBLSTATS	ldstmix.cpp	/^    BBLSTATS(UINT16 * stats)$/;"	f	class:BBLSTATS
+BBLSTATS	ldstmix.cpp	/^class BBLSTATS$/;"	c	file:
+BBLSTATS	opcodemix.cpp	/^    BBLSTATS(UINT16 * stats) : _counter(0), _stats(stats) {};$/;"	f	class:BBLSTATS
+BBLSTATS	opcodemix.cpp	/^class BBLSTATS$/;"	c	file:
+BBLSTATS	regmix.cpp	/^    BBLSTATS(UINT16 * stats) : _stats(stats),_counter(0) {};$/;"	f	class:BBLSTATS
+BBLSTATS	regmix.cpp	/^class BBLSTATS$/;"	c	file:
+BBLSTATS	topopcode.cpp	/^    BBLSTATS(UINT16 * stats) : _counter(0), _stats(stats) {};$/;"	f	class:BBLSTATS
+BBLSTATS	topopcode.cpp	/^class BBLSTATS$/;"	c	file:
+CACHE	dcache.H	/^    CACHE(std::string name, UINT32 cacheSize, UINT32 lineSize, UINT32 associativity)$/;"	f	class:CACHE
+CACHE	dcache.H	/^class CACHE : public CACHE_BASE$/;"	c
+CACHE	dcache.cpp	/^    typedef CACHE_ROUND_ROBIN(max_sets, max_associativity, allocation) CACHE;$/;"	t	namespace:DL1	file:
+CACHE_ALLOC	dcache.H	/^namespace CACHE_ALLOC$/;"	n
+CACHE_BASE	dcache.H	/^CACHE_BASE::CACHE_BASE(std::string name, UINT32 cacheSize, UINT32 lineSize, UINT32 associativity)$/;"	f	class:CACHE_BASE
+CACHE_BASE	dcache.H	/^class CACHE_BASE$/;"	c
+CACHE_DIRECT_MAPPED	dcache.H	463;"	d
+CACHE_ROUND_ROBIN	dcache.H	464;"	d
+CACHE_SET	dcache.H	/^namespace CACHE_SET$/;"	n
+CACHE_STATS	dcache.H	/^typedef UINT64 CACHE_STATS; \/\/ type of cache hit\/miss counters$/;"	t
+CACHE_TAG	dcache.H	/^    CACHE_TAG(ADDRINT tag = 0) { _tag = tag; }$/;"	f	class:CACHE_TAG
+CACHE_TAG	dcache.H	/^class CACHE_TAG$/;"	c
+CACHE_TYPE	dcache.H	/^    } CACHE_TYPE;$/;"	t	class:CACHE_BASE	typeref:enum:CACHE_BASE::__anon4
+CACHE_TYPE_DCACHE	dcache.H	/^        CACHE_TYPE_DCACHE,$/;"	e	enum:CACHE_BASE::__anon4
+CACHE_TYPE_ICACHE	dcache.H	/^        CACHE_TYPE_ICACHE,$/;"	e	enum:CACHE_BASE::__anon4
+CACHE_TYPE_NUM	dcache.H	/^        CACHE_TYPE_NUM$/;"	e	enum:CACHE_BASE::__anon4
+CONFIG_ROOT	makefile	/^CONFIG_ROOT := $(PIN_ROOT)\/source\/tools\/Config$/;"	m
+CONFIG_ROOT	makefile	/^CONFIG_ROOT := ..\/Config$/;"	m
+COUNTER	catmix.cpp	/^typedef UINT64 COUNTER;$/;"	t	file:
+COUNTER	coco.cpp	/^typedef UINT64 COUNTER;$/;"	t	file:
+COUNTER	dcache.cpp	/^} COUNTER;$/;"	t	typeref:enum:__anon6	file:
+COUNTER	edgcnt.cpp	/^    COUNTER() : _count(0)   {}$/;"	f	class:COUNTER
+COUNTER	edgcnt.cpp	/^class COUNTER$/;"	c	file:
+COUNTER	extmix.cpp	/^typedef UINT64 COUNTER;$/;"	t	file:
+COUNTER	ilenmix.cpp	/^typedef UINT64 COUNTER;$/;"	t	file:
+COUNTER	jumpmix.cpp	/^    COUNTER() : _call(0),_call_indirect(0), _return(0), _branch(0), _branch_indirect(0)   {}$/;"	f	class:COUNTER
+COUNTER	jumpmix.cpp	/^class COUNTER$/;"	c	file:
+COUNTER	ldstmix.cpp	/^typedef UINT64 COUNTER;$/;"	t	file:
+COUNTER	opcodemix.cpp	/^typedef UINT64 COUNTER;$/;"	t	file:
+COUNTER	regmix.cpp	/^typedef UINT64 COUNTER;$/;"	t	file:
+COUNTER	topopcode.cpp	/^typedef UINT64 COUNTER;$/;"	t	file:
+COUNTER_HIT	dcache.cpp	/^    COUNTER_HIT = 1,$/;"	e	enum:__anon6	file:
+COUNTER_HIT_MISS	dcache.cpp	/^typedef  COUNTER_ARRAY<UINT64, COUNTER_NUM> COUNTER_HIT_MISS;$/;"	t	file:
+COUNTER_MISS	dcache.cpp	/^    COUNTER_MISS = 0,$/;"	e	enum:__anon6	file:
+COUNTER_NUM	dcache.cpp	/^    COUNTER_NUM$/;"	e	enum:__anon6	file:
+CacheSize	dcache.H	/^    UINT32 CacheSize() const { return _cacheSize; }$/;"	f	class:CACHE_BASE
+CeilLog2	dcache.H	/^static inline INT32 CeilLog2(UINT32 n)$/;"	f
+CheckAddressRange	fence.cpp	/^VOID SANDBOX::CheckAddressRange(const char * beginAddr, const char * endAddr)$/;"	f	class:SANDBOX
+CheckAddressRangeDeferred	fence.cpp	/^    VOID CheckAddressRangeDeferred(const char * beginAddr, const char * endAddr)$/;"	f	class:SANDBOX
+Clear	opcodemix.cpp	/^    VOID Clear()$/;"	f	class:STATS
+Clear	topopcode.cpp	/^    VOID Clear(FLT64 factor)$/;"	f	class:STATS
+CompareLess	topopcode.cpp	/^LOCALFUN BOOL CompareLess(PAIR  s1 , PAIR  s2)$/;"	f
+CompareLess	toprtn.cpp	/^LOCALFUN BOOL CompareLess(PAIR  s1 , PAIR  s2)$/;"	f
+ComputeGlobalStats	catmix.cpp	/^VOID ComputeGlobalStats()$/;"	f
+ComputeGlobalStats	extmix.cpp	/^VOID ComputeGlobalStats()$/;"	f
+ComputeGlobalStats	ilenmix.cpp	/^VOID ComputeGlobalStats()$/;"	f
+ComputeGlobalStats	ldstmix.cpp	/^VOID ComputeGlobalStats()$/;"	f
+ComputeGlobalStats	regmix.cpp	/^VOID ComputeGlobalStats()$/;"	f
+CountSeen	jumpmix.cpp	/^COUNTER CountSeen;$/;"	v
+CountTaken	jumpmix.cpp	/^COUNTER CountTaken;$/;"	v
+CreateCFG	flowgraph.py	/^def CreateCFG(edg_list):$/;"	f
+DIRECT_MAPPED	dcache.H	/^    DIRECT_MAPPED(UINT32 associativity = 1) { ASSERTX(associativity == 1); }$/;"	f	class:CACHE_SET::DIRECT_MAPPED
+DIRECT_MAPPED	dcache.H	/^class DIRECT_MAPPED$/;"	c	namespace:CACHE_SET
+DL1	dcache.cpp	/^namespace DL1$/;"	n	file:
+DoCount	inscount2_vregs.cpp	/^ADDRINT PIN_FAST_ANALYSIS_CALL DoCount(ADDRINT numInsts, ADDRINT count)$/;"	f
+DoLoad	emuload.cpp	/^ADDRINT DoLoad(REG reg, ADDRINT * addr)$/;"	f
+DumpHistogram	topopcode.cpp	/^VOID DumpHistogram(std::ostream& out)$/;"	f
+DumpHistogram	toprtn.cpp	/^VOID DumpHistogram(std::ostream& out)$/;"	f
+DumpStats	catmix.cpp	/^VOID DumpStats(ofstream& out, STATS& stats, const string& title)$/;"	f
+DumpStats	extmix.cpp	/^VOID DumpStats(ofstream& out, STATS& stats, const string& title)$/;"	f
+DumpStats	ilenmix.cpp	/^VOID DumpStats(ofstream& out, STATS& stats, const string& title)$/;"	f
+DumpStats	opcodemix.cpp	/^VOID DumpStats(ofstream& out, STATS& stats, BOOL predicated_true,  const string& title)$/;"	f
+DumpText	callgraph.py	/^def DumpText(cutoff):$/;"	f
+DumpVCG	callgraph.py	/^def DumpVCG(cutoff, threshold):$/;"	f
+DumpVCG	flowgraph.py	/^def DumpVCG():$/;"	f
+EDG	callgraph.py	/^class EDG:$/;"	c
+EDG	flowgraph.py	/^class EDG:$/;"	c
+EDGE	edgcnt.cpp	/^    EDGE(ADDRINT s, ADDRINT d, ADDRINT n, ETYPE t) :$/;"	f	class:EDGE
+EDGE	edgcnt.cpp	/^class EDGE$/;"	c	file:
+EDG_HASH_SET	edgcnt.cpp	/^typedef map< EDGE, COUNTER*> EDG_HASH_SET;$/;"	t	file:
+ETYPE	edgcnt.cpp	/^}ETYPE;$/;"	t	typeref:enum:__anon12	file:
+ETYPE_BRANCH	edgcnt.cpp	/^    ETYPE_BRANCH,$/;"	e	enum:__anon12	file:
+ETYPE_CALL	edgcnt.cpp	/^    ETYPE_CALL,$/;"	e	enum:__anon12	file:
+ETYPE_IBRANCH	edgcnt.cpp	/^    ETYPE_IBRANCH,$/;"	e	enum:__anon12	file:
+ETYPE_ICALL	edgcnt.cpp	/^    ETYPE_ICALL,$/;"	e	enum:__anon12	file:
+ETYPE_INVALID	edgcnt.cpp	/^    ETYPE_INVALID,$/;"	e	enum:__anon12	file:
+ETYPE_LAST	edgcnt.cpp	/^    ETYPE_LAST$/;"	e	enum:__anon12	file:
+ETYPE_RETURN	edgcnt.cpp	/^    ETYPE_RETURN,$/;"	e	enum:__anon12	file:
+ETYPE_SYSCALL	edgcnt.cpp	/^    ETYPE_SYSCALL,$/;"	e	enum:__anon12	file:
+EXPORT_SYM	regval_app.cpp	33;"	d	file:
+EXPORT_SYM	regval_app.cpp	35;"	d	file:
+EdgeSet	edgcnt.cpp	/^static EDG_HASH_SET EdgeSet;$/;"	v	file:
+EmitMem	pinatrace.cpp	/^static VOID EmitMem(VOID * ea, INT32 size)$/;"	f	file:
+EmitPerThreadStats	ldstmix.cpp	/^VOID EmitPerThreadStats(ostream* out)$/;"	f
+EmulateLoad	emuload.cpp	/^VOID EmulateLoad(INS ins, VOID* v)$/;"	f
+Error	callgraph.py	/^def Error(str):$/;"	f
+Error	fence.cpp	/^    VOID Error(string msg)$/;"	f	class:SANDBOX	file:
+Error	flowgraph.py	/^def Error(str):$/;"	f
+FREE	malloctrace.cpp	50;"	d	file:
+FREE	malloctrace.cpp	53;"	d	file:
+Find	dcache.H	/^    UINT32 Find(CACHE_TAG tag) { return(_tag == tag); }$/;"	f	class:CACHE_SET::DIRECT_MAPPED
+Find	dcache.H	/^    UINT32 Find(CACHE_TAG tag)$/;"	f	class:CACHE_SET::ROUND_ROBIN
+FindRtnByAddress	callgraph.py	/^def FindRtnByAddress(addr, s):$/;"	f
+Fini	calltrace.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	catmix.cpp	/^VOID Fini(int, VOID * v)$/;"	f
+Fini	coco.cpp	/^VOID Fini(int, VOID * v)$/;"	f
+Fini	dcache.cpp	/^VOID Fini(int code, VOID * v)$/;"	f
+Fini	edgcnt.cpp	/^VOID Fini(int n, void *v)$/;"	f
+Fini	extmix.cpp	/^VOID Fini(int, VOID * v)$/;"	f
+Fini	fence.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	get_source_location.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	icount.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	ilenmix.cpp	/^VOID Fini(int, VOID * v)$/;"	f
+Fini	inscount2_mt.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	inscount2_vregs.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	jumpmix.cpp	/^VOID Fini(int n, void *v)$/;"	f
+Fini	ldstmix.cpp	/^VOID Fini(int, VOID * v)$/;"	f
+Fini	malloctrace.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	opcodemix.cpp	/^VOID Fini(int, VOID * v)$/;"	f
+Fini	pinatrace.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	regmix.cpp	/^VOID Fini(int, VOID * v)$/;"	f
+Fini	regval.cpp	/^static VOID Fini(INT32 code, VOID *v)$/;"	f	file:
+Fini	trace.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	xed-cache.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+FloorLog2	dcache.H	/^static inline INT32 FloorLog2(UINT32 n)$/;"	f
+GIGA	dcache.H	45;"	d
+GLOBALSTATS	regmix.cpp	/^struct GLOBALSTATS$/;"	s	file:
+GetAssociativity	dcache.H	/^    UINT32 GetAssociativity(UINT32 associativity) { return 1; }$/;"	f	class:CACHE_SET::DIRECT_MAPPED
+GetAssociativity	dcache.H	/^    UINT32 GetAssociativity(UINT32 associativity) { return _tagsLastIndex + 1; }$/;"	f	class:CACHE_SET::ROUND_ROBIN
+GlobalStats	ldstmix.cpp	/^STATS GlobalStats;$/;"	v
+GlobalStats	regmix.cpp	/^}GlobalStats;$/;"	v	typeref:struct:GLOBALSTATS
+GlobalStats	topopcode.cpp	/^STATS GlobalStats;$/;"	v
+GlobalStatsDynamic	catmix.cpp	/^STATS GlobalStatsDynamic;$/;"	v
+GlobalStatsDynamic	extmix.cpp	/^STATS GlobalStatsDynamic;$/;"	v
+GlobalStatsDynamic	ilenmix.cpp	/^STATS GlobalStatsDynamic;$/;"	v
+GlobalStatsDynamic	opcodemix.cpp	/^STATS GlobalStatsDynamic;$/;"	v
+GlobalStatsStatic	catmix.cpp	/^STATS GlobalStatsStatic;$/;"	v
+GlobalStatsStatic	extmix.cpp	/^STATS GlobalStatsStatic;$/;"	v
+GlobalStatsStatic	ilenmix.cpp	/^STATS GlobalStatsStatic;$/;"	v
+GlobalStatsStatic	opcodemix.cpp	/^STATS GlobalStatsStatic;$/;"	v
+HIT_MISS_NUM	dcache.H	/^    static const UINT32 HIT_MISS_NUM = 2;$/;"	m	class:CACHE_BASE
+HandlePendingChecks	fence.cpp	/^VOID SANDBOX::HandlePendingChecks()$/;"	f	class:SANDBOX
+HandlePendingChecks	fence.cpp	/^VOID SANDBOX::HandlePendingChecks(const char * beginAddr, const char * endAddr)$/;"	f	class:SANDBOX
+Handler	opcodemix.cpp	/^LOCALFUN VOID Handler(CONTROL_EVENT ev, VOID *val, CONTEXT * ctxt, VOID *ip, THREADID tid)$/;"	f
+Hits	dcache.H	/^    CACHE_STATS Hits() const { return SumAccess(true);}$/;"	f	class:CACHE_BASE
+Hits	dcache.H	/^    CACHE_STATS Hits(ACCESS_TYPE accessType) const { return _access[accessType][true];}$/;"	f	class:CACHE_BASE
+INC	jumpmix.cpp	102;"	d	file:
+INDEX_IPREL_READ	opcodemix.cpp	/^const UINT32 INDEX_IPREL_READ =     INDEX_SPECIAL + 4;$/;"	v
+INDEX_IPREL_READ	topopcode.cpp	/^const UINT32 INDEX_IPREL_READ =     INDEX_SPECIAL + 4;$/;"	v
+INDEX_IPREL_WRITE	opcodemix.cpp	/^const UINT32 INDEX_IPREL_WRITE =    INDEX_SPECIAL + 5;$/;"	v
+INDEX_IPREL_WRITE	topopcode.cpp	/^const UINT32 INDEX_IPREL_WRITE =    INDEX_SPECIAL + 5;$/;"	v
+INDEX_MEM_ATOMIC	opcodemix.cpp	/^const UINT32 INDEX_MEM_ATOMIC =     INDEX_SPECIAL + 1;$/;"	v
+INDEX_MEM_ATOMIC	topopcode.cpp	/^const UINT32 INDEX_MEM_ATOMIC =     INDEX_SPECIAL + 1;$/;"	v
+INDEX_MEM_READ_SIZE	opcodemix.cpp	/^const UINT32 INDEX_MEM_READ_SIZE =  INDEX_SPECIAL + 6;$/;"	v
+INDEX_MEM_READ_SIZE	topopcode.cpp	/^const UINT32 INDEX_MEM_READ_SIZE =  INDEX_SPECIAL + 6;$/;"	v
+INDEX_MEM_WRITE_SIZE	opcodemix.cpp	/^const UINT32 INDEX_MEM_WRITE_SIZE = INDEX_SPECIAL + 6 + MAX_MEM_SIZE;$/;"	v
+INDEX_MEM_WRITE_SIZE	topopcode.cpp	/^const UINT32 INDEX_MEM_WRITE_SIZE = INDEX_SPECIAL + 6 + MAX_MEM_SIZE;$/;"	v
+INDEX_SPECIAL	opcodemix.cpp	/^const UINT32 INDEX_SPECIAL =  3000;$/;"	v
+INDEX_SPECIAL	topopcode.cpp	/^const UINT32 INDEX_SPECIAL =  3000;$/;"	v
+INDEX_SPECIAL_END	opcodemix.cpp	/^const UINT32 INDEX_SPECIAL_END   =  INDEX_SPECIAL + 6 + MAX_MEM_SIZE + MAX_MEM_SIZE;$/;"	v
+INDEX_SPECIAL_END	topopcode.cpp	/^const UINT32 INDEX_SPECIAL_END   =  INDEX_SPECIAL + 6 + MAX_MEM_SIZE + MAX_MEM_SIZE;$/;"	v
+INDEX_STACK_READ	opcodemix.cpp	/^const UINT32 INDEX_STACK_READ =     INDEX_SPECIAL + 2;$/;"	v
+INDEX_STACK_READ	topopcode.cpp	/^const UINT32 INDEX_STACK_READ =     INDEX_SPECIAL + 2;$/;"	v
+INDEX_STACK_WRITE	opcodemix.cpp	/^const UINT32 INDEX_STACK_WRITE =    INDEX_SPECIAL + 3;$/;"	v
+INDEX_STACK_WRITE	topopcode.cpp	/^const UINT32 INDEX_STACK_WRITE =    INDEX_SPECIAL + 3;$/;"	v
+INDEX_TOTAL	opcodemix.cpp	/^const UINT32 INDEX_TOTAL =          INDEX_SPECIAL + 0;$/;"	v
+INDEX_TOTAL	topopcode.cpp	/^const UINT32 INDEX_TOTAL =          INDEX_SPECIAL + 0;$/;"	v
+INS	flowgraph.py	/^class INS:$/;"	c
+INS_GenerateIndexString	opcodemix.cpp	/^LOCALFUN UINT16 *INS_GenerateIndexString(INS ins, UINT16 *stats, BOOL memory_acess_profile)$/;"	f
+INS_GenerateIndexString	topopcode.cpp	/^LOCALFUN UINT16 *INS_GenerateIndexString(INS ins, UINT16 *stats, BOOL memory_acess_profile)$/;"	f
+INS_GetIndex	opcodemix.cpp	/^LOCALFUN UINT32 INS_GetIndex(INS ins)$/;"	f
+INS_GetIndex	topopcode.cpp	/^LOCALFUN UINT32 INS_GetIndex(INS ins)$/;"	f
+INS_GetStatsIndex	catmix.cpp	/^UINT16 INS_GetStatsIndex(INS ins)$/;"	f
+INS_GetStatsIndex	extmix.cpp	/^UINT16 INS_GetStatsIndex(INS ins)$/;"	f
+INS_GetStatsIndex	ilenmix.cpp	/^UINT16 INS_GetStatsIndex(INS ins)$/;"	f
+Image	catmix.cpp	/^VOID Image(IMG img, VOID * v)$/;"	f
+Image	extmix.cpp	/^VOID Image(IMG img, VOID * v)$/;"	f
+Image	fence.cpp	/^VOID Image(IMG img, VOID * v)$/;"	f
+Image	ilenmix.cpp	/^VOID Image(IMG img, VOID * v)$/;"	f
+Image	malloctrace.cpp	/^VOID Image(IMG img, VOID *v)$/;"	f
+Image	opcodemix.cpp	/^VOID Image(IMG img, VOID * v)$/;"	f
+ImageLoad	get_source_location.cpp	/^static VOID ImageLoad(IMG img, VOID * v) {$/;"	f	file:
+ImageLoad	regval.cpp	/^static VOID ImageLoad(IMG img, VOID * v)$/;"	f	file:
+ImageUnload	coco.cpp	/^VOID ImageUnload(IMG img, VOID * v)$/;"	f
+IndexStringLength	opcodemix.cpp	/^LOCALFUN  UINT32 IndexStringLength(BBL bbl, BOOL memory_acess_profile)$/;"	f
+IndexStringLength	topopcode.cpp	/^LOCALFUN  UINT32 IndexStringLength(BBL bbl, BOOL memory_acess_profile)$/;"	f
+IndexToOpcodeString	opcodemix.cpp	/^LOCALFUN string IndexToOpcodeString( UINT32 index )$/;"	f
+IndexToOpcodeString	topopcode.cpp	/^LOCALFUN string IndexToOpcodeString( UINT32 index )$/;"	f
+Info	callgraph.py	/^def Info(str):$/;"	f
+Info	flowgraph.py	/^def Info(str):$/;"	f
+Instruction	dcache.cpp	/^VOID Instruction(INS ins, void * v)$/;"	f
+Instruction	edgcnt.cpp	/^VOID Instruction(INS ins, void *v)$/;"	f
+Instruction	icount.cpp	/^VOID Instruction(INS ins, VOID *v)$/;"	f
+Instruction	jumpmix.cpp	/^VOID Instruction(INS ins, void *v)$/;"	f
+Instruction	pinatrace.cpp	/^VOID Instruction(INS ins, VOID *v)$/;"	f
+Instruction	xed-cache.cpp	/^VOID Instruction(INS ins, VOID *v)$/;"	f
+Instruction	xed-print.cpp	/^VOID Instruction(INS ins, VOID *v)$/;"	f
+Instruction	xed-use.cpp	/^VOID Instruction(INS ins, VOID *v)$/;"	f
+IsMemReadIndex	opcodemix.cpp	/^BOOL IsMemReadIndex(UINT32 i)$/;"	f
+IsMemReadIndex	topopcode.cpp	/^BOOL IsMemReadIndex(UINT32 i)$/;"	f
+IsMemWriteIndex	opcodemix.cpp	/^BOOL IsMemWriteIndex(UINT32 i)$/;"	f
+IsMemWriteIndex	topopcode.cpp	/^BOOL IsMemWriteIndex(UINT32 i)$/;"	f
+IsPower2	dcache.H	/^static inline bool IsPower2(UINT32 n)$/;"	f
+KILO	dcache.H	43;"	d
+Kilo	fence.cpp	/^    static const ADDRINT Kilo = 1024;$/;"	m	class:SANDBOX	file:
+LineSize	dcache.H	/^    UINT32 LineSize() const { return _lineSize; }$/;"	f	class:CACHE_BASE
+LoadMulti	dcache.cpp	/^VOID LoadMulti(ADDRINT addr, UINT32 size, UINT32 instId)$/;"	f
+LoadMultiFast	dcache.cpp	/^VOID LoadMultiFast(ADDRINT addr, UINT32 size)$/;"	f
+LoadSingle	dcache.cpp	/^VOID LoadSingle(ADDRINT addr, UINT32 instId)$/;"	f
+LoadSingleFast	dcache.cpp	/^VOID LoadSingleFast(ADDRINT addr)$/;"	f
+Lock	inscount2_vregs.cpp	/^PIN_LOCK Lock;$/;"	v
+Lookup	edgcnt.cpp	/^static COUNTER * Lookup( EDGE edge)$/;"	f	file:
+MALLOC	malloctrace.cpp	49;"	d	file:
+MALLOC	malloctrace.cpp	52;"	d	file:
+MAX_ADDR	callgraph.py	/^MAX_ADDR = 0$/;"	v
+MAX_BINS	xed-cache.cpp	60;"	d	file:
+MAX_INDEX	catmix.cpp	/^const UINT32 MAX_INDEX = 64;$/;"	v
+MAX_INDEX	extmix.cpp	/^const UINT32 MAX_INDEX = 64;$/;"	v
+MAX_INDEX	ilenmix.cpp	/^const UINT32 MAX_INDEX = 64;$/;"	v
+MAX_INDEX	opcodemix.cpp	/^const UINT32 MAX_INDEX = 4096;$/;"	v
+MAX_INDEX	topopcode.cpp	/^const UINT32 MAX_INDEX = 4096;$/;"	v
+MAX_MEM_SIZE	opcodemix.cpp	/^const UINT32 MAX_MEM_SIZE = 512;$/;"	v
+MAX_MEM_SIZE	topopcode.cpp	/^const UINT32 MAX_MEM_SIZE = 512;$/;"	v
+MAX_REG	regmix.cpp	/^const UINT16 MAX_REG = 4096;$/;"	v
+MAX_STATS_PER_BLOCK	ldstmix.cpp	237;"	d	file:
+MEGA	dcache.H	44;"	d
+Main	callgraph.py	/^def Main(argv):$/;"	f
+Main	flowgraph.py	/^def Main(argv):$/;"	f
+MallocAfter	malloctrace.cpp	/^VOID MallocAfter(ADDRINT ret)$/;"	f
+MaxNumThreads	inscount2_mt.cpp	/^const INT32 MaxNumThreads = 10000;$/;"	v
+MaxNumThreads	ldstmix.cpp	/^UINT32 MaxNumThreads = 1;$/;"	v
+Mega	fence.cpp	/^    static const ADDRINT Mega = Kilo * Kilo;$/;"	m	class:SANDBOX	file:
+MemsizeToIndex	opcodemix.cpp	/^LOCALFUN UINT32 MemsizeToIndex(UINT32 size, BOOL write)$/;"	f
+MemsizeToIndex	topopcode.cpp	/^LOCALFUN UINT32 MemsizeToIndex(UINT32 size, BOOL write)$/;"	f
+Misses	dcache.H	/^    CACHE_STATS Misses() const { return SumAccess(false);}$/;"	f	class:CACHE_BASE
+Misses	dcache.H	/^    CACHE_STATS Misses(ACCESS_TYPE accessType) const { return _access[accessType][false];}$/;"	f	class:CACHE_BASE
+NumSets	dcache.H	/^    UINT32 NumSets() const { return _setIndexMask + 1; }$/;"	f	class:CACHE_BASE
+OUT	jumpmix.cpp	145;"	d	file:
+Out	topopcode.cpp	/^std::ofstream Out;$/;"	v
+Out	toprtn.cpp	/^std::ofstream Out;$/;"	v
+OutFile	inscount2_mt.cpp	/^ofstream OutFile;$/;"	v
+OutFile	inscount2_vregs.cpp	/^ofstream OutFile;$/;"	v
+OutFile	regval.cpp	/^ofstream OutFile;$/;"	v
+PADSIZE	inscount2_mt.cpp	50;"	d	file:
+PAIR	topopcode.cpp	/^typedef pair<UINT32,UINT64> PAIR;$/;"	t	file:
+PAIR	toprtn.cpp	/^typedef pair<ADDRINT,UINT64> PAIR;$/;"	t	file:
+PATTERN_INVALID	ldstmix.cpp	/^    PATTERN_INVALID,$/;"	e	enum:__anon8	file:
+PATTERN_LAST	ldstmix.cpp	/^    PATTERN_LAST$/;"	e	enum:__anon8	file:
+PATTERN_MEM_R	ldstmix.cpp	/^    PATTERN_MEM_R,$/;"	e	enum:__anon8	file:
+PATTERN_MEM_RW	ldstmix.cpp	/^    PATTERN_MEM_RW,$/;"	e	enum:__anon8	file:
+PATTERN_MEM_W	ldstmix.cpp	/^    PATTERN_MEM_W,$/;"	e	enum:__anon8	file:
+PATTERN_NO_MEM	ldstmix.cpp	/^    PATTERN_NO_MEM,$/;"	e	enum:__anon8	file:
+PATTERN_NO_MEM_LIES	ldstmix.cpp	/^    PATTERN_NO_MEM_LIES,$/;"	e	enum:__anon8	file:
+PIN_CACHE_H	dcache.H	40;"	d
+PageMask	fence.cpp	/^    static const ADDRINT PageMask = PageSize - 1;$/;"	m	class:SANDBOX	file:
+PageSize	fence.cpp	/^    static const ADDRINT PageSize = 4 * Kilo;$/;"	m	class:SANDBOX	file:
+PatternAssemler	flowgraph.py	/^PatternAssemler = re.compile(r'^\\s*([0-9a-fA-F]+):\\s*(?:[0-9a-fA-F][0-9a-fA-F] )+\\s*(.+)$')$/;"	v
+PatternCall	flowgraph.py	/^PatternCall = re.compile(r'call')$/;"	v
+PatternEdge	callgraph.py	/^PatternEdge = re.compile(r'^\\s*0x([0-9a-fA-F]+)\\s+0x([0-9a-fA-F]+)\\s+([a-zA-Z])\\s+([0-9]+)\\s*$')$/;"	v
+PatternEdge2	flowgraph.py	/^PatternEdge2 = re.compile(r'^\\s*0x([0-9a-fA-F]+)\\s+0x([0-9a-fA-F]+)\\s+([0-9]+)\\s*$')$/;"	v
+PatternEdge3	flowgraph.py	/^PatternEdge3 = re.compile(r'^\\s*0x([0-9a-fA-F]+)\\s+0x([0-9a-fA-F]+)\\s+([a-zA-Z])\\s+([0-9]+)\\s*$')$/;"	v
+PatternNoFallthrough	flowgraph.py	/^PatternNoFallthrough = re.compile(r'call|ret|jmp')$/;"	v
+PatternSyscall	callgraph.py	/^PatternSyscall = re.compile(r'^[fF]+$')$/;"	v
+PrintMessage	fence.cpp	/^VOID SANDBOX::PrintMessage(string msg)$/;"	f	class:SANDBOX
+PrintRegisters	regval.cpp	/^static void PrintRegisters(const CONTEXT * ctxt)$/;"	f	file:
+PrintUntouchedRanges	coco.cpp	/^VOID PrintUntouchedRanges(SEC sec)$/;"	f
+ProcessAssemblerListing	flowgraph.py	/^def ProcessAssemblerListing(lines):$/;"	f
+ProcessEdgProfile	callgraph.py	/^def ProcessEdgProfile(lines, unique_edgs_only):$/;"	f
+ProcessEdgProfile	flowgraph.py	/^def ProcessEdgProfile(lines):$/;"	f
+ProcessSymbols	callgraph.py	/^def ProcessSymbols(lines):$/;"	f
+ProtectPage	fence.cpp	/^VOID SANDBOX::ProtectPage(const char * page)$/;"	f	class:SANDBOX
+REG_GetStatsIndex	regmix.cpp	/^UINT16 REG_GetStatsIndex(REG reg, BOOL is_write)$/;"	f
+ROUND_ROBIN	dcache.H	/^    ROUND_ROBIN(UINT32 associativity = MAX_ASSOCIATIVITY)$/;"	f	class:CACHE_SET::ROUND_ROBIN
+ROUND_ROBIN	dcache.H	/^class ROUND_ROBIN$/;"	c	namespace:CACHE_SET
+RTN	callgraph.py	/^class RTN:$/;"	c
+RTN_MAP	callgraph.py	/^RTN_MAP = []$/;"	v
+RecordAddressRange	fence.cpp	/^VOID SANDBOX::RecordAddressRange(const char * beginAddr, const char * endAddr)$/;"	f	class:SANDBOX
+RecordIns	fence.cpp	/^VOID SANDBOX::RecordIns(INS ins)$/;"	f	class:SANDBOX
+RecordMem	pinatrace.cpp	/^static VOID RecordMem(VOID * ip, CHAR r, VOID * addr, INT32 size, BOOL isPrefetch)$/;"	f	file:
+RecordMemWrite	pinatrace.cpp	/^static VOID RecordMemWrite(VOID * ip)$/;"	f	file:
+RecordPage	fence.cpp	/^VOID SANDBOX::RecordPage(const char * page)$/;"	f	class:SANDBOX
+RecordPageRange	fence.cpp	/^VOID SANDBOX::RecordPageRange(const char * beginPage, const char * endPage)$/;"	f	class:SANDBOX
+RecordRegisters	ldstmix.cpp	/^INT32 RecordRegisters(BBL bbl, $/;"	f
+RecordRegisters	regmix.cpp	/^INT32 RecordRegisters(BBL bbl, UINT16 * stats)$/;"	f
+RecordWriteAddrSize	pinatrace.cpp	/^static VOID RecordWriteAddrSize(VOID * addr, INT32 size)$/;"	f	file:
+Replace	dcache.H	/^    VOID Replace(CACHE_TAG tag) { _tag = tag; }$/;"	f	class:CACHE_SET::DIRECT_MAPPED
+Replace	dcache.H	/^    VOID Replace(CACHE_TAG tag)$/;"	f	class:CACHE_SET::ROUND_ROBIN
+RtnMap	toprtn.cpp	/^LOCALVAR ADDR_CNT_MAP RtnMap;$/;"	v
+SANDBOX	fence.cpp	/^class SANDBOX$/;"	c	file:
+STATS	catmix.cpp	/^}STATS;$/;"	t	typeref:struct:__anon5	file:
+STATS	extmix.cpp	/^}STATS;$/;"	t	typeref:struct:__anon7	file:
+STATS	ilenmix.cpp	/^}STATS;$/;"	t	typeref:struct:__anon1	file:
+STATS	ldstmix.cpp	/^} STATS;$/;"	t	typeref:struct:__anon9	file:
+STATS	opcodemix.cpp	/^class STATS$/;"	c	file:
+STATS	topopcode.cpp	/^class STATS$/;"	c	file:
+STORE_ALLOCATE	dcache.H	/^        STORE_ALLOCATE,$/;"	e	enum:CACHE_ALLOC::__anon2
+STORE_ALLOCATION	dcache.H	/^    } STORE_ALLOCATION;$/;"	t	namespace:CACHE_ALLOC	typeref:enum:CACHE_ALLOC::__anon2
+STORE_NO_ALLOCATE	dcache.H	/^        STORE_NO_ALLOCATE$/;"	e	enum:CACHE_ALLOC::__anon2
+ScratchReg	inscount2_vregs.cpp	/^REG ScratchReg;$/;"	v
+SetAssociativity	dcache.H	/^    VOID SetAssociativity(UINT32 associativity) { ASSERTX(associativity == 1); }$/;"	f	class:CACHE_SET::DIRECT_MAPPED
+SetAssociativity	dcache.H	/^    VOID SetAssociativity(UINT32 associativity)$/;"	f	class:CACHE_SET::ROUND_ROBIN
+SplitAddress	dcache.H	/^    VOID SplitAddress(const ADDRINT addr, CACHE_TAG & tag, UINT32 & setIndex) const$/;"	f	class:CACHE_BASE
+SplitAddress	dcache.H	/^    VOID SplitAddress(const ADDRINT addr, CACHE_TAG & tag, UINT32 & setIndex, UINT32 & lineIndex) const$/;"	f	class:CACHE_BASE
+Start	regval_app.cpp	/^extern "C" EXPORT_SYM void Start()$/;"	f
+StartRoutine	regval.cpp	/^static void StartRoutine()$/;"	f	file:
+StatsLong	dcache.H	/^string CACHE_BASE::StatsLong(string prefix, CACHE_TYPE cache_type) const$/;"	f	class:CACHE_BASE
+Stop	regval_app.cpp	/^extern "C" EXPORT_SYM void Stop()$/;"	f
+StopRoutine	regval.cpp	/^static void StopRoutine()$/;"	f	file:
+StoreMulti	dcache.cpp	/^VOID StoreMulti(ADDRINT addr, UINT32 size, UINT32 instId)$/;"	f
+StoreMultiFast	dcache.cpp	/^VOID StoreMultiFast(ADDRINT addr, UINT32 size)$/;"	f
+StoreSingle	dcache.cpp	/^VOID StoreSingle(ADDRINT addr, UINT32 instId)$/;"	f
+StoreSingleFast	dcache.cpp	/^VOID StoreSingleFast(ADDRINT addr)$/;"	f
+String	callgraph.py	/^    def String(self,cutoff):$/;"	m	class:RTN
+String	flowgraph.py	/^    def String(self):$/;"	m	class:BBL
+StringFromEtype	edgcnt.cpp	/^string StringFromEtype( ETYPE etype)$/;"	f
+StringVCG	callgraph.py	/^    def StringVCG(self, threshold = 100000000000L):$/;"	m	class:EDG
+StringVCG	callgraph.py	/^    def StringVCG(self,threshold):$/;"	m	class:RTN
+StringVCG	flowgraph.py	/^    def StringVCG(self, threshold = 100000000000L):$/;"	m	class:EDG
+StringVCG	flowgraph.py	/^    def StringVCG(self,threshold=1000):$/;"	m	class:BBL
+SumAccess	dcache.H	/^    CACHE_STATS SumAccess(bool hit) const$/;"	f	class:CACHE_BASE
+THREAD_DATA	inscount2_mt.cpp	/^struct THREAD_DATA$/;"	s	file:
+Target2String	calltrace.cpp	/^const string *Target2String(ADDRINT target)$/;"	f
+Target2String	toprtn.cpp	/^const string *Target2String(ADDRINT target)$/;"	f
+ThreadFini	inscount2_vregs.cpp	/^VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 code, VOID *v)$/;"	f
+ThreadStart	inscount2_mt.cpp	/^VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)$/;"	f
+ThreadStart	inscount2_vregs.cpp	/^VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v)$/;"	f
+ThreadStart	ldstmix.cpp	/^VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)$/;"	f
+Total	jumpmix.cpp	/^    UINT64 Total()$/;"	f	class:COUNTER
+TotalCount	inscount2_vregs.cpp	/^UINT64 TotalCount = 0;$/;"	v
+Trace	calltrace.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	catmix.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	coco.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	extmix.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	fence.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	ilenmix.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	inscount2_mt.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	inscount2_vregs.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	ldstmix.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	opcodemix.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	regmix.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	regval.cpp	/^static VOID Trace(TRACE trace, VOID *v)$/;"	f	file:
+Trace	topopcode.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	toprtn.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	trace.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+TraceFile	calltrace.cpp	/^std::ofstream TraceFile;$/;"	v
+TraceFile	malloctrace.cpp	/^std::ofstream TraceFile;$/;"	v
+TraceFile	pinatrace.cpp	/^std::ofstream TraceFile;$/;"	v
+TraceFile	trace.cpp	/^std::ofstream TraceFile;$/;"	v
+USE_DECODE_CACHE	xed-cache.cpp	123;"	d	file:
+Usage	callgraph.py	/^def Usage():$/;"	f
+Usage	calltrace.cpp	/^INT32 Usage()$/;"	f
+Usage	catmix.cpp	/^INT32 Usage()$/;"	f
+Usage	coco.cpp	/^INT32 Usage()$/;"	f
+Usage	dcache.cpp	/^INT32 Usage()$/;"	f
+Usage	edgcnt.cpp	/^static INT32 Usage()$/;"	f	file:
+Usage	emuload.cpp	/^INT32 Usage()$/;"	f
+Usage	extmix.cpp	/^INT32 Usage()$/;"	f
+Usage	fence.cpp	/^INT32 Usage()$/;"	f
+Usage	flowgraph.py	/^def Usage():$/;"	f
+Usage	get_source_location.cpp	/^INT32 Usage() {$/;"	f
+Usage	icount.cpp	/^INT32 Usage()$/;"	f
+Usage	ilenmix.cpp	/^INT32 Usage()$/;"	f
+Usage	inscount2_mt.cpp	/^INT32 Usage()$/;"	f
+Usage	inscount2_vregs.cpp	/^INT32 Usage()$/;"	f
+Usage	jumpmix.cpp	/^static INT32 Usage()$/;"	f	file:
+Usage	ldstmix.cpp	/^INT32 Usage()$/;"	f
+Usage	malloctrace.cpp	/^INT32 Usage()$/;"	f
+Usage	opcodemix.cpp	/^INT32 Usage()$/;"	f
+Usage	pinatrace.cpp	/^static INT32 Usage()$/;"	f	file:
+Usage	regmix.cpp	/^INT32 Usage()$/;"	f
+Usage	topopcode.cpp	/^INT32 Usage()$/;"	f
+Usage	toprtn.cpp	/^INT32 Usage()$/;"	f
+Usage	trace.cpp	/^INT32 Usage()$/;"	f
+Usage	xed-cache.cpp	/^INT32 Usage()$/;"	f
+Usage	xed-print.cpp	/^INT32 Usage()$/;"	f
+Usage	xed-use.cpp	/^INT32 Usage()$/;"	f
+VEC	topopcode.cpp	/^typedef vector<PAIR> VEC;$/;"	t	file:
+VEC	toprtn.cpp	/^typedef vector<PAIR> VEC;$/;"	t	file:
+Version	callgraph.py	/^def Version():$/;"	f
+Version	flowgraph.py	/^def Version():$/;"	f
+Warning	callgraph.py	/^def Warning(str):$/;"	f
+Warning	fence.cpp	/^    VOID Warning(string msg)$/;"	f	class:SANDBOX	file:
+Warning	flowgraph.py	/^def Warning(str):$/;"	f
+Work	regval_app.cpp	/^long double Work()$/;"	f
+WriteAddr	pinatrace.cpp	/^static VOID * WriteAddr;$/;"	v	file:
+WriteSize	pinatrace.cpp	/^static INT32 WriteSize;$/;"	v	file:
+__init__	callgraph.py	/^    def __init__(self,src,dst,type,count):$/;"	m	class:EDG
+__init__	callgraph.py	/^    def __init__(self,start,name,external=0):$/;"	m	class:RTN
+__init__	flowgraph.py	/^    def __init__(self, addr, opcode ):$/;"	m	class:INS
+__init__	flowgraph.py	/^    def __init__(self,src,dst,count, type):$/;"	m	class:EDG
+__init__	flowgraph.py	/^    def __init__(self,start):$/;"	m	class:BBL
+_access	dcache.H	/^    CACHE_STATS _access[ACCESS_TYPE_NUM][HIT_MISS_NUM];$/;"	m	class:CACHE_BASE
+_associativity	dcache.H	/^    const UINT32 _associativity;$/;"	m	class:CACHE_BASE
+_branch	jumpmix.cpp	/^    UINT64 _branch;$/;"	m	class:COUNTER	file:
+_branch_indirect	jumpmix.cpp	/^    UINT64 _branch_indirect;    $/;"	m	class:COUNTER	file:
+_cacheSize	dcache.H	/^    const UINT32 _cacheSize;$/;"	m	class:CACHE_BASE
+_call	jumpmix.cpp	/^    UINT64 _call;$/;"	m	class:COUNTER	file:
+_call_indirect	jumpmix.cpp	/^    UINT64 _call_indirect;$/;"	m	class:COUNTER	file:
+_count	edgcnt.cpp	/^    UINT64 _count;       \/\/ number of times the edge was traversed$/;"	m	class:COUNTER	file:
+_count	inscount2_mt.cpp	/^    UINT64 _count;$/;"	m	struct:THREAD_DATA	file:
+_counter	catmix.cpp	/^    COUNTER _counter;$/;"	m	class:BBLSTATS	file:
+_counter	extmix.cpp	/^    COUNTER _counter;$/;"	m	class:BBLSTATS	file:
+_counter	ilenmix.cpp	/^    COUNTER _counter;$/;"	m	class:BBLSTATS	file:
+_counter	ldstmix.cpp	/^    COUNTER* _counter;$/;"	m	class:BBLSTATS	file:
+_counter	opcodemix.cpp	/^    COUNTER _counter;$/;"	m	class:BBLSTATS	file:
+_counter	regmix.cpp	/^    COUNTER _counter;$/;"	m	class:BBLSTATS	file:
+_counter	topopcode.cpp	/^    COUNTER _counter;$/;"	m	class:BBLSTATS	file:
+_deferredRanges	fence.cpp	/^    AddrMap _deferredRanges;$/;"	m	class:SANDBOX	file:
+_dst	edgcnt.cpp	/^    ADDRINT _dst;$/;"	m	class:EDGE	file:
+_executed	coco.cpp	/^    BOOL _executed;$/;"	m	class:BBLSTATS	file:
+_lineShift	dcache.H	/^    const UINT32 _lineShift;$/;"	m	class:CACHE_BASE
+_lineSize	dcache.H	/^    const UINT32 _lineSize;$/;"	m	class:CACHE_BASE
+_name	dcache.H	/^    const std::string _name;$/;"	m	class:CACHE_BASE
+_nextReplaceIndex	dcache.H	/^    UINT32 _nextReplaceIndex;$/;"	m	class:CACHE_SET::ROUND_ROBIN
+_next_ins	edgcnt.cpp	/^    ADDRINT _next_ins;$/;"	m	class:EDGE	file:
+_pad	inscount2_mt.cpp	/^    UINT8 _pad[PADSIZE];$/;"	m	struct:THREAD_DATA	file:
+_pages	fence.cpp	/^    AddrMap _pages;$/;"	m	class:SANDBOX	file:
+_return	jumpmix.cpp	/^    UINT64 _return;$/;"	m	class:COUNTER	file:
+_setIndexMask	dcache.H	/^    const UINT32 _setIndexMask;$/;"	m	class:CACHE_BASE
+_sets	dcache.H	/^    SET _sets[MAX_SETS];$/;"	m	class:CACHE
+_size	coco.cpp	/^    const USIZE _size;$/;"	m	class:BBLSTATS	file:
+_src	edgcnt.cpp	/^    ADDRINT _src;$/;"	m	class:EDGE	file:
+_start	coco.cpp	/^    const ADDRINT _start;$/;"	m	class:BBLSTATS	file:
+_stats	catmix.cpp	/^    const UINT16 * _stats;$/;"	m	class:BBLSTATS	file:
+_stats	extmix.cpp	/^    const UINT16 * _stats;$/;"	m	class:BBLSTATS	file:
+_stats	ilenmix.cpp	/^    const UINT16 * _stats;$/;"	m	class:BBLSTATS	file:
+_stats	ldstmix.cpp	/^    const UINT16 * _stats; $/;"	m	class:BBLSTATS	file:
+_stats	opcodemix.cpp	/^    const UINT16 * const _stats;$/;"	m	class:BBLSTATS	file:
+_stats	regmix.cpp	/^    const UINT16 * _stats;$/;"	m	class:BBLSTATS	file:
+_stats	topopcode.cpp	/^    const UINT16 * const _stats;$/;"	m	class:BBLSTATS	file:
+_syscall	jumpmix.cpp	/^    UINT64 _syscall;$/;"	m	class:COUNTER	file:
+_tag	dcache.H	/^    ADDRINT _tag;$/;"	m	class:CACHE_TAG
+_tag	dcache.H	/^    CACHE_TAG _tag;$/;"	m	class:CACHE_SET::DIRECT_MAPPED
+_tags	dcache.H	/^    CACHE_TAG _tags[MAX_ASSOCIATIVITY];$/;"	m	class:CACHE_SET::ROUND_ROBIN
+_tagsLastIndex	dcache.H	/^    UINT32 _tagsLastIndex;$/;"	m	class:CACHE_SET::ROUND_ROBIN
+_type	edgcnt.cpp	/^    ETYPE   _type; \/\/ must be integer to make stl happy$/;"	m	class:EDGE	file:
+add_count	callgraph.py	/^    def add_count(self,count):$/;"	m	class:EDG
+add_in_count	flowgraph.py	/^    def add_in_count(self, count ):$/;"	m	class:BBL
+add_in_edg	callgraph.py	/^    def add_in_edg(self, edg ):$/;"	m	class:RTN
+add_in_edg	flowgraph.py	/^    def add_in_edg(self, edg ):$/;"	m	class:BBL
+add_ins	flowgraph.py	/^    def add_ins(self,ins):$/;"	m	class:BBL
+add_out_count	flowgraph.py	/^    def add_out_count(self, count ):$/;"	m	class:BBL
+add_out_edg	callgraph.py	/^    def add_out_edg(self, edg ):$/;"	m	class:RTN
+add_out_edg	flowgraph.py	/^    def add_out_edg(self, edg ):$/;"	m	class:BBL
+allocation	dcache.cpp	/^    const CACHE_ALLOC::STORE_ALLOCATION allocation = CACHE_ALLOC::STORE_ALLOCATE;$/;"	m	namespace:DL1	file:
+bbl_counter	topopcode.cpp	/^LOCALVAR UINT64 bbl_counter = 0;$/;"	v
+bisect	callgraph.py	/^import bisect$/;"	i
+cache	xed-cache.cpp	/^xed_decode_cache_t cache;$/;"	v
+control	opcodemix.cpp	/^LOCALVAR CONTROL control;$/;"	v
+copy	callgraph.py	/^import copy$/;"	i
+copy	flowgraph.py	/^import copy$/;"	i
+count	callgraph.py	/^    def count(self):$/;"	m	class:EDG
+count_in	callgraph.py	/^    def count_in(self):$/;"	m	class:RTN
+count_in	flowgraph.py	/^    def count_in(self):$/;"	m	class:BBL
+count_out	callgraph.py	/^    def count_out(self):$/;"	m	class:RTN
+count_out	flowgraph.py	/^    def count_out(self):$/;"	m	class:BBL
+count_trace	trace.cpp	/^UINT32 count_trace = 0; \/\/ current trace number$/;"	v
+counter	toprtn.cpp	/^LOCALVAR UINT64 counter = 0;$/;"	v
+do_call	calltrace.cpp	/^VOID  do_call(const string *s)$/;"	f
+do_call_args	calltrace.cpp	/^VOID  do_call_args(const string *s, ADDRINT arg0)$/;"	f
+do_call_args_indirect	calltrace.cpp	/^VOID  do_call_args_indirect(ADDRINT target, BOOL taken, ADDRINT arg0)$/;"	f
+do_call_indirect	calltrace.cpp	/^VOID  do_call_indirect(ADDRINT target, BOOL taken)$/;"	f
+do_call_indirect	toprtn.cpp	/^VOID  do_call_indirect(ADDRINT target, BOOL taken)$/;"	f
+docount	catmix.cpp	/^VOID docount(COUNTER * counter)$/;"	f
+docount	coco.cpp	/^VOID docount(BOOL * counter)$/;"	f
+docount	edgcnt.cpp	/^VOID docount( COUNTER *pedg )$/;"	f
+docount	extmix.cpp	/^VOID docount(COUNTER * counter)$/;"	f
+docount	icount.cpp	/^VOID docount()$/;"	f
+docount	ilenmix.cpp	/^VOID docount(COUNTER * counter)$/;"	f
+docount	inscount2_mt.cpp	/^VOID PIN_FAST_ANALYSIS_CALL docount(ADDRINT c, THREADID tid) { icount[tid]._count += c; }$/;"	f
+docount	ldstmix.cpp	/^VOID docount(COUNTER * counter, THREADID tid)$/;"	f
+docount	opcodemix.cpp	/^VOID PIN_FAST_ANALYSIS_CALL docount(COUNTER * counter)$/;"	f
+docount	regmix.cpp	/^VOID docount(COUNTER * counter)$/;"	f
+docount	topopcode.cpp	/^VOID docount(COUNTER * counter)$/;"	f
+docount	trace.cpp	/^VOID  docount(const string *s)$/;"	f
+docount2	edgcnt.cpp	/^VOID docount2( ADDRINT src, ADDRINT dst, ADDRINT n, ETYPE type, INT32 taken )$/;"	f
+enabled	opcodemix.cpp	/^LOCALVAR UINT32 enabled = 0;$/;"	v
+find_target	callgraph.py	/^    def find_target(self,dst):$/;"	m	class:RTN
+get_addr	flowgraph.py	/^    def get_addr(self):$/;"	m	class:INS
+get_bbl	flowgraph.py	/^    def get_bbl(self):$/;"	m	class:INS
+get_leader	flowgraph.py	/^    def get_leader(self):$/;"	m	class:INS
+get_next	flowgraph.py	/^    def get_next(self):$/;"	m	class:BBL
+get_next	flowgraph.py	/^    def get_next(self):$/;"	m	class:INS
+get_opcode	flowgraph.py	/^    def get_opcode(self):$/;"	m	class:INS
+get_start	flowgraph.py	/^    def get_start(self):$/;"	m	class:BBL
+get_time	xed-cache.cpp	/^inline xed_uint64_t get_time() {$/;"	f
+getopt	callgraph.py	/^import getopt$/;"	i
+getopt	flowgraph.py	/^import getopt$/;"	i
+has_no_fallthru	flowgraph.py	/^    def has_no_fallthru(self):$/;"	m	class:BBL
+has_no_fallthru	flowgraph.py	/^    def has_no_fallthru(self):$/;"	m	class:INS
+hi	xed-cache.cpp	/^        xed_uint32_t hi;$/;"	m	struct:__anon10::__anon11	file:
+histo	xed-cache.cpp	/^UINT64 histo[MAX_BINS];$/;"	v
+i	xed-cache.cpp	/^UINT64 i=0;$/;"	v
+icount	inscount2_mt.cpp	/^THREAD_DATA icount[MaxNumThreads];$/;"	v
+ins_count	icount.cpp	/^UINT64 ins_count = 0;$/;"	v
+invalid	calltrace.cpp	/^string invalid = "invalid_rtn";$/;"	v
+invalid	toprtn.cpp	/^string invalid = "invalid_rtn";$/;"	v
+is_call	flowgraph.py	/^    def is_call(self):$/;"	m	class:BBL
+is_call	flowgraph.py	/^    def is_call(self):$/;"	m	class:INS
+is_external	callgraph.py	/^    def is_external(self):$/;"	m	class:RTN
+is_fallthru	flowgraph.py	/^    def is_fallthru(self):$/;"	m	class:EDG
+j	xed-cache.cpp	/^UINT64 j=0;$/;"	v
+lo	xed-cache.cpp	/^        xed_uint32_t lo;$/;"	m	struct:__anon10::__anon11	file:
+lock	inscount2_mt.cpp	/^PIN_LOCK lock;$/;"	v
+lock	ldstmix.cpp	/^PIN_LOCK lock;$/;"	v
+main	calltrace.cpp	/^int  main(int argc, char *argv[])$/;"	f
+main	catmix.cpp	/^int main(int argc, CHAR *argv[])$/;"	f
+main	coco.cpp	/^int main(int argc, CHAR *argv[])$/;"	f
+main	dcache.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	edgcnt.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	emuload.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	extmix.cpp	/^int main(int argc, CHAR *argv[])$/;"	f
+main	fence.cpp	/^int main(int argc, CHAR *argv[])$/;"	f
+main	get_source_app.cpp	/^int main() {$/;"	f
+main	get_source_location.cpp	/^int main(INT32 argc, CHAR **argv) {$/;"	f
+main	icount.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	ilenmix.cpp	/^int main(int argc, CHAR *argv[])$/;"	f
+main	inscount2_mt.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	inscount2_vregs.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	jumpmix.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	ldstmix.cpp	/^int main(int argc, CHAR *argv[])$/;"	f
+main	malloctrace.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	opcodemix.cpp	/^int main(int argc, CHAR *argv[])$/;"	f
+main	pinatrace.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	regmix.cpp	/^int main(int argc, CHAR *argv[])$/;"	f
+main	regval.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	regval_app.cpp	/^int main()$/;"	f
+main	topopcode.cpp	/^int main(int argc, CHAR *argv[])$/;"	f
+main	toprtn.cpp	/^int main(int argc, CHAR *argv[])$/;"	f
+main	trace.cpp	/^int  main(int argc, char *argv[])$/;"	f
+main	xed-cache.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	xed-print.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	xed-use.cpp	/^int main(int argc, char *argv[])$/;"	f
+max_associativity	dcache.cpp	/^    const UINT32 max_associativity = 256; \/\/ associativity;$/;"	m	namespace:DL1	file:
+max_sets	dcache.cpp	/^    const UINT32 max_sets = KILO; \/\/ cacheSize \/ (lineSize * associativity);$/;"	m	namespace:DL1	file:
+mydecstr	dcache.H	/^static string mydecstr(UINT64 v, UINT32 w)$/;"	f
+name	callgraph.py	/^    def name(self):$/;"	m	class:RTN
+numThreads	inscount2_mt.cpp	/^INT32 numThreads = 0;$/;"	v
+numThreads	ldstmix.cpp	/^UINT32 numThreads = 0;$/;"	v
+operator <	edgcnt.cpp	/^    bool operator <(const EDGE& edge) const $/;"	f	class:EDGE
+operator ==	dcache.H	/^    bool operator==(const CACHE_TAG &right) const { return _tag == right._tag; }$/;"	f	class:CACHE_TAG
+operator ADDRINT	dcache.H	/^    operator ADDRINT() const { return _tag; }$/;"	f	class:CACHE_TAG
+os	callgraph.py	/^import os$/;"	i
+os	flowgraph.py	/^import os$/;"	i
+out	catmix.cpp	/^static std::ofstream* out = 0;$/;"	v	file:
+out	coco.cpp	/^std::ofstream out;$/;"	v
+out	edgcnt.cpp	/^static std::ofstream* out = 0;$/;"	v	file:
+out	emuload.cpp	/^std::ofstream* out = 0;$/;"	v
+out	extmix.cpp	/^static std::ofstream* out = 0;$/;"	v	file:
+out	ilenmix.cpp	/^static std::ofstream* out = 0;$/;"	v	file:
+out	jumpmix.cpp	/^static std::ofstream* out = 0;$/;"	v	file:
+out	ldstmix.cpp	/^static std::ofstream* out = 0;$/;"	v	file:
+out	opcodemix.cpp	/^static std::ofstream* out = 0;$/;"	v	file:
+out	regmix.cpp	/^static std::ofstream* out = 0;$/;"	v	file:
+out	xed-cache.cpp	/^std::ofstream* out = 0;$/;"	v
+out	xed-print.cpp	/^std::ofstream* out = 0;$/;"	v
+out	xed-use.cpp	/^std::ofstream* out = 0;$/;"	v
+outFile	dcache.cpp	/^std::ofstream outFile;$/;"	v
+output	get_source_location.cpp	/^static void output(ADDRINT address, ostream* printTo, INS ins = INS_Invalid()) {$/;"	f	file:
+pattern	ldstmix.cpp	/^    COUNTER pattern[PATTERN_LAST];$/;"	m	struct:__anon9	file:
+pattern_t	ldstmix.cpp	/^} pattern_t;$/;"	t	typeref:enum:__anon8	file:
+pattern_t2str	ldstmix.cpp	/^pattern_t2str(pattern_t x)$/;"	f
+predicated	catmix.cpp	/^    COUNTER predicated[MAX_INDEX];$/;"	m	struct:__anon5	file:
+predicated	extmix.cpp	/^    COUNTER predicated[MAX_INDEX];$/;"	m	struct:__anon7	file:
+predicated	ilenmix.cpp	/^    COUNTER predicated[MAX_INDEX];$/;"	m	struct:__anon1	file:
+predicated	opcodemix.cpp	/^    COUNTER predicated[MAX_INDEX];$/;"	m	class:STATS	file:
+predicated_true	catmix.cpp	/^    COUNTER predicated_true[MAX_INDEX];$/;"	m	struct:__anon5	file:
+predicated_true	extmix.cpp	/^    COUNTER predicated_true[MAX_INDEX];$/;"	m	struct:__anon7	file:
+predicated_true	ilenmix.cpp	/^    COUNTER predicated_true[MAX_INDEX];$/;"	m	struct:__anon1	file:
+predicated_true	opcodemix.cpp	/^    COUNTER predicated_true[MAX_INDEX];$/;"	m	class:STATS	file:
+printRegsNow	regval.cpp	/^volatile bool printRegsNow = false;$/;"	v
+profile	dcache.cpp	/^COMPRESSOR_COUNTER<ADDRINT, UINT32, COUNTER_HIT_MISS> profile;$/;"	v
+q	xed-cache.cpp	/^    xed_uint64_t q;$/;"	m	union:__anon10	file:
+qu_t	xed-cache.cpp	/^} qu_t;$/;"	t	typeref:union:__anon10	file:
+re	callgraph.py	/^import re$/;"	i
+re	flowgraph.py	/^import re$/;"	i
+reg_r	regmix.cpp	/^    COUNTER reg_r[MAX_REG];$/;"	m	struct:GLOBALSTATS	file:
+reg_w	regmix.cpp	/^    COUNTER reg_w[MAX_REG];$/;"	m	struct:GLOBALSTATS	file:
+rejects	xed-cache.cpp	/^UINT64 rejects =0;$/;"	v
+s	xed-cache.cpp	/^    } s;$/;"	m	union:__anon10	typeref:struct:__anon10::__anon11	file:
+sandbox	fence.cpp	/^static SANDBOX sandbox;$/;"	v	file:
+set_bbl	flowgraph.py	/^    def set_bbl(self,bbl):$/;"	m	class:INS
+set_count	flowgraph.py	/^    def set_count(self,count):$/;"	m	class:BBL
+set_leader	flowgraph.py	/^    def set_leader(self,leader):$/;"	m	class:INS
+set_next	flowgraph.py	/^    def set_next(self,next):$/;"	m	class:BBL
+set_next	flowgraph.py	/^    def set_next(self,next):$/;"	m	class:INS
+start	callgraph.py	/^    def start(self):$/;"	m	class:RTN
+startRtnName	regval.cpp	/^const char* startRtnName = "Start";$/;"	v
+startRtnName	regval.cpp	/^const char* startRtnName = "_Start";$/;"	v
+statsList	catmix.cpp	/^list<const BBLSTATS*> statsList;$/;"	v
+statsList	coco.cpp	/^list<const BBLSTATS*> statsList;$/;"	v
+statsList	extmix.cpp	/^list<const BBLSTATS*> statsList;$/;"	v
+statsList	ilenmix.cpp	/^list<const BBLSTATS*> statsList;$/;"	v
+statsList	ldstmix.cpp	/^list<const BBLSTATS*> statsList;$/;"	v
+statsList	opcodemix.cpp	/^LOCALVAR vector<const BBLSTATS*> statsList;$/;"	v
+statsList	regmix.cpp	/^list<const BBLSTATS*> statsList;$/;"	v
+statsList	topopcode.cpp	/^LOCALVAR vector<BBLSTATS*> statsList;$/;"	v
+stopRtnName	regval.cpp	/^const char* stopRtnName = "Stop";$/;"	v
+stopRtnName	regval.cpp	/^const char* stopRtnName = "_Stop";$/;"	v
+string	callgraph.py	/^import string$/;"	i
+string	flowgraph.py	/^import string$/;"	i
+sys	callgraph.py	/^import sys$/;"	i
+sys	flowgraph.py	/^import sys$/;"	i
+unpredicated	catmix.cpp	/^    COUNTER unpredicated[MAX_INDEX];$/;"	m	struct:__anon5	file:
+unpredicated	extmix.cpp	/^    COUNTER unpredicated[MAX_INDEX];$/;"	m	struct:__anon7	file:
+unpredicated	ilenmix.cpp	/^    COUNTER unpredicated[MAX_INDEX];$/;"	m	struct:__anon1	file:
+unpredicated	opcodemix.cpp	/^    COUNTER unpredicated[MAX_INDEX];$/;"	m	class:STATS	file:
+unpredicated	topopcode.cpp	/^    COUNTER unpredicated[MAX_INDEX];$/;"	m	class:STATS	file:
+updates	topopcode.cpp	/^LOCALVAR UINT64 updates = 0;$/;"	v
+updates	toprtn.cpp	/^LOCALVAR UINT64 updates = 0;$/;"	v
+use_xed	xed-cache.cpp	/^VOID use_xed(ADDRINT pc) {$/;"	f
+use_xed	xed-print.cpp	/^VOID use_xed(ADDRINT pc) {$/;"	f
+vcg_name	callgraph.py	/^    def vcg_name(self):$/;"	m	class:RTN

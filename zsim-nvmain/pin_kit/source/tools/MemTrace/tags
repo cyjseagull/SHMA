@@ -1,0 +1,419 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ANALYSIS_CALL_INFO	memtrace_simple.cpp	/^      ANALYSIS_CALL_INFO(INS ins, UINT32 offsetFromTraceStartInBuffer, UINT32 memop) : $/;"	f	class:ANALYSIS_CALL_INFO
+ANALYSIS_CALL_INFO	memtrace_simple.cpp	/^class ANALYSIS_CALL_INFO$/;"	c	file:
+ANALYSIS_CALL_INFO	memtrace_threadpool.cpp	/^      ANALYSIS_CALL_INFO(INS ins, UINT32 offsetFromTraceStartInBuffer, UINT32 memop) : $/;"	f	class:ANALYSIS_CALL_INFO
+ANALYSIS_CALL_INFO	memtrace_threadpool.cpp	/^class ANALYSIS_CALL_INFO$/;"	c	file:
+APP_THREAD_REPRESENTITVE	membuffer_simple.cpp	/^APP_THREAD_REPRESENTITVE::APP_THREAD_REPRESENTITVE(THREADID tid)$/;"	f	class:APP_THREAD_REPRESENTITVE
+APP_THREAD_REPRESENTITVE	membuffer_simple.cpp	/^class APP_THREAD_REPRESENTITVE$/;"	c	file:
+APP_THREAD_REPRESENTITVE	membuffer_simple_tid.cpp	/^APP_THREAD_REPRESENTITVE::APP_THREAD_REPRESENTITVE(THREADID tid)$/;"	f	class:APP_THREAD_REPRESENTITVE
+APP_THREAD_REPRESENTITVE	membuffer_simple_tid.cpp	/^class APP_THREAD_REPRESENTITVE$/;"	c	file:
+APP_THREAD_REPRESENTITVE	membuffer_threadpool.cpp	/^APP_THREAD_REPRESENTITVE::APP_THREAD_REPRESENTITVE(THREADID tid) : $/;"	f	class:APP_THREAD_REPRESENTITVE
+APP_THREAD_REPRESENTITVE	membuffer_threadpool.cpp	/^class APP_THREAD_REPRESENTITVE$/;"	c	file:
+APP_THREAD_REPRESENTITVE	memtrace_simple.cpp	/^APP_THREAD_REPRESENTITVE::APP_THREAD_REPRESENTITVE(THREADID myTid)$/;"	f	class:APP_THREAD_REPRESENTITVE
+APP_THREAD_REPRESENTITVE	memtrace_simple.cpp	/^class APP_THREAD_REPRESENTITVE$/;"	c	file:
+APP_THREAD_REPRESENTITVE	memtrace_threadpool.cpp	/^APP_THREAD_REPRESENTITVE::APP_THREAD_REPRESENTITVE(THREADID myTid) : _curBuffer(AllocateBuffer()), _myTid(myTid), _pointerToEndOfTraceInBuffer(NULL), _numOutstandingBuffers(0)$/;"	f	class:APP_THREAD_REPRESENTITVE
+APP_THREAD_REPRESENTITVE	memtrace_threadpool.cpp	/^class APP_THREAD_REPRESENTITVE$/;"	c	file:
+APP_THREAD_STATISTICS	threadpool_statistics.h	/^      APP_THREAD_STATISTICS()$/;"	f	class:APP_THREAD_STATISTICS
+APP_THREAD_STATISTICS	threadpool_statistics.h	/^class APP_THREAD_STATISTICS$/;"	c
+AccumulateAppThreadStatistics	threadpool_statistics.h	/^VOID OVERALL_STATISTICS::AccumulateAppThreadStatistics (APP_THREAD_STATISTICS *statistics, BOOL accumulateFreeStats)$/;"	f	class:OVERALL_STATISTICS
+AddNumElementsProcessed	threadpool_statistics.h	/^      VOID AddNumElementsProcessed(UINT32 numElementsProcessed) {_numElementsProcessed+=numElementsProcessed;}$/;"	f	class:APP_THREAD_STATISTICS
+AllBuffersProcessed	membuffer_threadpool.cpp	/^BOOL APP_THREAD_REPRESENTITVE::AllBuffersProcessed()$/;"	f	class:APP_THREAD_REPRESENTITVE
+AllBuffersProcessed	memtrace_threadpool.cpp	/^    BOOL AllBuffersProcessed() {return (_numOutstandingBuffers==0);}$/;"	f	class:APP_THREAD_REPRESENTITVE
+AllocateBuffer	memtrace_threadpool.cpp	/^char *  APP_THREAD_REPRESENTITVE::AllocateBuffer()$/;"	f	class:APP_THREAD_REPRESENTITVE
+AllocateSpaceForTraceInBuffer	memtrace_simple.cpp	/^    static char * PIN_FAST_ANALYSIS_CALL  AllocateSpaceForTraceInBuffer(char * endOfPreviousTraceInBuffer, $/;"	f	class:APP_THREAD_REPRESENTITVE
+AllocateSpaceForTraceInBuffer	memtrace_threadpool.cpp	/^void * PIN_FAST_ANALYSIS_CALL  APP_THREAD_REPRESENTITVE::AllocateSpaceForTraceInBuffer(char * endOfPreviousTraceInBuffer, $/;"	f	class:APP_THREAD_REPRESENTITVE
+AtomicIncrement	atomic_increment_ia32.asm	/^ AtomicIncrement PROC$/;"	l
+AtomicIncrement	atomic_increment_ia32.s	/^AtomicIncrement:$/;"	l
+AtomicIncrement	atomic_increment_intel64.asm	/^AtomicIncrement PROC$/;"	l
+AtomicIncrement	atomic_increment_intel64.s	/^AtomicIncrement:$/;"	l
+AtomicIncrement	atomic_increment_mic.s	/^AtomicIncrement:$/;"	l
+BUFFER_LIST_ELEMENT	membuffer_threadpool.cpp	/^    struct BUFFER_LIST_ELEMENT$/;"	s	class:BUFFER_LIST_MANAGER	file:
+BUFFER_LIST_ELEMENT	memtrace_threadpool.cpp	/^    struct BUFFER_LIST_ELEMENT$/;"	s	class:BUFFER_LIST_MANAGER	file:
+BUFFER_LIST_MANAGER	membuffer_threadpool.cpp	/^BUFFER_LIST_MANAGER::BUFFER_LIST_MANAGER()$/;"	f	class:BUFFER_LIST_MANAGER
+BUFFER_LIST_MANAGER	membuffer_threadpool.cpp	/^class BUFFER_LIST_MANAGER$/;"	c	file:
+BUFFER_LIST_MANAGER	memtrace_threadpool.cpp	/^BUFFER_LIST_MANAGER::BUFFER_LIST_MANAGER()$/;"	f	class:BUFFER_LIST_MANAGER
+BUFFER_LIST_MANAGER	memtrace_threadpool.cpp	/^class BUFFER_LIST_MANAGER$/;"	c	file:
+BUFFER_LIST_STATISTICS	threadpool_statistics.h	/^      BUFFER_LIST_STATISTICS() : _numTimesWaited(0), _cyclesWaitingForBuffer(0) $/;"	f	class:BUFFER_LIST_STATISTICS
+BUFFER_LIST_STATISTICS	threadpool_statistics.h	/^class BUFFER_LIST_STATISTICS$/;"	c
+BUFFER_SIZE	memtrace.cpp	/^        BUFFER_SIZE = 1000000,$/;"	e	enum:MLOG::__anon3	file:
+Begin	memtrace.cpp	/^    char * Begin() { return _data; }$/;"	f	class:MLOG
+Begin	memtrace_simple.cpp	/^    char * Begin() { return _buffer; }$/;"	f	class:APP_THREAD_REPRESENTITVE
+BeginTrace	memtrace.cpp	/^char * MLOG::BeginTrace(char * logCursor, char * logEnd, TRACE_HEADER * theader, UINT32 size, THREADID tid)$/;"	f	class:MLOG
+BufferFull	membuffer.cpp	/^VOID * BufferFull(BUFFER_ID id, THREADID tid, const CONTEXT *ctxt, VOID *buf,$/;"	f
+BufferFull	membuffer_simple.cpp	/^VOID * BufferFull(BUFFER_ID id, THREADID tid, const CONTEXT *ctxt, VOID *buf,$/;"	f
+BufferFull	membuffer_simple_tid.cpp	/^VOID * BufferFull(BUFFER_ID id, THREADID tid, const CONTEXT *ctxt, VOID *buf,$/;"	f
+BufferFull	membuffer_threadpool.cpp	/^VOID * BufferFull(BUFFER_ID id, THREADID tid, const CONTEXT *ctxt, VOID *buf,$/;"	f
+BufferFull	memtrace_simple.cpp	/^    static char * PIN_FAST_ANALYSIS_CALL BufferFull(char *endOfTraceInBuffer, ADDRINT tid)$/;"	f	class:APP_THREAD_REPRESENTITVE
+BufferFull	memtrace_threadpool.cpp	/^void * PIN_FAST_ANALYSIS_CALL  APP_THREAD_REPRESENTITVE::BufferFull(VOID *endOfTraceInBuffer, ADDRINT *endOfBuffer, ADDRINT tid)$/;"	f	class:APP_THREAD_REPRESENTITVE
+BufferProcessingThread	membuffer_threadpool.cpp	/^static VOID BufferProcessingThread(VOID * arg)$/;"	f	file:
+BufferProcessingThread	memtrace_threadpool.cpp	/^static VOID BufferProcessingThread(VOID * arg)$/;"	f	file:
+CALL	memtrace.cpp	/^    CALL(INS ins, AFUNPTR afunptr, UINT32 offset, IARG_TYPE itype)$/;"	f	class:CALL
+CALL	memtrace.cpp	/^class CALL$/;"	c	file:
+CONFIG_ROOT	makefile	/^CONFIG_ROOT := $(PIN_ROOT)\/source\/tools\/Config$/;"	m
+CONFIG_ROOT	makefile	/^CONFIG_ROOT := ..\/Config$/;"	m
+CalledWaitForAllThreadsStarted	membuffer_simple_tid.cpp	/^void CalledWaitForAllThreadsStarted(THREADID tid)$/;"	f
+CheckIfNoSpaceForTraceInBuffer	memtrace_simple.cpp	/^    static ADDRINT PIN_FAST_ANALYSIS_CALL CheckIfNoSpaceForTraceInBuffer(char * endOfPreviousTraceInBuffer, char * bufferEnd, ADDRINT totalSizeOccupiedByTraceInBuffer)$/;"	f	class:APP_THREAD_REPRESENTITVE
+CheckIfNoSpaceForTraceInBuffer	memtrace_threadpool.cpp	/^ADDRINT PIN_FAST_ANALYSIS_CALL APP_THREAD_REPRESENTITVE::CheckIfNoSpaceForTraceInBuffer(char * endOfPreviousTraceInBuffer, char * bufferEnd, ADDRINT sizeNeededForThisTraceInBuffer)$/;"	f	class:APP_THREAD_REPRESENTITVE
+CmdType	memtrace.cpp	/^    TCMD_TYPE CmdType(int i) const { assert(i < NumCmds()); return _cmds[i]; }$/;"	f	class:TRACE_HEADER
+CurBuffer	memtrace_threadpool.cpp	/^    VOID * CurBuffer() { return _curBuffer; }$/;"	f	class:APP_THREAD_REPRESENTITVE
+CurBufferEnd	memtrace_threadpool.cpp	/^    VOID * CurBufferEnd() { return ((char *)_curBuffer) + KnobNumBytesInBuffer.Value(); }$/;"	f	class:APP_THREAD_REPRESENTITVE
+CyclesProcessingBuffer	threadpool_statistics.h	/^      UINT64 CyclesProcessingBuffer() {return _cyclesProcessingBuffer;}$/;"	f	class:APP_THREAD_STATISTICS
+CyclesWaitingForBuffer	threadpool_statistics.h	/^      UINT64 CyclesWaitingForBuffer() {return _cyclesWaitingForBuffer;}$/;"	f	class:BUFFER_LIST_STATISTICS
+CyclesWaitingForFreeBuffer	threadpool_statistics.h	/^      UINT64 CyclesWaitingForFreeBuffer() {return _cyclesWaitingForFreeBuffer;}$/;"	f	class:APP_THREAD_STATISTICS
+DecrementNumOutstandingBuffers	memtrace_threadpool.cpp	/^    VOID DecrementNumOutstandingBuffers(THREADID tid) $/;"	f	class:APP_THREAD_REPRESENTITVE
+DetermineBBLAnalysisCalls	memtrace_simple.cpp	/^void DetermineBBLAnalysisCalls(BBL bbl, TRACE_ANALYSIS_CALLS_NEEDED * traceAnalysisCallsNeeded)$/;"	f
+DetermineBBLAnalysisCalls	memtrace_threadpool.cpp	/^VOID DetermineBBLAnalysisCalls(BBL bbl, TRACE_ANALYSIS_CALLS_NEEDED * traceAnalysisCallsNeeded)$/;"	f
+DoWork	thread2.cpp	/^EXPORT_CSYM void  DoWork()$/;"	f
+Dump	threadpool_statistics.h	/^      VOID Dump()$/;"	f	class:APP_THREAD_STATISTICS
+Dump	threadpool_statistics.h	/^      VOID Dump()$/;"	f	class:OVERALL_STATISTICS
+DumpBufferToFile	membuffer.cpp	/^VOID MLOG::DumpBufferToFile( struct MEMREF * reference, UINT64 numElements, THREADID tid )$/;"	f	class:MLOG
+DumpNumBuffersFilled	threadpool_statistics.h	/^      VOID DumpNumBuffersFilled()$/;"	f	class:APP_THREAD_STATISTICS
+DumpNumBuffersFilled	threadpool_statistics.h	/^      VOID DumpNumBuffersFilled()$/;"	f	class:OVERALL_STATISTICS
+EMPTY_ENTRY	memtrace_threadpool.cpp	/^const int EMPTY_ENTRY = 0;$/;"	v
+EMPTY_SLOT	memtrace.cpp	/^        EMPTY_SLOT = 0$/;"	e	enum:MLOG::__anon3	file:
+EXPORT_CSYM	thread2.cpp	38;"	d	file:
+EXPORT_CSYM	thread2.cpp	41;"	d	file:
+EmptyEntry	memtrace_threadpool.cpp	/^    static BOOL EmptyEntry(char * curMEMREFElement)$/;"	f	class:APP_THREAD_REPRESENTITVE	file:
+EmptySlot	memtrace.cpp	/^    static BOOL EmptySlot(char * logCursor)$/;"	f	class:MLOG	file:
+End	memtrace.cpp	/^    char * End() { return _data + BUFFER_SIZE; }$/;"	f	class:MLOG
+End	memtrace_simple.cpp	/^    char * End() { return _buffer + KnobNumBytesInBuffer.Value(); }$/;"	f	class:APP_THREAD_REPRESENTITVE
+EnqueFullAndGetNextToFill	membuffer_threadpool.cpp	/^VOID * APP_THREAD_REPRESENTITVE::EnqueFullAndGetNextToFill(VOID *fullBuf, UINT64 numElements)$/;"	f	class:APP_THREAD_REPRESENTITVE
+EnqueFullAndGetNextToFill	memtrace_threadpool.cpp	/^VOID * APP_THREAD_REPRESENTITVE::EnqueFullAndGetNextToFill(VOID *endOfTraceInBuffer, ADDRINT *endOfBuffer)$/;"	f	class:APP_THREAD_REPRESENTITVE
+Expand	memtrace.cpp	/^void MLOG::Expand()$/;"	f	class:MLOG
+ExpandTrace	memtrace.cpp	/^void MLOG::ExpandTrace(TRACE_HEADER const * traceHeader, char * logCursor)$/;"	f	class:MLOG
+Fini	membuffer_simple.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	membuffer_simple_tid.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	membuffer_threadpool.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	memtrace_simple.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	memtrace_threadpool.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+FiniUnlocked	membuffer_threadpool.cpp	/^static VOID FiniUnlocked(INT32 code, VOID *v)$/;"	f	file:
+FiniUnlocked	memtrace_threadpool.cpp	/^static VOID FiniUnlocked(INT32 code, VOID *v)$/;"	f	file:
+FreeBufferListManager	membuffer_threadpool.cpp	/^    BUFFER_LIST_MANAGER *FreeBufferListManager() { return _freeBufferListManager;} $/;"	f	class:APP_THREAD_REPRESENTITVE
+GetBufferFromList	membuffer_threadpool.cpp	/^VOID  BUFFER_LIST_MANAGER::GetBufferFromList(VOID **buf, UINT64 *numElements,$/;"	f	class:BUFFER_LIST_MANAGER
+GetBufferFromList	memtrace_threadpool.cpp	/^VOID  BUFFER_LIST_MANAGER::GetBufferFromList(VOID **buf, VOID **endOfLastTraceInfBuffer,$/;"	f	class:BUFFER_LIST_MANAGER
+INSERT_IF	memtrace.cpp	659;"	d	file:
+IP	memtrace.cpp	/^    ADDRINT IP() const { return _ip; }$/;"	f	class:REF
+Image	membuffer_simple_tid.cpp	/^VOID Image(IMG img, void *v)$/;"	f
+Immediate	memtrace.cpp	/^    static ADDRINT Immediate(char * logCursor)$/;"	f	class:MLOG	file:
+IncorporateBufferStatistics	threadpool_statistics.h	/^      VOID IncorporateBufferStatistics (BUFFER_LIST_STATISTICS * myFreeBufferListStats)$/;"	f	class:APP_THREAD_STATISTICS
+IncorporateBufferStatistics	threadpool_statistics.h	/^VOID OVERALL_STATISTICS::IncorporateBufferStatistics (BUFFER_LIST_STATISTICS *statistics, BOOL isFull)$/;"	f	class:OVERALL_STATISTICS
+IncrementNumBuffersFilled	threadpool_statistics.h	/^      VOID IncrementNumBuffersFilled() {_numBuffersFilled++;}$/;"	f	class:APP_THREAD_STATISTICS
+IncrementNumBuffersProcessedInAppThread	threadpool_statistics.h	/^      VOID IncrementNumBuffersProcessedInAppThread() {_numBuffersProcessedInAppThread++;}$/;"	f	class:APP_THREAD_STATISTICS
+IncrementNumOutstandingBuffers	memtrace_threadpool.cpp	/^    VOID IncrementNumOutstandingBuffers(THREADID tid) $/;"	f	class:APP_THREAD_REPRESENTITVE
+IncrementNumTimesWaited	threadpool_statistics.h	/^      VOID IncrementNumTimesWaited() {_numTimesWaited++;}$/;"	f	class:BUFFER_LIST_STATISTICS
+Init	threadpool_statistics.h	/^      VOID Init()$/;"	f	class:OVERALL_STATISTICS
+Insert	memtrace.cpp	/^    void Insert(INT32 frameSize)$/;"	f	class:CALL
+InsertAnalysisCall	memtrace_simple.cpp	/^    void InsertAnalysisCall(INT32 sizeofTraceInBuffer)$/;"	f	class:ANALYSIS_CALL_INFO
+InsertAnalysisCall	memtrace_threadpool.cpp	/^    void InsertAnalysisCall(INT32 sizeofTraceInBuffer)$/;"	f	class:ANALYSIS_CALL_INFO
+InsertAnalysisCalls	memtrace_simple.cpp	/^void TRACE_ANALYSIS_CALLS_NEEDED::InsertAnalysisCalls()$/;"	f	class:TRACE_ANALYSIS_CALLS_NEEDED
+InsertAnalysisCalls	memtrace_threadpool.cpp	/^VOID TRACE_ANALYSIS_CALLS_NEEDED::InsertAnalysisCalls()$/;"	f	class:TRACE_ANALYSIS_CALLS_NEEDED
+InsertCalls	memtrace.cpp	/^void SCRATCH_TRACE_HEADER::InsertCalls()$/;"	f	class:SCRATCH_TRACE_HEADER
+InstrumentBBL	memtrace.cpp	/^void InstrumentBBL(BBL bbl, SCRATCH_TRACE_HEADER * theader)$/;"	f
+InstrumentRtn	membuffer_simple_tid.cpp	/^static void InstrumentRtn(RTN rtn, VOID *)$/;"	f	file:
+InstrumentTrace	memtrace.cpp	/^void InstrumentTrace(TRACE trace, void *)$/;"	f
+LogBytes	memtrace.cpp	/^    int LogBytes() const { return _logBytes; }$/;"	f	class:TRACE_HEADER
+MAX_BUFFER_PROCESSING_THREADS	memtrace_threadpool.cpp	/^const int MAX_BUFFER_PROCESSING_THREADS = 16;$/;"	v
+MEMREF	membuffer.cpp	/^struct MEMREF$/;"	s	file:
+MEMREF	membuffer_simple.cpp	/^struct MEMREF$/;"	s	file:
+MEMREF	membuffer_simple_tid.cpp	/^struct MEMREF$/;"	s	file:
+MEMREF	membuffer_threadpool.cpp	/^struct MEMREF$/;"	s	file:
+MEMREF	memtrace_simple.cpp	/^struct MEMREF$/;"	s	file:
+MEMREF	memtrace_threadpool.cpp	/^struct MEMREF$/;"	s	file:
+MEMTRACE_DEBUG	memtrace.cpp	64;"	d	file:
+MLOG	membuffer.cpp	/^MLOG::MLOG(THREADID tid)$/;"	f	class:MLOG
+MLOG	membuffer.cpp	/^class MLOG$/;"	c	file:
+MLOG	memtrace.cpp	/^MLOG::MLOG(THREADID tid)$/;"	f	class:MLOG
+MLOG	memtrace.cpp	/^class MLOG$/;"	c	file:
+MarkEmptySlot	memtrace.cpp	/^    static void MarkEmptySlot(char * logCursor)$/;"	f	class:MLOG	file:
+NUM_BUF_PAGES	membuffer.cpp	80;"	d	file:
+NumAnalysisCallsNeeded	memtrace_simple.cpp	/^    UINT32 NumAnalysisCallsNeeded() const { return _numAnalysisCallsNeeded; }$/;"	f	class:TRACE_ANALYSIS_CALLS_NEEDED
+NumAnalysisCallsNeeded	memtrace_threadpool.cpp	/^    UINT32 NumAnalysisCallsNeeded() const { return _numAnalysisCallsNeeded; }$/;"	f	class:TRACE_ANALYSIS_CALLS_NEEDED
+NumBuffersElementsProcessed	threadpool_statistics.h	/^      UINT64 NumBuffersElementsProcessed() {return _numElementsProcessed;}$/;"	f	class:APP_THREAD_STATISTICS
+NumBuffersFilled	membuffer_simple.cpp	/^    UINT32 NumBuffersFilled() {return _numBuffersFilled;}$/;"	f	class:APP_THREAD_REPRESENTITVE
+NumBuffersFilled	membuffer_simple_tid.cpp	/^    UINT32 NumBuffersFilled() {return _numBuffersFilled;}$/;"	f	class:APP_THREAD_REPRESENTITVE
+NumBuffersFilled	memtrace_simple.cpp	/^    UINT32 NumBuffersFilled() {return _numBuffersFilled;}$/;"	f	class:APP_THREAD_REPRESENTITVE
+NumBuffersFilled	threadpool_statistics.h	/^      UINT32 NumBuffersFilled() {return _numBuffersFilled;}$/;"	f	class:APP_THREAD_STATISTICS
+NumBuffersOnList	membuffer_threadpool.cpp	/^    UINT32 NumBuffersOnList () { return (_bufferList.size());}$/;"	f	class:BUFFER_LIST_MANAGER
+NumBuffersOnList	memtrace_threadpool.cpp	/^    UINT32 NumBuffersOnList () { return (_bufferList.size());}$/;"	f	class:BUFFER_LIST_MANAGER
+NumBuffersProcessedInAppThread	threadpool_statistics.h	/^      UINT32 NumBuffersProcessedInAppThread() {return _numBuffersProcessedInAppThread;}$/;"	f	class:APP_THREAD_STATISTICS
+NumCmds	memtrace.cpp	/^    UINT32 NumCmds() const { return _cmds.size(); }$/;"	f	class:SCRATCH_TRACE_HEADER
+NumCmds	memtrace.cpp	/^    int NumCmds() const { return _numCmds; }$/;"	f	class:TRACE_HEADER
+NumElementsProcessed	membuffer_simple.cpp	/^    UINT32 NumElementsProcessed() {return _numElementsProcessed;}$/;"	f	class:APP_THREAD_REPRESENTITVE
+NumElementsProcessed	membuffer_simple_tid.cpp	/^    UINT32 NumElementsProcessed() {return _numElementsProcessed;}$/;"	f	class:APP_THREAD_REPRESENTITVE
+NumElementsProcessed	memtrace_simple.cpp	/^    UINT32 NumElementsProcessed() {return _numElementsProcessed;}$/;"	f	class:APP_THREAD_REPRESENTITVE
+NumLogBytes	memtrace.cpp	/^int MLOG::NumLogBytes(TCMD_TYPE ttype)$/;"	f	class:MLOG
+NumTimesWaitedForFree	threadpool_statistics.h	/^      UINT32 NumTimesWaitedForFree() {return _numTimesWaitedForFree;}$/;"	f	class:APP_THREAD_STATISTICS
+NumTimesWaitied	threadpool_statistics.h	/^      UINT32 NumTimesWaitied() {return (_numTimesWaited);}$/;"	f	class:BUFFER_LIST_STATISTICS
+OVERALL_STATISTICS	threadpool_statistics.h	/^      OVERALL_STATISTICS(){};$/;"	f	class:OVERALL_STATISTICS
+OVERALL_STATISTICS	threadpool_statistics.h	/^class OVERALL_STATISTICS$/;"	c
+PUBLIC	atomic_increment_ia32.asm	/^PUBLIC AtomicIncrement$/;"	l
+PUBLIC	atomic_increment_intel64.asm	/^PUBLIC AtomicIncrement$/;"	l
+ProcessBuffer	membuffer_simple.cpp	/^VOID APP_THREAD_REPRESENTITVE::ProcessBuffer(VOID *buf, UINT64 numElements)$/;"	f	class:APP_THREAD_REPRESENTITVE
+ProcessBuffer	membuffer_simple_tid.cpp	/^VOID APP_THREAD_REPRESENTITVE::ProcessBuffer(VOID *buf, UINT64 numElements, THREADID tid)$/;"	f	class:APP_THREAD_REPRESENTITVE
+ProcessBuffer	membuffer_threadpool.cpp	/^VOID ProcessBuffer(VOID *buf, UINT64 numElements,  APP_THREAD_REPRESENTITVE * associatedAppThread)$/;"	f
+ProcessBuffer	memtrace_simple.cpp	/^void APP_THREAD_REPRESENTITVE::ProcessBuffer(char *end)$/;"	f	class:APP_THREAD_REPRESENTITVE
+ProcessBuffer	memtrace_threadpool.cpp	/^VOID ProcessBuffer(VOID *curBuf, VOID *endOfTraceInBuffer, APP_THREAD_REPRESENTITVE *associatedAppThread)$/;"	f
+PutBufferOnList	membuffer_threadpool.cpp	/^VOID   BUFFER_LIST_MANAGER::PutBufferOnList(VOID *buf, UINT64 numElements,$/;"	f	class:BUFFER_LIST_MANAGER
+PutBufferOnList	memtrace_threadpool.cpp	/^VOID   BUFFER_LIST_MANAGER::PutBufferOnList(VOID *buf, VOID *endOfLastTraceInfBuffer,$/;"	f	class:BUFFER_LIST_MANAGER
+REF	memtrace.cpp	/^    REF() {};$/;"	f	class:REF
+REF	memtrace.cpp	/^    REF(ADDRINT ip, BOOL read)$/;"	f	class:REF
+REF	memtrace.cpp	/^class REF$/;"	c	file:
+RecordAnalysisCallNeeded	memtrace_simple.cpp	/^void TRACE_ANALYSIS_CALLS_NEEDED::RecordAnalysisCallNeeded(INS ins, UINT32 memop)$/;"	f	class:TRACE_ANALYSIS_CALLS_NEEDED
+RecordAnalysisCallNeeded	memtrace_threadpool.cpp	/^void TRACE_ANALYSIS_CALLS_NEEDED::RecordAnalysisCallNeeded(INS ins, UINT32 memop)$/;"	f	class:TRACE_ANALYSIS_CALLS_NEEDED
+RecordImmediate	memtrace.cpp	/^    static void PIN_FAST_ANALYSIS_CALL RecordImmediate(CHAR * logCursor, ADDRINT offset, ADDRINT value)$/;"	f	class:MLOG
+RecordLogImmediate	memtrace.cpp	/^void SCRATCH_TRACE_HEADER::RecordLogImmediate(INS ins, IARG_TYPE itype)$/;"	f	class:SCRATCH_TRACE_HEADER
+RecordMEMREFInBuffer	memtrace_simple.cpp	/^    static void PIN_FAST_ANALYSIS_CALL RecordMEMREFInBuffer(CHAR * endOfTraceInBuffer, ADDRINT offsetFromEndOfTrace, ADDRINT pc, ADDRINT ea)$/;"	f	class:APP_THREAD_REPRESENTITVE
+RecordMEMREFInBuffer	memtrace_threadpool.cpp	/^VOID PIN_FAST_ANALYSIS_CALL APP_THREAD_REPRESENTITVE::RecordMEMREFInBuffer(CHAR * endOfTraceInBuffer, ADDRINT offsetFromEndOfTrace, ADDRINT pc, ADDRINT ea)$/;"	f	class:APP_THREAD_REPRESENTITVE
+RecordToolThreadCreated	membuffer_threadpool.cpp	/^static void RecordToolThreadCreated(PIN_THREAD_UID threadUid)$/;"	f	file:
+RecordToolThreadCreated	memtrace_threadpool.cpp	/^static VOID RecordToolThreadCreated(PIN_THREAD_UID threadUid)$/;"	f	file:
+RecordTraceBegin	memtrace.cpp	/^char * MLOG::RecordTraceBegin(char * logCursor, TRACE_HEADER * theader, ADDRINT size)$/;"	f	class:MLOG
+RecordTraceHeader	memtrace.cpp	/^    static void RecordTraceHeader(char * logCursor, TRACE_HEADER * traceHeader)$/;"	f	class:MLOG	file:
+Ref	memtrace.cpp	/^    REF const * Ref(int i) const { assert(i < NumCmds()); return _refs + i; }$/;"	f	class:TRACE_HEADER
+Reset	memtrace.cpp	/^void MLOG::Reset()$/;"	f	class:MLOG
+ResetCurMEMREFElement	memtrace_simple.cpp	/^void APP_THREAD_REPRESENTITVE::ResetCurMEMREFElement(char ** curMEMREFElement)$/;"	f	class:APP_THREAD_REPRESENTITVE
+ResetLogCursor	memtrace.cpp	/^void MLOG::ResetLogCursor(char ** logCursor)$/;"	f	class:MLOG
+SCRATCH_TRACE_HEADER	memtrace.cpp	/^    SCRATCH_TRACE_HEADER()$/;"	f	class:SCRATCH_TRACE_HEADER
+SCRATCH_TRACE_HEADER	memtrace.cpp	/^class SCRATCH_TRACE_HEADER$/;"	c	file:
+SetCurBuffer	memtrace_threadpool.cpp	/^    VOID SetCurBuffer (VOID *buf) {_curBuffer = buf;}$/;"	f	class:APP_THREAD_REPRESENTITVE
+SignalBufferSem	membuffer_threadpool.cpp	/^VOID BUFFER_LIST_MANAGER::SignalBufferSem()$/;"	f	class:BUFFER_LIST_MANAGER
+SignalBufferSem	memtrace_threadpool.cpp	/^VOID BUFFER_LIST_MANAGER::SignalBufferSem()$/;"	f	class:BUFFER_LIST_MANAGER
+StartCyclesProcessingBuffer	threadpool_statistics.h	/^      VOID StartCyclesProcessingBuffer()$/;"	f	class:APP_THREAD_STATISTICS
+StartCyclesWaitingForBuffer	threadpool_statistics.h	/^      VOID StartCyclesWaitingForBuffer()$/;"	f	class:BUFFER_LIST_STATISTICS
+Statistics	membuffer_threadpool.cpp	/^	APP_THREAD_STATISTICS * Statistics() { return (&_appThreadStatistics);}$/;"	f	class:APP_THREAD_REPRESENTITVE
+Statistics	membuffer_threadpool.cpp	/^    BUFFER_LIST_STATISTICS *Statistics() {return &_bufferListStatistics;}$/;"	f	class:BUFFER_LIST_MANAGER
+Statistics	memtrace_threadpool.cpp	/^    APP_THREAD_STATISTICS * Statistics() { return (&_appThreadStatistics);}$/;"	f	class:APP_THREAD_REPRESENTITVE
+Statistics	memtrace_threadpool.cpp	/^    BUFFER_LIST_STATISTICS *Statistics() {return &_bufferListStatistics;}$/;"	f	class:BUFFER_LIST_MANAGER
+TCMD_BBLOCK	memtrace.cpp	/^    TCMD_BBLOCK$/;"	e	enum:__anon1	file:
+TCMD_DATA	memtrace.cpp	/^} TCMD_DATA;$/;"	t	typeref:union:__anon2	file:
+TCMD_DATA_REG_OFFSET	memtrace.cpp	/^class TCMD_DATA_REG_OFFSET$/;"	c	file:
+TCMD_DATA_REG_VALUE	memtrace.cpp	/^class TCMD_DATA_REG_VALUE$/;"	c	file:
+TCMD_DATA_TRACE_OFFSET	memtrace.cpp	/^class TCMD_DATA_TRACE_OFFSET$/;"	c	file:
+TCMD_IMMEDIATE	memtrace.cpp	/^    TCMD_IMMEDIATE,$/;"	e	enum:__anon1	file:
+TCMD_INVALID	memtrace.cpp	/^    TCMD_INVALID,$/;"	e	enum:__anon1	file:
+TCMD_REG_OFFSET	memtrace.cpp	/^    TCMD_REG_OFFSET,$/;"	e	enum:__anon1	file:
+TCMD_REG_VALUE	memtrace.cpp	/^    TCMD_REG_VALUE,$/;"	e	enum:__anon1	file:
+TCMD_TRACE_OFFSET	memtrace.cpp	/^    TCMD_TRACE_OFFSET,$/;"	e	enum:__anon1	file:
+TCMD_TYPE	memtrace.cpp	/^} TCMD_TYPE;$/;"	t	typeref:enum:__anon1	file:
+TRACE_ANALYSIS_CALLS_NEEDED	memtrace_simple.cpp	/^    TRACE_ANALYSIS_CALLS_NEEDED() : _currentOffsetFromTraceStartInBuffer(0),  _numAnalysisCallsNeeded(0)$/;"	f	class:TRACE_ANALYSIS_CALLS_NEEDED
+TRACE_ANALYSIS_CALLS_NEEDED	memtrace_simple.cpp	/^class TRACE_ANALYSIS_CALLS_NEEDED$/;"	c	file:
+TRACE_ANALYSIS_CALLS_NEEDED	memtrace_threadpool.cpp	/^    TRACE_ANALYSIS_CALLS_NEEDED() : _currentOffsetFromTraceStartInBuffer(0),  _numAnalysisCallsNeeded(0)$/;"	f	class:TRACE_ANALYSIS_CALLS_NEEDED
+TRACE_ANALYSIS_CALLS_NEEDED	memtrace_threadpool.cpp	/^class TRACE_ANALYSIS_CALLS_NEEDED$/;"	c	file:
+TRACE_HEADER	memtrace.cpp	/^TRACE_HEADER::TRACE_HEADER(SCRATCH_TRACE_HEADER * scratch)$/;"	f	class:TRACE_HEADER
+TRACE_HEADER	memtrace.cpp	/^class TRACE_HEADER$/;"	c	file:
+ThreadFini	membuffer.cpp	/^VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 code, VOID *v)$/;"	f
+ThreadFini	membuffer_simple.cpp	/^VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 code, VOID *v)$/;"	f
+ThreadFini	membuffer_simple_tid.cpp	/^VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 code, VOID *v)$/;"	f
+ThreadFini	membuffer_threadpool.cpp	/^VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 code, VOID *v)$/;"	f
+ThreadFini	memtrace.cpp	/^VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 code, VOID *v)$/;"	f
+ThreadFini	memtrace_simple.cpp	/^VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 code, VOID *v)$/;"	f
+ThreadFini	memtrace_threadpool.cpp	/^VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 code, VOID *v)$/;"	f
+ThreadStart	membuffer.cpp	/^VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v)$/;"	f
+ThreadStart	membuffer_simple.cpp	/^VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v)$/;"	f
+ThreadStart	membuffer_simple_tid.cpp	/^VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v)$/;"	f
+ThreadStart	membuffer_threadpool.cpp	/^VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v)$/;"	f
+ThreadStart	memtrace.cpp	/^VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v)$/;"	f
+ThreadStart	memtrace_simple.cpp	/^VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v)$/;"	f
+ThreadStart	memtrace_threadpool.cpp	/^VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v)$/;"	f
+ThreadStart	thread2.cpp	/^EXPORT_CSYM void * ThreadStart(void * arg)$/;"	f
+TotalCycles	threadpool_statistics.h	/^      UINT64 TotalCycles() {return _totalCycles;}$/;"	f	class:APP_THREAD_STATISTICS
+TotalSizeOccupiedByTraceInBuffer	memtrace_simple.cpp	/^    UINT32 TotalSizeOccupiedByTraceInBuffer() const { return _currentOffsetFromTraceStartInBuffer; }$/;"	f	class:TRACE_ANALYSIS_CALLS_NEEDED
+TotalSizeOccupiedByTraceInBuffer	memtrace_threadpool.cpp	/^    UINT32 TotalSizeOccupiedByTraceInBuffer() const { return _currentOffsetFromTraceStartInBuffer; }$/;"	f	class:TRACE_ANALYSIS_CALLS_NEEDED
+Trace	membuffer.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	membuffer_simple.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	membuffer_simple_tid.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	membuffer_threadpool.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+TraceAllocIf	memtrace.cpp	/^ADDRINT MLOG::TraceAllocIf(char * logCursor, char * logEnd, ADDRINT size)$/;"	f	class:MLOG
+TraceAllocThen	memtrace.cpp	/^char * MLOG::TraceAllocThen(char * logCursor, ADDRINT size, THREADID tid)$/;"	f	class:MLOG
+TraceAnalysisCalls	memtrace_simple.cpp	/^void TraceAnalysisCalls(TRACE trace, void *)$/;"	f
+TraceAnalysisCalls	memtrace_threadpool.cpp	/^VOID TraceAnalysisCalls(TRACE trace, VOID *)$/;"	f
+TraceHeader	memtrace.cpp	/^    static TRACE_HEADER const * TraceHeader(char * logCursor)$/;"	f	class:MLOG	file:
+UpdateCyclesProcessingBuffer	threadpool_statistics.h	/^      VOID UpdateCyclesProcessingBuffer()$/;"	f	class:APP_THREAD_STATISTICS
+UpdateCyclesWaitingForBuffer	threadpool_statistics.h	/^      VOID UpdateCyclesWaitingForBuffer()$/;"	f	class:BUFFER_LIST_STATISTICS
+Usage	membuffer.cpp	/^INT32 Usage()$/;"	f
+Usage	membuffer_simple.cpp	/^INT32 Usage()$/;"	f
+Usage	membuffer_simple_tid.cpp	/^INT32 Usage()$/;"	f
+Usage	membuffer_threadpool.cpp	/^INT32 Usage()$/;"	f
+Usage	memtrace_simple.cpp	/^INT32 Usage()$/;"	f
+Usage	memtrace_threadpool.cpp	/^INT32 Usage()$/;"	f
+WIND	membuffer_threadpool.cpp	/^namespace WIND$/;"	n	file:
+WIND	memtrace_threadpool.cpp	/^namespace WIND$/;"	n	file:
+WaitForAllThreadsStarted	thread2.cpp	/^EXPORT_CSYM void WaitForAllThreadsStarted()$/;"	f
+_addressOffset	memtrace.cpp	/^    INT32 _addressOffset;$/;"	m	class:TCMD_DATA_TRACE_OFFSET	file:
+_addressOffset	memtrace.cpp	/^    UINT32 _addressOffset;$/;"	m	class:TCMD_DATA_REG_OFFSET	file:
+_afunptr	memtrace.cpp	/^    AFUNPTR _afunptr;$/;"	m	class:CALL	file:
+_analysisCalls	memtrace_simple.cpp	/^    vector<ANALYSIS_CALL_INFO> _analysisCalls;$/;"	m	class:TRACE_ANALYSIS_CALLS_NEEDED	file:
+_analysisCalls	memtrace_threadpool.cpp	/^    vector<ANALYSIS_CALL_INFO> _analysisCalls;$/;"	m	class:TRACE_ANALYSIS_CALLS_NEEDED	file:
+_appThreadStatistics	membuffer_threadpool.cpp	/^    APP_THREAD_STATISTICS _appThreadStatistics;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_appThreadStatistics	memtrace_threadpool.cpp	/^    APP_THREAD_STATISTICS _appThreadStatistics;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_buffer	memtrace_simple.cpp	/^    char * _buffer;  \/\/ this is the actual buffer $/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_bufferList	membuffer_threadpool.cpp	/^    list<const BUFFER_LIST_ELEMENT> _bufferList;$/;"	m	class:BUFFER_LIST_MANAGER	file:
+_bufferList	memtrace_threadpool.cpp	/^    list<BUFFER_LIST_ELEMENT> _bufferList;$/;"	m	class:BUFFER_LIST_MANAGER	file:
+_bufferListLock	membuffer_threadpool.cpp	/^    PIN_LOCK _bufferListLock;$/;"	m	class:BUFFER_LIST_MANAGER	file:
+_bufferListLock	memtrace_threadpool.cpp	/^    PIN_LOCK _bufferListLock;$/;"	m	class:BUFFER_LIST_MANAGER	file:
+_bufferListStatistics	membuffer_threadpool.cpp	/^    BUFFER_LIST_STATISTICS _bufferListStatistics;$/;"	m	class:BUFFER_LIST_MANAGER	file:
+_bufferListStatistics	memtrace_threadpool.cpp	/^    BUFFER_LIST_STATISTICS _bufferListStatistics;$/;"	m	class:BUFFER_LIST_MANAGER	file:
+_bufferSem	membuffer_threadpool.cpp	/^    WIND::HANDLE _bufferSem;$/;"	m	class:BUFFER_LIST_MANAGER	file:
+_bufferSem	memtrace_threadpool.cpp	/^    WIND::HANDLE _bufferSem;$/;"	m	class:BUFFER_LIST_MANAGER	file:
+_buffersAllocated	membuffer_threadpool.cpp	/^    BOOL _buffersAllocated;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_calls	memtrace.cpp	/^    vector<CALL> _calls;$/;"	m	class:SCRATCH_TRACE_HEADER	file:
+_cmdData	memtrace.cpp	/^    TCMD_DATA * _cmdData;$/;"	m	class:TRACE_HEADER	file:
+_cmds	memtrace.cpp	/^    TCMD_TYPE * _cmds;$/;"	m	class:TRACE_HEADER	file:
+_cmds	memtrace.cpp	/^    vector<TCMD_TYPE> _cmds;$/;"	m	class:SCRATCH_TRACE_HEADER	file:
+_curBuffer	memtrace_threadpool.cpp	/^    VOID * _curBuffer;  \/\/ this is the current buffer being filled$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_currentOffsetFromTraceStartInBuffer	memtrace_simple.cpp	/^    INT32 _currentOffsetFromTraceStartInBuffer;$/;"	m	class:TRACE_ANALYSIS_CALLS_NEEDED	file:
+_currentOffsetFromTraceStartInBuffer	memtrace_threadpool.cpp	/^    INT32 _currentOffsetFromTraceStartInBuffer;$/;"	m	class:TRACE_ANALYSIS_CALLS_NEEDED	file:
+_cyclesProcessingBuffer	threadpool_statistics.h	/^    UINT64 _cyclesProcessingBuffer;$/;"	m	class:APP_THREAD_STATISTICS
+_cyclesProcessingBuffer	threadpool_statistics.h	/^    UINT64 _cyclesProcessingBuffer;$/;"	m	class:OVERALL_STATISTICS
+_cyclesWaitingForBuffer	threadpool_statistics.h	/^    UINT64 _cyclesWaitingForBuffer;$/;"	m	class:BUFFER_LIST_STATISTICS
+_cyclesWaitingForFreeBuffer	threadpool_statistics.h	/^    UINT64 _cyclesWaitingForFreeBuffer;$/;"	m	class:APP_THREAD_STATISTICS
+_cyclesWaitingForFreeBuffer	threadpool_statistics.h	/^    UINT64 _cyclesWaitingForFreeBuffer;$/;"	m	class:OVERALL_STATISTICS
+_cyclesWaitingForFullBuffer	threadpool_statistics.h	/^    UINT64 _cyclesWaitingForFullBuffer;$/;"	m	class:OVERALL_STATISTICS
+_data	memtrace.cpp	/^    char * _data;$/;"	m	class:MLOG	file:
+_data	memtrace.cpp	/^    vector<TCMD_DATA> _data;$/;"	m	class:SCRATCH_TRACE_HEADER	file:
+_fp	threadpool_statistics.h	/^    FILE * _fp;$/;"	m	class:APP_THREAD_STATISTICS
+_fp	threadpool_statistics.h	/^    FILE * _fp;$/;"	m	class:OVERALL_STATISTICS
+_frameOffset	memtrace.cpp	/^    INT32 _frameOffset;$/;"	m	class:SCRATCH_TRACE_HEADER	file:
+_freeBufferListManager	membuffer_threadpool.cpp	/^    BUFFER_LIST_MANAGER *_freeBufferListManager;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_ins	memtrace.cpp	/^    INS _ins;$/;"	m	class:CALL	file:
+_ins	memtrace_simple.cpp	/^    INS _ins;$/;"	m	class:ANALYSIS_CALL_INFO	file:
+_ins	memtrace_threadpool.cpp	/^    INS _ins;$/;"	m	class:ANALYSIS_CALL_INFO	file:
+_ip	memtrace.cpp	/^    ADDRINT _ip;$/;"	m	class:REF	file:
+_itype	memtrace.cpp	/^    IARG_TYPE _itype;$/;"	m	class:CALL	file:
+_logBytes	memtrace.cpp	/^    int _logBytes;$/;"	m	class:TRACE_HEADER	file:
+_memop	memtrace_simple.cpp	/^    UINT32 _memop;$/;"	m	class:ANALYSIS_CALL_INFO	file:
+_memop	memtrace_threadpool.cpp	/^    UINT32 _memop;$/;"	m	class:ANALYSIS_CALL_INFO	file:
+_myTid	membuffer_threadpool.cpp	/^    THREADID _myTid;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_myTid	memtrace_simple.cpp	/^	THREADID _myTid;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_myTid	memtrace_threadpool.cpp	/^    THREADID _myTid;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_numAnalysisCallsNeeded	memtrace_simple.cpp	/^    INT32 _numAnalysisCallsNeeded;$/;"	m	class:TRACE_ANALYSIS_CALLS_NEEDED	file:
+_numAnalysisCallsNeeded	memtrace_threadpool.cpp	/^    INT32 _numAnalysisCallsNeeded;$/;"	m	class:TRACE_ANALYSIS_CALLS_NEEDED	file:
+_numBuffersFilled	membuffer_simple.cpp	/^    UINT32 _numBuffersFilled;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_numBuffersFilled	membuffer_simple_tid.cpp	/^    UINT32 _numBuffersFilled;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_numBuffersFilled	memtrace_simple.cpp	/^    UINT32 _numBuffersFilled;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_numBuffersFilled	threadpool_statistics.h	/^    UINT32 _numBuffersFilled;$/;"	m	class:APP_THREAD_STATISTICS
+_numBuffersFilled	threadpool_statistics.h	/^    UINT32 _numBuffersFilled;$/;"	m	class:OVERALL_STATISTICS
+_numBuffersProcessedInAppThread	threadpool_statistics.h	/^    UINT32 _numBuffersProcessedInAppThread;$/;"	m	class:APP_THREAD_STATISTICS
+_numBuffersProcessedInAppThread	threadpool_statistics.h	/^    UINT32 _numBuffersProcessedInAppThread;$/;"	m	class:OVERALL_STATISTICS
+_numCmds	memtrace.cpp	/^    int _numCmds;$/;"	m	class:TRACE_HEADER	file:
+_numElementsProcessed	membuffer_simple.cpp	/^    UINT32 _numElementsProcessed;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_numElementsProcessed	membuffer_simple_tid.cpp	/^    UINT32 _numElementsProcessed;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_numElementsProcessed	memtrace_simple.cpp	/^    UINT32 _numElementsProcessed;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_numElementsProcessed	threadpool_statistics.h	/^    UINT64 _numElementsProcessed;$/;"	m	class:APP_THREAD_STATISTICS
+_numElementsProcessed	threadpool_statistics.h	/^    UINT64 _numElementsProcessed;$/;"	m	class:OVERALL_STATISTICS
+_numOutstandingBuffers	memtrace_threadpool.cpp	/^    int _numOutstandingBuffers;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_numOutstandingBuffersLock	memtrace_threadpool.cpp	/^    PIN_LOCK _numOutstandingBuffersLock;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_numTimesWaited	threadpool_statistics.h	/^    UINT32 _numTimesWaited;$/;"	m	class:BUFFER_LIST_STATISTICS
+_numTimesWaitedForFree	threadpool_statistics.h	/^    UINT32 _numTimesWaitedForFree;$/;"	m	class:APP_THREAD_STATISTICS
+_numTimesWaitedForFree	threadpool_statistics.h	/^    UINT32 _numTimesWaitedForFree;$/;"	m	class:OVERALL_STATISTICS
+_numTimesWaitedForFull	threadpool_statistics.h	/^    UINT32 _numTimesWaitedForFull;$/;"	m	class:OVERALL_STATISTICS
+_offset	memtrace.cpp	/^    INT32 _offset;$/;"	m	class:CALL	file:
+_offsetFromTraceStartInBuffer	memtrace_simple.cpp	/^    INT32 _offsetFromTraceStartInBuffer;$/;"	m	class:ANALYSIS_CALL_INFO	file:
+_offsetFromTraceStartInBuffer	memtrace_threadpool.cpp	/^    INT32 _offsetFromTraceStartInBuffer;$/;"	m	class:ANALYSIS_CALL_INFO	file:
+_ofile	membuffer.cpp	/^    ofstream _ofile;$/;"	m	class:MLOG	file:
+_pointerToEndOfTraceInBuffer	memtrace_threadpool.cpp	/^    char * _pointerToEndOfTraceInBuffer;$/;"	m	class:APP_THREAD_REPRESENTITVE	file:
+_read	memtrace.cpp	/^    BOOL _read;$/;"	m	class:REF	file:
+_refs	memtrace.cpp	/^    REF * _refs;$/;"	m	class:TRACE_HEADER	file:
+_refs	memtrace.cpp	/^    vector<REF> _refs;$/;"	m	class:SCRATCH_TRACE_HEADER	file:
+_reg	memtrace.cpp	/^    REG _reg;$/;"	m	class:TCMD_DATA_REG_OFFSET	file:
+_reg	memtrace.cpp	/^    REG _reg;$/;"	m	class:TCMD_DATA_REG_VALUE	file:
+_roffset	memtrace.cpp	/^    TCMD_DATA_REG_OFFSET _roffset;$/;"	m	union:__anon2	file:
+_rvalue	memtrace.cpp	/^    TCMD_DATA_REG_VALUE _rvalue;$/;"	m	union:__anon2	file:
+_startAtCycle	threadpool_statistics.h	/^    UINT64 _startAtCycle;$/;"	m	class:APP_THREAD_STATISTICS
+_startProgramAtCycle	threadpool_statistics.h	/^    UINT64 _startProgramAtCycle;$/;"	m	class:OVERALL_STATISTICS
+_startToProcessBufAtCycle	threadpool_statistics.h	/^    UINT64 _startToProcessBufAtCycle;$/;"	m	class:APP_THREAD_STATISTICS
+_startToWaitForBufferAtCycle	threadpool_statistics.h	/^    UINT64 _startToWaitForBufferAtCycle;$/;"	m	class:BUFFER_LIST_STATISTICS
+_toffset	memtrace.cpp	/^    TCMD_DATA_TRACE_OFFSET _toffset;$/;"	m	union:__anon2	file:
+_totalCycles	threadpool_statistics.h	/^    UINT64 _totalCycles;$/;"	m	class:APP_THREAD_STATISTICS
+_totalCycles	threadpool_statistics.h	/^    UINT64 _totalCycles;$/;"	m	class:OVERALL_STATISTICS
+_traceOffset	memtrace.cpp	/^    INT32 _traceOffset;$/;"	m	class:TCMD_DATA_TRACE_OFFSET	file:
+a	thread.c	/^int a[100000];$/;"	v
+a	thread2.cpp	/^int a[100000];$/;"	v
+appThreadRepresentitive	membuffer_threadpool.cpp	/^        APP_THREAD_REPRESENTITVE *appThreadRepresentitive;$/;"	m	struct:BUFFER_LIST_MANAGER::BUFFER_LIST_ELEMENT	file:
+appThreadRepresentitive	memtrace_threadpool.cpp	/^        APP_THREAD_REPRESENTITVE *appThreadRepresentitive;$/;"	m	struct:BUFFER_LIST_MANAGER::BUFFER_LIST_ELEMENT	file:
+appThreadRepresentitiveKey	membuffer_simple.cpp	/^TLS_KEY appThreadRepresentitiveKey;$/;"	v
+appThreadRepresentitiveKey	membuffer_simple_tid.cpp	/^TLS_KEY appThreadRepresentitiveKey;$/;"	v
+appThreadRepresentitiveKey	membuffer_threadpool.cpp	/^TLS_KEY appThreadRepresentitiveKey;$/;"	v
+appThreadRepresentitiveKey	memtrace_simple.cpp	/^TLS_KEY appThreadRepresentitiveKey;$/;"	v
+appThreadRepresentitiveKey	memtrace_threadpool.cpp	/^TLS_KEY appThreadRepresentitiveKey;$/;"	v
+buf	membuffer_threadpool.cpp	/^        VOID *buf;$/;"	m	struct:BUFFER_LIST_MANAGER::BUFFER_LIST_ELEMENT	file:
+buf	memtrace_threadpool.cpp	/^        VOID *buf;$/;"	m	struct:BUFFER_LIST_MANAGER::BUFFER_LIST_ELEMENT	file:
+bufId	membuffer.cpp	/^BUFFER_ID bufId;$/;"	v
+bufId	membuffer_simple.cpp	/^BUFFER_ID bufId;$/;"	v
+bufId	membuffer_simple_tid.cpp	/^BUFFER_ID bufId;$/;"	v
+bufId	membuffer_threadpool.cpp	/^BUFFER_ID bufId;$/;"	v
+doExit	membuffer_threadpool.cpp	/^BOOL doExit = FALSE; \/\/ process is terminating$/;"	v
+doExit	memtrace_threadpool.cpp	/^BOOL doExit = FALSE;$/;"	v
+ea	membuffer.cpp	/^    ADDRINT ea;$/;"	m	struct:MEMREF	file:
+ea	membuffer_simple.cpp	/^    ADDRINT ea;$/;"	m	struct:MEMREF	file:
+ea	membuffer_simple_tid.cpp	/^    ADDRINT ea;$/;"	m	struct:MEMREF	file:
+ea	membuffer_threadpool.cpp	/^    ADDRINT ea;$/;"	m	struct:MEMREF	file:
+ea	memtrace_simple.cpp	/^    ADDRINT ea;  \/\/ the address of the memory being referenced$/;"	m	struct:MEMREF	file:
+ea	memtrace_threadpool.cpp	/^    ADDRINT ea;  \/\/ the address of the memory being referenced$/;"	m	struct:MEMREF	file:
+endOfBufferReg	memtrace_simple.cpp	/^REG endOfBufferReg;$/;"	v
+endOfBufferReg	memtrace_threadpool.cpp	/^REG endOfBufferReg;$/;"	v
+endOfLastTraceInfBuffer	memtrace_threadpool.cpp	/^        VOID *endOfLastTraceInfBuffer;$/;"	m	struct:BUFFER_LIST_MANAGER::BUFFER_LIST_ELEMENT	file:
+endOfTraceInBufferReg	memtrace_simple.cpp	/^REG endOfTraceInBufferReg;$/;"	v
+endOfTraceInBufferReg	memtrace_threadpool.cpp	/^REG endOfTraceInBufferReg;$/;"	v
+extern	atomic_increment_ia32.asm	/^extern numthreadsStarted:dword$/;"	l
+extern	atomic_increment_intel64.asm	/^extern numthreadsStarted:dword$/;"	l
+freeBuffersListManager	memtrace_threadpool.cpp	/^BUFFER_LIST_MANAGER freeBuffersListManager;$/;"	v
+fullBuffersListManager	membuffer_threadpool.cpp	/^BUFFER_LIST_MANAGER fullBuffersListManager;$/;"	v
+fullBuffersListManager	memtrace_threadpool.cpp	/^BUFFER_LIST_MANAGER fullBuffersListManager;$/;"	v
+hello	thread.c	/^void * hello(void * arg)$/;"	f
+lock1	membuffer_simple_tid.cpp	/^PIN_LOCK lock1;$/;"	v
+lock2	membuffer_simple_tid.cpp	/^PIN_LOCK lock2;$/;"	v
+main	membuffer.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	membuffer_simple.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	membuffer_simple_tid.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	membuffer_threadpool.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	memtrace.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	memtrace_simple.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	memtrace_threadpool.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	thread.c	/^int main(int argc, char *argv[])$/;"	f
+main	thread2.cpp	/^EXPORT_CSYM int main(int argc, char *argv[])$/;"	f
+maxThreadsSimultaneosulyInProcessBuffer	membuffer_simple_tid.cpp	/^volatile int maxThreadsSimultaneosulyInProcessBuffer = 0;$/;"	v
+mlog_key	membuffer.cpp	/^TLS_KEY mlog_key;$/;"	v
+mlog_key	memtrace.cpp	/^TLS_KEY mlog_key;$/;"	v
+n	thread.c	/^int n = 10;$/;"	v
+n	thread2.cpp	/^int n = 10;$/;"	v
+numElements	membuffer_threadpool.cpp	/^        UINT64 numElements;$/;"	m	struct:BUFFER_LIST_MANAGER::BUFFER_LIST_ELEMENT	file:
+numThreadsCalledWaitForAllThreadsStarted	membuffer_simple_tid.cpp	/^volatile int numThreadsCalledWaitForAllThreadsStarted = 0;$/;"	v
+numThreadsInApp	membuffer_simple_tid.cpp	/^const int numThreadsInApp = 16;$/;"	v
+numThreadsSimultaneosulyInProcessBuffer	membuffer_simple_tid.cpp	/^volatile int numThreadsSimultaneosulyInProcessBuffer = 0;$/;"	v
+numthreads	thread2.cpp	/^long numthreads = 16;$/;"	v
+numthreadsStarted	thread2.cpp	/^EXPORT_CSYM unsigned int numthreadsStarted = 0;$/;"	v
+ofile	memtrace.cpp	/^    ofstream ofile;$/;"	m	class:MLOG	file:
+overallStatistics	threadpool_statistics.h	/^} overallStatistics;$/;"	v	typeref:class:OVERALL_STATISTICS
+pc	membuffer.cpp	/^    ADDRINT pc;$/;"	m	struct:MEMREF	file:
+pc	membuffer_simple.cpp	/^    ADDRINT pc;$/;"	m	struct:MEMREF	file:
+pc	membuffer_simple_tid.cpp	/^    ADDRINT pc;$/;"	m	struct:MEMREF	file:
+pc	membuffer_threadpool.cpp	/^    ADDRINT pc;$/;"	m	struct:MEMREF	file:
+pc	memtrace_simple.cpp	/^    ADDRINT pc;  \/\/ pc (ip) of the instruction doing the memory reference$/;"	m	struct:MEMREF	file:
+pc	memtrace_threadpool.cpp	/^    ADDRINT pc;  \/\/ pc (ip) of the instruction doing the memory reference$/;"	m	struct:MEMREF	file:
+processingThreadRunning	membuffer_threadpool.cpp	/^BOOL processingThreadRunning = FALSE; \/\/ is any processing thread running$/;"	v
+processingThreadRunning	memtrace_threadpool.cpp	/^BOOL processingThreadRunning = FALSE; \/\/ is any processing thread running$/;"	v
+scratch_reg0	memtrace.cpp	/^REG scratch_reg0;$/;"	v
+scratch_reg1	memtrace.cpp	/^REG scratch_reg1;$/;"	v
+threads	thread.c	/^THREAD_HANDLE threads[MAXTHREADS];$/;"	v
+threads	thread2.cpp	/^THREAD_HANDLE threads[MAXTHREADS];$/;"	v
+tid	membuffer_simple_tid.cpp	/^    THREADID tid;$/;"	m	struct:MEMREF	file:
+totalBuffersFilled	membuffer_simple.cpp	/^UINT32 totalBuffersFilled = 0;$/;"	v
+totalBuffersFilled	membuffer_simple_tid.cpp	/^UINT32 totalBuffersFilled = 0;$/;"	v
+totalBuffersFilled	memtrace_simple.cpp	/^UINT32 totalBuffersFilled = 0;$/;"	v
+totalElementsProcessed	membuffer_simple.cpp	/^UINT64 totalElementsProcessed = 0;$/;"	v
+totalElementsProcessed	membuffer_simple_tid.cpp	/^UINT64 totalElementsProcessed = 0;$/;"	v
+totalElementsProcessed	memtrace_simple.cpp	/^UINT64 totalElementsProcessed = 0;$/;"	v
+uidSet	membuffer_threadpool.cpp	/^set<PIN_THREAD_UID> uidSet; $/;"	v
+uidSet	memtrace_threadpool.cpp	/^set<PIN_THREAD_UID> uidSet; $/;"	v
+~APP_THREAD_REPRESENTITVE	membuffer_simple.cpp	/^APP_THREAD_REPRESENTITVE::~APP_THREAD_REPRESENTITVE()$/;"	f	class:APP_THREAD_REPRESENTITVE
+~APP_THREAD_REPRESENTITVE	membuffer_simple_tid.cpp	/^APP_THREAD_REPRESENTITVE::~APP_THREAD_REPRESENTITVE()$/;"	f	class:APP_THREAD_REPRESENTITVE
+~APP_THREAD_REPRESENTITVE	membuffer_threadpool.cpp	/^    ~APP_THREAD_REPRESENTITVE(){};$/;"	f	class:APP_THREAD_REPRESENTITVE
+~APP_THREAD_REPRESENTITVE	memtrace_simple.cpp	/^APP_THREAD_REPRESENTITVE::~APP_THREAD_REPRESENTITVE()$/;"	f	class:APP_THREAD_REPRESENTITVE
+~APP_THREAD_REPRESENTITVE	memtrace_threadpool.cpp	/^APP_THREAD_REPRESENTITVE::~APP_THREAD_REPRESENTITVE()$/;"	f	class:APP_THREAD_REPRESENTITVE
+~MLOG	membuffer.cpp	/^MLOG::~MLOG()$/;"	f	class:MLOG
+~MLOG	memtrace.cpp	/^MLOG::~MLOG()$/;"	f	class:MLOG
