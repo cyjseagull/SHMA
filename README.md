@@ -22,7 +22,7 @@ memory node, zone and buddy allocator.
 
 
 Modules and architecture of hybrid simulator are shown as following:
-![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/simulator_architecture.png)
+![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/Hybrid_Simulator_Architecture.png)
 
 The research leading to these results has received funding from National high technology research and development program(**863 program**) project corpus, in-memory computing system software research and development project
 
@@ -38,14 +38,44 @@ zsim was also modified and enhanced while Daniel Sanchez was an intern at Google
 Additionally, if you use this software in your research, we request that you reference the zsim paper ("ZSim: Fast and Accurate Microarchitectural Simulation of Thousand-Core Systems", Sanchez and Kozyrakis, ISCA-40, June 2013) as the source of the simulator in any publications that use this software, and that you send us a citation of your work.
 
 
-Setup and Compiling
+Setup,Compiling and Configuration
 ------------
-1.	**External Dependencies**
-* gcc(>=4.6), [Intel Pin Toolkit](https://software.intel.com/en-us/articles/pintool-downloads), [libconfig](http://www.hyperrealm.com/libconfig/libconfig-1.5.tar.gz), [libhdf5](https://www.hdfgroup.org/ftp/HDF5/releases/)
-2.	**Compiling**
+1.**External Dependencies**
+* gcc(>=4.6)
+* [Intel Pin Toolkit](https://software.intel.com/en-us/articles/pintool-downloads)
+* [libconfig](http://www.hyperrealm.com/libconfig/libconfig-1.5.tar.gz)
+* [hdf5](https://www.hdfgroup.org/ftp/HDF5/releases/)
+
+
+2.**Compiling**
+* update environment script env.sh according to your machine configuration
+```javascript
+#!/bin/sh
+PINPATH= path of pin_kit
+NVMAINPATH= path of nvmain
+ZSIMPATH= path of zsim
+BOOST= path of nvmain
+HDF5= path of hdf5
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PINPATH/intel64/lib:$PINPATH/intel64/runtime:$PINPATH/intel64/lib:$PINPATH/intel64/lib-ext:$BOOST/lib:$HDF5/lib
+INCLUDE=$INCLUDE:$HDF5/include
+LIBRARY_PATH=$LIBRARY_PATH:$HDF5/lib
+CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:$HDF5/include
+export ZSIMPATH PINPATH NVMAINPATH LD_LIBRARY_PATH BOOST CPLUS_INCLUDE_PATH LIBRARY_PATH
+```
+* compiling
+```javascript
+[root @node1 SHMA]# cd zsim-nvmain
+[root @node1 zsim-nvmain]# source env.sh  //init environmental values
+[root @node1 zsim-nvmain]# scons -j16    //compiling
+```
+
+3.**Configuration**
+* 
+
 
 Memory Management and TLB Simulation Modules
 -----------------------
+
 ![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/zsim_modification.png)
 
 
