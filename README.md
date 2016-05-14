@@ -69,8 +69,38 @@ export ZSIMPATH PINPATH NVMAINPATH LD_LIBRARY_PATH BOOST CPLUS_INCLUDE_PATH LIBR
 [root @node1 zsim-nvmain]# scons -j16    //compiling
 ```
 
-3.**Configuration**
-* 
+3.**zsim Configuration Keys** (example zsim configuration files is in zsim-nvmain/config directory)
+* **Enable TLB、Page Table and Memory Management Simulation**  
+(1) <font color=red>sys.tlbs.tlb_type</font>: type of TLB, default is "CommonTlb","HotMonitorTlb" enables SHMA policy;  
+(2) <font color=red>sys.tlbs.itlb(dtlb): prefix for configuring instruction/data TLB</font>  
+① entry_num: Number of TLB entries, default is 128;  
+② hit_lantency: Latency(cycles) of TLB hit, default is 1cycle;  
+③ response_latency: TLB response latency(cycles) to CPU, default is 1cycle;  
+④ evict_policy: evict policy, default is "LRU";  
+(3) <font color=red>sys.pgt_walker( page table walker configuration)</font>  
+① mode: paging mode configuration, SHMA supports seven paging modes, namely, <font color=blue>Legacy_Normal</font>(4GB address space, page size is 4KB), <font color=blue>Legacy_Huge</font>(4GB address space, page size is 4MB), <font color=blue>PAE_Normal</font>(64GB address space, page size is 4KB),<font color=blue>PAE_Huge</font>(64GB address space, page size is 2MB), <font color=blue>LongMode_Normal</font>(address length is 48 bits,page size is 4KB), <font color=blue>LongMode_Middle</font>(address length is 48 bits, page size is 2MB) and <font color=blue>LongMode_Huge</font>（address length is 48bits, page size is 1GB);  
+② itlb: instruction TLB name corresponding to this page table walker;  
+③ dtlb: name of data TLB corresponding to this page table walker; 
+(4)<font color=red>sys.mem.zone: memory management configuration</font>  
+<font color=red>zone_dma/zone_dma32/zone_normal/zone_highmem</font>: set OS zone size(MB)
+
+
+* **SHMA(Software-Managed DRAM Cache) Related Configuration**(example in zsim-nvmain/config/shma.cfg)
+(1) <font color=red>sys.tlbs.tlb_type</font>: must be set to be "HotMonitorTlb";  
+(2) <font color=red>sys.init_access_threshold</font>: set initial value of fetching_threshold, default is 0;  
+(3) <font color=red>sys.adjust_interval</font>: period of adjusting fetching_threshold automatically, defalut is 10000000 cycles (1000cycles is basic units);
+
+4.**nvmain Configuration Keys** (example nvmain configuration files is in zsim-nvmain/config/nvmain-config directory)
+* **Enabling DRAM-NVM hierarchical hybrid architecture**( zsim-nvmain/config/nvmain-config/hierarchy)
+
+
+*  **Enabling SHMA(software-managed DRAM Cache) policy in DRAM-NVM hierarchical hybrid architecture**(zsim-nvmain/config/nvmain-config/shma)
+
+
+*  **Enabling RBLA policy in DRAM-NVM hybrid architecture**(zsim-nvmain/config/nvmain-config/rbla)
+
+
+*  **Enabling MultiQueue policy in DRAM-NVM hybrid architecture**(zsim-nvmain/config/nvmain-config/mq)
 
 
 Memory Management and TLB Simulation Modules
