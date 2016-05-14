@@ -1,6 +1,6 @@
 # SHMA---Software-managed Caching for Hybrid DRAM/NVM Memory Architectures
 
-SHMA is implemented with zsim and NVMain. Hybrid simulator that integrates cycle-accurate main memory simulator for emerging non-volatile memories --NVMain with zsim can be forked from "https://github.com/AXLEproject/axle-zsim-nvmain". 
+&#160; &#160; &#160; &#160;SHMA is implemented with zsim and NVMain. Hybrid simulator that integrates cycle-accurate main memory simulator for emerging non-volatile memories --NVMain with zsim can be forked from "https://github.com/AXLEproject/axle-zsim-nvmain". 
 Comparing to zsim-nvmain hybrid simulator, SHMA has achieved following functions:
 
  * **Implemented memory management simulations(such as MemoryNode, Zone, BuddyAllocator etc.)**:   Considering that pin-based zsim only replays virtual address into simulation architecture, and 
@@ -22,7 +22,7 @@ memory node, zone and buddy allocator.
 
 
 Modules and architecture of hybrid simulator are shown as following:
-![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/Hybrid_Simulator_Architecture.png)
+![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/simulator_architecture.png)
 
 The research leading to these results has received funding from National high technology research and development program(**863 program**) project corpus, in-memory computing system software research and development project
 
@@ -40,7 +40,8 @@ Additionally, if you use this software in your research, we request that you ref
 
 Setup,Compiling and Configuration
 ------------
-**1.External Dependencies**
+**1.External Dependencies**  
+&#160; &#160; &#160; &#160;Before install hybrid simulator zsim-nvmain, it's essential that you have already install dependencies listing below.
 * gcc(>=4.6)
 * [Intel Pin Toolkit](https://software.intel.com/en-us/articles/pintool-downloads)
 * [libconfig](http://www.hyperrealm.com/libconfig/libconfig-1.5.tar.gz)
@@ -62,12 +63,13 @@ LIBRARY_PATH=$LIBRARY_PATH:$HDF5/lib
 CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:$HDF5/include
 export ZSIMPATH PINPATH NVMAINPATH LD_LIBRARY_PATH BOOST CPLUS_INCLUDE_PATH LIBRARY_PATH
 ```
-* compiling
+* compiling and Installation
 ```javascript
 [root @node1 SHMA]# cd zsim-nvmain
 [root @node1 zsim-nvmain]# source env.sh  //init environmental values
 [root @node1 zsim-nvmain]# scons -j16    //compiling
 ```
+
 
 **3.zsim Configuration Keys** (example zsim configuration files is in zsim-nvmain/config directory)
 * **Enable TLB、Page Table and Memory Management Simulation**  
@@ -124,9 +126,17 @@ export ZSIMPATH PINPATH NVMAINPATH LD_LIBRARY_PATH BOOST CPLUS_INCLUDE_PATH LIBR
 **(5) CONFIG_CHANNEL**: configuration file path of every main memory channel;  
 
 
-Memory Management and TLB Simulation Modules
+TLB, Page Table and Memory Management Simulation Modules
 -----------------------
-
+&#160; &#160; &#160; &#160;As described above, original zsim doesn't support OS simulation, and SHMA has added TLB, page table and memory management simulation into zsim, main modification is shown as following picture. The left side marks major code of original zsim corresponding to system simulation, **the right side marks SHMA modifications to zsim for TLB, page table and memory management simulation support.**
 ![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/zsim_modification.png)
+
+Architecture of SHMA(software-managed DRAM Caching)
+---------------------------
+&#160; &#160; &#160; &#160; SHMA has extended both page table and TLB to maintain both mappings from virtual address to physical address and physical address to DRAM cache address, this has brought DRAM cache management into software level, so that DRAM cache can be exploited fully. Besides, SHMA adopts utility-based DRAM caching policy that only fetching hot pages into DRAM cache when its memory pressure in high state to reduce DRAM cache pollution. SHMA supports DRAM cache directly bypass,too. Following picture is the architecture of SHMA.
+![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/SHMA_architecture.png)
+
+Implementations of RBLA and MultiQueue Policies
+----------------------------
 
 
