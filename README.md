@@ -137,5 +137,14 @@ Architecture of SHMA(software-managed DRAM Caching)
 
 Implementations of RBLA and MultiQueue Policies
 ----------------------------
+* Row Buffer Locality Aware Migrator (RBLA)
+&#160; &#160; &#160; &#160;RBLA migrates NVM pages with bad row buffer locality to DRAM, and reserve pages with good row buffer locality in NVM to gain benefit from row buffer hit in NVM and reduce overhead caused by row buffer miss in NVM. Its implementation is shown as following picture:![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/RBLA.png)
+
+
+* hot page migrator based on MultiQueue Alogrithm (MultiQueue)
+&#160; &#160; &#160; &#160;MultiQueue classify NVM pages into hot pages and cold pages using multiqueue algorithm accroding to both page access frequency and time locality. Its implementation is shown as following picture:![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/MultiQueue.png)
+
+
+Happy hacking and hope you find SHMA useful for hybrid memory architecture research.
 
 
