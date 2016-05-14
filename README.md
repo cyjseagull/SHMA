@@ -133,8 +133,7 @@ TLB, Page Table and Memory Management Simulation Modules
 
 Architecture of SHMA(software-managed DRAM Caching)
 ---------------------------
-&#160; &#160; &#160; &#160; SHMA has extended both page table and TLB to maintain both mappings from virtual address to physical address and physical address to DRAM cache address, this has brought DRAM cache management into software level, so that DRAM cache can be exploited fully. Besides, SHMA adopts utility-based DRAM caching policy that only fetching hot pages into DRAM cache when its memory pressure in high state to reduce DRAM cache pollution. SHMA supports DRAM cache directly bypass,too. Following picture is the architecture of SHMA.
-![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/SHMA_architecture.png)
+&#160; &#160; &#160; &#160; SHMA has extended both page table and TLB to maintain both mappings from virtual address to physical address and physical address to DRAM cache address, this has brought DRAM cache management into software level, so that DRAM cache can be exploited fully. Besides, SHMA adopts utility-based DRAM caching policy that only fetching hot pages into DRAM cache when its memory pressure in high state to reduce DRAM cache pollution. SHMA supports DRAM cache directly bypass,too. Following picture is the architecture of SHMA.![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/SHMA_architecture.png)
 
 Implementations of RBLA and MultiQueue Policies
 ----------------------------
