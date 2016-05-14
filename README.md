@@ -71,8 +71,8 @@ export ZSIMPATH PINPATH NVMAINPATH LD_LIBRARY_PATH BOOST CPLUS_INCLUDE_PATH LIBR
 
 3.**zsim Configuration Keys** (example zsim configuration files is in zsim-nvmain/config directory)
 * **Enable TLB、Page Table and Memory Management Simulation**  
-(1) <font color=red>sys.tlbs.tlb_type</font>: type of TLB, default is "CommonTlb","HotMonitorTlb" enables SHMA policy;  
-(2) <font color=red>sys.tlbs.itlb(dtlb): prefix for configuring instruction/data TLB</font>  
+(1) <font color=Red>sys.tlbs.tlb_type</font>: type of TLB, default is "CommonTlb","HotMonitorTlb" enables SHMA policy;  
+(2) <font color=Red>sys.tlbs.itlb(dtlb): prefix for configuring instruction/data TLB</font>  
 ① entry_num: Number of TLB entries, default is 128;  
 ② hit_lantency: Latency(cycles) of TLB hit, default is 1cycle;  
 ③ response_latency: TLB response latency(cycles) to CPU, default is 1cycle;  
