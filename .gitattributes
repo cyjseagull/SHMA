@@ -1,2 +1,2 @@
-images/* linguist-vendored=true
-README.md linguist-vendored=true
+images/* linguist-documentation=false
+README.md linguist-documentation=false
