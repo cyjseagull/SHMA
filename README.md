@@ -40,7 +40,7 @@ Additionally, if you use this software in your research, we request that you ref
 
 License & Copyright of SHMA (SCTS&CGCL of HUST)
 -------------------------
-SHMA was extended by Yujie Chen, Dong Liu at  Services Computing Technology and System Lab(SCTS & CGCL) of Huazhong University of Science and Technology, the copyright of this SHMA remains with SCTS && CGCL Lab of Huazhong University of Science and Technology.
+SHMA was extended by Yujie Chen, Dong Liu at  Services Computing Technology and System Lab(SCTS & CGCL) of Huazhong University of Science and Technology, the copyright of this SHMA remains with SCTS & CGCL Lab of Huazhong University of Science and Technology.
 
 
 Setup,Compiling and Configuration
