@@ -27,8 +27,8 @@ Modules and architecture of hybrid simulator are shown as following:
 The research leading to these results has received funding from National high technology research and development program(**863 program**) project corpus, in-memory computing system software research and development project
 
 
-License & Copyright
-----------
+Origianl License & Copyright of zsim
+--------------------
 zsim is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2.
 
 zsim was originally written by Daniel Sanchez at Stanford University, and per Stanford University policy, the copyright of this original code remains with Stanford (specifically, the Board of Trustees of Leland Stanford Junior University). Since then, zsim has been substantially modified and enhanced at MIT by Daniel Sanchez, Nathan Beckmann, and Harshad Kasture. zsim also incorporates contributions on main memory performance models from Krishna Malladi, Makoto Takami, and Kenta Yasufuku.
@@ -36,6 +36,11 @@ zsim was originally written by Daniel Sanchez at Stanford University, and per St
 zsim was also modified and enhanced while Daniel Sanchez was an intern at Google. Google graciously agreed to share these modifications under a GPLv2 license. This code is (C) 2011 Google Inc. Files containing code developed at Google have a different license header with the correct copyright attribution.
 
 Additionally, if you use this software in your research, we request that you reference the zsim paper ("ZSim: Fast and Accurate Microarchitectural Simulation of Thousand-Core Systems", Sanchez and Kozyrakis, ISCA-40, June 2013) as the source of the simulator in any publications that use this software, and that you send us a citation of your work.
+
+
+License & Copyright of SHMA (SCTS&CGCL of HUST)
+-------------------------
+SHMA was extended by Yujie Chen, Dong Liu at  Services Computing Technology and System Lab(SCTS & CGCL) of Huazhong University of Science and Technology, the copyright of this SHMA remains with SCTS && CGCL Lab of Huazhong University of Science and Technology.
 
 
 Setup,Compiling and Configuration
