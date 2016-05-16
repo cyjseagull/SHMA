@@ -72,7 +72,7 @@ export ZSIMPATH PINPATH NVMAINPATH LD_LIBRARY_PATH BOOST CPLUS_INCLUDE_PATH LIBR
 ```javascript
 [root @node1 SHMA]# cd zsim-nvmain
 [root @node1 zsim-nvmain]# source env.sh  //init environmental values
-[root @node1 zsim-nvmain]# scons -j16    //compiling
+[root @node1 zsim-nvmain]# scons -j16    //compiling, -j16 represents that compiling with 16 cores
 ```
 
 
