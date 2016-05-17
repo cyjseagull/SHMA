@@ -60,11 +60,12 @@ Setup,Compiling and Configuration
 #!/bin/sh
 PINPATH= path of pin_kit
 NVMAINPATH= path of nvmain
-ZSIMPATH= path of zsim
-BOOST= path of nvmain
-HDF5= path of hdf5
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PINPATH/intel64/lib:$PINPATH/intel64/runtime:$PINPATH/intel64/lib:$PINPATH/intel64/lib-ext:$BOOST/lib:$HDF5/lib
-INCLUDE=$INCLUDE:$HDF5/include
+ZSIMPATH= path of zsim-nvmain
+BOOST= path of boost
+LIBCONFIG= path of libconfig
+HDF5=path of hdf5
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PINPATH/intel64/lib:$PINPATH/intel64/runtime:$PINPATH/intel64/lib:$PINPATH/intel64/lib-ext:$BOOST/lib:$HDF5/lib:$LIBCONFIG:/lib
+INCLUDE=$INCLUDE:$HDF5/include:$LIBCONFIG:/include
 LIBRARY_PATH=$LIBRARY_PATH:$HDF5/lib
 CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:$HDF5/include
 export ZSIMPATH PINPATH NVMAINPATH LD_LIBRARY_PATH BOOST CPLUS_INCLUDE_PATH LIBRARY_PATH
