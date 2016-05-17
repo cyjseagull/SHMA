@@ -1,0 +1,332 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+APP_UNDEF_USE_GNU	divide_by_zero_linux.c	41;"	d	file:
+APP_UNDEF_USE_GNU	divide_by_zero_linux.c	49;"	d	file:
+After	invocation.cpp	/^VOID After(CONTEXT * ctxt)$/;"	f
+After	w_malloctrace.cpp	/^VOID After(CHAR * name, ADDRINT ret)$/;"	f
+AfterForkInChild	fork_jit_tool.cpp	/^VOID AfterForkInChild(THREADID threadid, const CONTEXT* ctxt, VOID * arg)$/;"	f
+AfterForkInParent	fork_jit_tool.cpp	/^VOID AfterForkInParent(THREADID threadid, const CONTEXT* ctxt, VOID * arg)$/;"	f
+Arg1Before	malloctrace.cpp	/^VOID Arg1Before(CHAR * name, ADDRINT size)$/;"	f
+Before	invocation.cpp	/^VOID Before(CONTEXT * ctxt)$/;"	f
+Before	w_malloctrace.cpp	/^VOID Before(CHAR * name, WINDOWS::HANDLE hHeap,$/;"	f
+BeforeFork	fork_jit_tool.cpp	/^VOID BeforeFork(THREADID threadid, const CONTEXT* ctxt, VOID * arg)$/;"	f
+BeforeMalloc	malloc_mt.cpp	/^VOID BeforeMalloc( int size, THREADID threadid )$/;"	f
+BreakOnNewMax	stack-debugger.cpp	/^static bool BreakOnNewMax = false;$/;"	v	file:
+BreakOnSize	stack-debugger.cpp	/^static ADDRINT BreakOnSize = 0;$/;"	v	file:
+BufferFull	buffer_linux.cpp	/^VOID * BufferFull(BUFFER_ID id, THREADID tid, const CONTEXT *ctxt, VOID *buf,$/;"	f
+BufferFull	buffer_windows.cpp	/^VOID * BufferFull(BUFFER_ID id, THREADID tid, const CONTEXT *ctxt, VOID *buf,$/;"	f
+ByeWorld	detach.cpp	/^VOID ByeWorld(VOID *v)$/;"	f
+CONFIG_ROOT	makefile	/^CONFIG_ROOT := $(PIN_ROOT)\/source\/tools\/Config$/;"	m
+CONFIG_ROOT	makefile	/^CONFIG_ROOT := ..\/Config$/;"	m
+CheckThreadCount	countreps.cpp	/^static VOID CheckThreadCount(THREADID threadIndex, CONTEXT *, INT32, VOID *)$/;"	f	file:
+ConnectDebugger	stack-debugger.cpp	/^static void ConnectDebugger()$/;"	f	file:
+CountDown	isampling.cpp	/^ADDRINT CountDown()$/;"	f
+DIV_OPCODE	divide_by_zero_linux.c	73;"	d	file:
+DebugInterpreter	stack-debugger.cpp	/^static BOOL DebugInterpreter(THREADID tid, CONTEXT *ctxt, const string &cmd, string *result, VOID *)$/;"	f	file:
+DivideByZero	divide_by_zero_linux.c	/^int DivideByZero()$/;"	f
+DivideByZero	divide_by_zero_windows.c	/^int DivideByZero()$/;"	f
+DivideByZeroRetPoint	divide_by_zero_linux.c	/^void *DivideByZeroRetPoint;$/;"	v
+DivideHandler	emudiv.cpp	/^EXCEPT_HANDLING_RESULT DivideHandler(THREADID tid, EXCEPTION_INFO * pExceptInfo, $/;"	f
+DoBreakpoint	stack-debugger.cpp	/^static VOID DoBreakpoint(const CONTEXT *ctxt, THREADID tid)$/;"	f	file:
+DoLoad	safecopy.cpp	/^ADDRINT DoLoad(REG reg, ADDRINT * addr)$/;"	f
+DumpBufferToFile	buffer_linux.cpp	/^VOID MLOG::DumpBufferToFile( struct MEMREF * reference, UINT64 numElements, THREADID tid )$/;"	f	class:MLOG
+EXPAND_OPCODE	countreps.cpp	69;"	d	file:
+EXPORT_SYM	divide_by_zero_windows.c	33;"	d	file:
+EmulateIntDivide	emudiv.cpp	/^VOID EmulateIntDivide(ADDRINT * pGdx, ADDRINT * pGax, ADDRINT divisor, CONTEXT * ctxt, THREADID tid)$/;"	f
+EmulateLoad	safecopy.cpp	/^VOID EmulateLoad(INS ins, VOID* v)$/;"	f
+EmulateMemDivide	emudiv.cpp	/^VOID EmulateMemDivide(ADDRINT * pGdx, ADDRINT * pGax, ADDRINT *pDivisor, unsigned int opSize, CONTEXT * ctxt, THREADID tid)$/;"	f
+EnableInstrumentation	stack-debugger.cpp	/^static bool EnableInstrumentation = false;$/;"	v	file:
+FP_MALLOC	replacesigprobed.cpp	/^typedef VOID * ( *FP_MALLOC )( size_t );$/;"	t	file:
+FREE	malloctrace.cpp	41;"	d	file:
+FREE	malloctrace.cpp	44;"	d	file:
+Fibonacci	fibonacci.cpp	/^static unsigned long Fibonacci(unsigned long num)$/;"	f	file:
+Fini	buffer_windows.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	countreps.cpp	/^static VOID Fini(INT32 code, VOID *v)$/;"	f	file:
+Fini	imageload.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	inscount0.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	inscount1.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	inscount2.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	inscount_tls.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	invocation.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	isampling.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	itrace.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	malloc_mt.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	malloctrace.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	pinatrace.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	proccount.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	strace.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+Fini	w_malloctrace.cpp	/^VOID Fini(INT32 code, VOID *v)$/;"	f
+FollowChild	follow_child_tool.cpp	/^BOOL FollowChild(CHILD_PROCESS childProcess, VOID * userData)$/;"	f
+GlobalHandler	emudiv.cpp	/^EXCEPT_HANDLING_RESULT GlobalHandler(THREADID threadIndex, EXCEPTION_INFO * pExceptInfo, $/;"	f
+IS_DISP32_MODE	divide_by_zero_linux.c	80;"	d	file:
+IS_DISP8_MODE	divide_by_zero_linux.c	79;"	d	file:
+IS_REG_MODE	divide_by_zero_linux.c	78;"	d	file:
+Image	malloctrace.cpp	/^VOID Image(IMG img, VOID *v)$/;"	f
+Image	w_malloctrace.cpp	/^VOID Image(IMG img, VOID *v)$/;"	f
+ImageLoad	imageload.cpp	/^VOID ImageLoad(IMG img, VOID *v)$/;"	f
+ImageLoad	invocation.cpp	/^VOID ImageLoad(IMG img, VOID *v)$/;"	f
+ImageLoad	malloc_mt.cpp	/^VOID ImageLoad(IMG img, VOID *)$/;"	f
+ImageLoad	nonstatica.cpp	/^VOID ImageLoad(IMG img, VOID *v)$/;"	f
+ImageLoad	replacesigprobed.cpp	/^VOID ImageLoad( IMG img, VOID *v )$/;"	f
+ImageLoad	staticcount.cpp	/^VOID ImageLoad(IMG img, VOID *v)$/;"	f
+ImageUnload	imageload.cpp	/^VOID ImageUnload(IMG img, VOID *v)$/;"	f
+Instruction	detach.cpp	/^VOID Instruction(INS ins, VOID *v)$/;"	f
+Instruction	inscount0.cpp	/^VOID Instruction(INS ins, VOID *v)$/;"	f
+Instruction	isampling.cpp	/^VOID Instruction(INS ins, VOID *v)$/;"	f
+Instruction	itrace.cpp	/^VOID Instruction(INS ins, VOID *v)$/;"	f
+Instruction	pinatrace.cpp	/^VOID Instruction(INS ins, VOID *v)$/;"	f
+Instruction	stack-debugger.cpp	/^static VOID Instruction(INS ins, VOID *)$/;"	f	file:
+Instruction	strace.cpp	/^VOID Instruction(INS ins, VOID *v)$/;"	f
+InstrumentDivide	emudiv.cpp	/^VOID InstrumentDivide(INS ins, VOID* v)$/;"	f
+InstrumentInstruction	countreps.cpp	/^static VOID InstrumentInstruction(INS ins, VOID *)$/;"	f	file:
+InstrumentTrace	countreps.cpp	/^static VOID InstrumentTrace(TRACE trace, VOID *v)$/;"	f	file:
+M	isampling.cpp	/^const INT32 M =  50000;$/;"	v
+MALLOC	malloctrace.cpp	40;"	d	file:
+MALLOC	malloctrace.cpp	43;"	d	file:
+MAXTHREADS	thread_unix.c	40;"	d	file:
+MEMREF	buffer_linux.cpp	/^struct MEMREF$/;"	s	file:
+MEMREF	buffer_windows.cpp	/^struct MEMREF$/;"	s	file:
+MLOG	buffer_linux.cpp	/^MLOG::MLOG(THREADID tid)$/;"	f	class:MLOG
+MLOG	buffer_linux.cpp	/^class MLOG$/;"	c	file:
+MODRM_DISP32	divide_by_zero_linux.c	76;"	d	file:
+MODRM_DISP8	divide_by_zero_linux.c	75;"	d	file:
+MODRM_REG	divide_by_zero_linux.c	74;"	d	file:
+MallocAfter	malloctrace.cpp	/^VOID MallocAfter(ADDRINT ret)$/;"	f
+N	detach.cpp	40;"	d	file:
+N	isampling.cpp	/^const INT32 N = 100000;$/;"	v
+NUM_BUF_PAGES	buffer_linux.cpp	67;"	d	file:
+NUM_BUF_PAGES	buffer_windows.cpp	80;"	d	file:
+NewMalloc	replacesigprobed.cpp	/^VOID * NewMalloc( FP_MALLOC orgFuncptr, UINT32 arg0, ADDRINT returnIp )$/;"	f
+NumOps	countreps.cpp	93;"	d	file:
+OnStackChangeIf	stack-debugger.cpp	/^static ADDRINT OnStackChangeIf(ADDRINT sp, ADDRINT addrInfo)$/;"	f	file:
+OnThreadEnd	stack-debugger.cpp	/^static VOID OnThreadEnd(THREADID tid, const CONTEXT *ctxt, INT32, VOID *)$/;"	f	file:
+OnThreadStart	stack-debugger.cpp	/^static VOID OnThreadStart(THREADID tid, CONTEXT *ctxt, INT32, VOID *)$/;"	f	file:
+OutFile	inscount0.cpp	/^ofstream OutFile;$/;"	v
+OutFile	inscount1.cpp	/^ofstream OutFile;$/;"	v
+OutFile	inscount2.cpp	/^ofstream OutFile;$/;"	v
+OutFile	inscount_tls.cpp	/^ofstream OutFile;$/;"	v
+OutFile	invocation.cpp	/^ofstream OutFile;$/;"	v
+Output	stack-debugger.cpp	/^static std::ostream *Output = &std::cerr;$/;"	v	file:
+PADSIZE	inscount_tls.cpp	45;"	d	file:
+PrintIp	isampling.cpp	/^VOID PrintIp(VOID *ip)$/;"	f
+REG_IP	divide_by_zero_linux.c	58;"	d	file:
+REG_IP	divide_by_zero_linux.c	60;"	d	file:
+RTN_COUNT	proccount.cpp	/^} RTN_COUNT;$/;"	t	typeref:struct:RtnCount	file:
+RTN_INTERNAL_RANGE	nonstatica.cpp	/^}RTN_INTERNAL_RANGE;$/;"	t	typeref:struct:__anon3	file:
+RTN_INTERNAL_RANGE	statica.cpp	/^}RTN_INTERNAL_RANGE;$/;"	t	typeref:struct:__anon2	file:
+RecordMemRead	pinatrace.cpp	/^VOID RecordMemRead(VOID * ip, VOID * addr)$/;"	f
+RecordMemWrite	pinatrace.cpp	/^VOID RecordMemWrite(VOID * ip, VOID * addr)$/;"	f
+RegTinfo	stack-debugger.cpp	/^static REG RegTinfo;$/;"	v	file:
+Routine	proccount.cpp	/^VOID Routine(RTN rtn, VOID *v)$/;"	f
+RtnCount	proccount.cpp	/^typedef struct RtnCount$/;"	s	file:
+RtnList	proccount.cpp	/^RTN_COUNT * RtnList = 0;$/;"	v
+STRINGIZE	countreps.cpp	57;"	d	file:
+StripPath	proccount.cpp	/^const char * StripPath(const char * path)$/;"	f
+SysAfter	strace.cpp	/^VOID SysAfter(ADDRINT ret)$/;"	f
+SysBefore	strace.cpp	/^VOID SysBefore(ADDRINT ip, ADDRINT num, ADDRINT arg0, ADDRINT arg1, ADDRINT arg2, ADDRINT arg3, ADDRINT arg4, ADDRINT arg5)$/;"	f
+SyscallEntry	strace.cpp	/^VOID SyscallEntry(THREADID threadIndex, CONTEXT *ctxt, SYSCALL_STANDARD std, VOID *v)$/;"	f
+SyscallExit	strace.cpp	/^VOID SyscallExit(THREADID threadIndex, CONTEXT *ctxt, SYSCALL_STANDARD std, VOID *v)$/;"	f
+TINFO	stack-debugger.cpp	/^    TINFO(ADDRINT base) : _stackBase(base), _max(0), _maxReported(0) {}$/;"	f	struct:TINFO
+TINFO	stack-debugger.cpp	/^struct TINFO$/;"	s	file:
+TINFO_MAP	stack-debugger.cpp	/^typedef std::map<THREADID, TINFO *> TINFO_MAP;$/;"	t	file:
+Taken	invocation.cpp	/^VOID Taken( const CONTEXT * ctxt)$/;"	f
+ThreadCreation	thread_win.c	/^int ThreadCreation()$/;"	f
+ThreadFini	buffer_linux.cpp	/^VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 code, VOID *v)$/;"	f
+ThreadFini	malloc_mt.cpp	/^VOID ThreadFini(THREADID threadid, const CONTEXT *ctxt, INT32 code, VOID *v)$/;"	f
+ThreadInfos	stack-debugger.cpp	/^static TINFO_MAP ThreadInfos;$/;"	v	file:
+ThreadRoutine	thread_win.c	/^int ThreadRoutine()$/;"	f
+ThreadStart	buffer_linux.cpp	/^VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v)$/;"	f
+ThreadStart	inscount_tls.cpp	/^VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)$/;"	f
+ThreadStart	malloc_mt.cpp	/^VOID ThreadStart(THREADID threadid, CONTEXT *ctxt, INT32 flags, VOID *v)$/;"	f
+Trace	buffer_linux.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	buffer_windows.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	inscount1.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	inscount2.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+Trace	inscount_tls.cpp	/^VOID Trace(TRACE trace, VOID *v)$/;"	f
+TraceFile	imageload.cpp	/^ofstream TraceFile;$/;"	v
+TraceFile	malloctrace.cpp	/^std::ofstream TraceFile;$/;"	v
+TrimWhitespace	stack-debugger.cpp	/^static std::string TrimWhitespace(const std::string &inLine)$/;"	f	file:
+Usage	buffer_linux.cpp	/^INT32 Usage()$/;"	f
+Usage	buffer_windows.cpp	/^INT32 Usage()$/;"	f
+Usage	countreps.cpp	/^INT32 Usage()$/;"	f
+Usage	detach.cpp	/^INT32 Usage()$/;"	f
+Usage	emudiv.cpp	/^INT32 Usage()$/;"	f
+Usage	fork_jit_tool.cpp	/^INT32 Usage()$/;"	f
+Usage	imageload.cpp	/^INT32 Usage()$/;"	f
+Usage	inscount0.cpp	/^INT32 Usage()$/;"	f
+Usage	inscount1.cpp	/^INT32 Usage()$/;"	f
+Usage	inscount2.cpp	/^INT32 Usage()$/;"	f
+Usage	inscount_tls.cpp	/^INT32 Usage()$/;"	f
+Usage	invocation.cpp	/^INT32 Usage()$/;"	f
+Usage	isampling.cpp	/^INT32 Usage()$/;"	f
+Usage	itrace.cpp	/^INT32 Usage()$/;"	f
+Usage	malloc_mt.cpp	/^INT32 Usage()$/;"	f
+Usage	malloctrace.cpp	/^INT32 Usage()$/;"	f
+Usage	pinatrace.cpp	/^INT32 Usage()$/;"	f
+Usage	proccount.cpp	/^INT32 Usage()$/;"	f
+Usage	replacesigprobed.cpp	/^INT32 Usage()$/;"	f
+Usage	safecopy.cpp	/^INT32 Usage()$/;"	f
+Usage	stack-debugger.cpp	/^INT32 Usage()$/;"	f
+Usage	statica.cpp	/^INT32 Usage()$/;"	f
+Usage	staticcount.cpp	/^INT32 Usage()$/;"	f
+Usage	strace.cpp	/^INT32 Usage()$/;"	f
+Usage	w_malloctrace.cpp	/^INT32 Usage()$/;"	f
+WINDOWS	w_malloctrace.cpp	/^namespace WINDOWS$/;"	n	file:
+__USE_GNU	divide_by_zero_linux.c	40;"	d	file:
+__USE_GNU	divide_by_zero_linux.c	48;"	d	file:
+_address	proccount.cpp	/^    ADDRINT _address;$/;"	m	struct:RtnCount	file:
+_count	inscount_tls.cpp	/^    UINT64 _count;$/;"	m	class:thread_data_t	file:
+_icount	proccount.cpp	/^    UINT64 _icount;$/;"	m	struct:RtnCount	file:
+_image	proccount.cpp	/^    string _image;$/;"	m	struct:RtnCount	file:
+_max	stack-debugger.cpp	/^    size_t _max;            \/\/ Maximum stack usage so far.$/;"	m	struct:TINFO	file:
+_maxReported	stack-debugger.cpp	/^    size_t _maxReported;    \/\/ Maximum stack usage reported at breakpoint.$/;"	m	struct:TINFO	file:
+_name	proccount.cpp	/^    string _name;$/;"	m	struct:RtnCount	file:
+_next	proccount.cpp	/^    struct RtnCount * _next;$/;"	m	struct:RtnCount	typeref:struct:RtnCount::RtnCount	file:
+_ofile	buffer_linux.cpp	/^    ofstream _ofile;$/;"	m	class:MLOG	file:
+_os	stack-debugger.cpp	/^    std::ostringstream _os; \/\/ Used to format messages.$/;"	m	struct:TINFO	file:
+_pad	inscount_tls.cpp	/^    UINT8 _pad[PADSIZE];$/;"	m	class:thread_data_t	file:
+_rtn	proccount.cpp	/^    RTN _rtn;$/;"	m	struct:RtnCount	file:
+_rtnCount	proccount.cpp	/^    UINT64 _rtnCount;$/;"	m	struct:RtnCount	file:
+_stackBase	stack-debugger.cpp	/^    ADDRINT _stackBase;     \/\/ Base (highest address) of stack.$/;"	m	struct:TINFO	file:
+add	countreps.cpp	/^    VOID add(UINT32 firstRep, UINT32 repCount)$/;"	f	class:stats
+add	countreps.cpp	/^    VOID add(UINT32 r, UINT32 w) { reads += r; writes += w; }$/;"	f	class:memoryStats
+addCount	countreps.cpp	/^static VOID addCount (UINT32 opIdx, UINT32 firstRep, UINT32 repCount)$/;"	f	file:
+addMemops	countreps.cpp	/^static VOID addMemops(UINT32 opcodeIdx, UINT32 repeats, UINT32 readsPerRep, UINT32 writesPerRep)$/;"	f	file:
+addTotal	countreps.cpp	/^static VOID addTotal(UINT32 delta)$/;"	f	file:
+addTotalMemops	countreps.cpp	/^static VOID addTotalMemops(UINT32 reads, UINT32 writes)$/;"	f	file:
+allOps	countreps.cpp	/^    UINT64 allOps() const { return reads+writes; }$/;"	f	class:memoryStats
+bufId	buffer_linux.cpp	/^BUFFER_ID bufId;$/;"	v
+bufId	buffer_windows.cpp	/^BUFFER_ID bufId;$/;"	v
+computeEA	countreps.cpp	/^static ADDRINT computeEA (ADDRINT firstEA, UINT32 eflags, UINT32 count, UINT32 elementSize)$/;"	f	file:
+count	countreps.cpp	/^    UINT64 count;                               \/* Times we start the REP prefixed op *\/$/;"	m	class:stats	file:
+data	thread_unix.c	/^int data[MAXTHREADS];$/;"	v
+div0_signal_handler	divide_by_zero_linux.c	/^void div0_signal_handler(int signum, siginfo_t *siginfo, void *uctxt) $/;"	f
+docount	detach.cpp	/^VOID docount() $/;"	f
+docount	inscount0.cpp	/^VOID docount() { icount++; }$/;"	f
+docount	inscount1.cpp	/^VOID docount(UINT32 c) { icount += c; }$/;"	f
+docount	inscount2.cpp	/^VOID PIN_FAST_ANALYSIS_CALL docount(ADDRINT c) { icount += c; }$/;"	f
+docount	inscount_tls.cpp	/^VOID PIN_FAST_ANALYSIS_CALL docount(UINT32 c, THREADID threadid)$/;"	f
+docount	proccount.cpp	/^VOID docount(UINT64 * counter)$/;"	f
+ea	buffer_linux.cpp	/^    ADDRINT     ea;$/;"	m	struct:MEMREF	file:
+ea	buffer_windows.cpp	/^    ADDRINT     ea;$/;"	m	struct:MEMREF	file:
+empty	countreps.cpp	/^    BOOL empty() const { return count == 0; }$/;"	f	class:stats
+empty	countreps.cpp	/^    BOOL empty() const { return reads == 0 && writes == 0; }$/;"	f	class:memoryStats
+end	nonstatica.cpp	/^    ADDRINT end;$/;"	m	struct:__anon3	file:
+end	statica.cpp	/^    ADDRINT end;$/;"	m	struct:__anon2	file:
+fieldWidth	countreps.cpp	/^enum { fieldWidth = 16 };$/;"	e	enum:__anon1	file:
+fileLock	buffer_windows.cpp	/^PIN_LOCK fileLock;$/;"	v
+get_tls	inscount_tls.cpp	/^thread_data_t* get_tls(THREADID threadid)$/;"	f
+icount	detach.cpp	/^UINT64 icount = 0;$/;"	v
+icount	inscount0.cpp	/^static UINT64 icount = 0;$/;"	v	file:
+icount	inscount1.cpp	/^static UINT64 icount = 0;$/;"	v	file:
+icount	inscount2.cpp	/^static UINT64 icount = 0;$/;"	v	file:
+icount	isampling.cpp	/^INT32 icount = N;$/;"	v
+insertRepExecutionCountInstrumentation	countreps.cpp	/^static VOID insertRepExecutionCountInstrumentation (INS ins, UINT32 opIdx)$/;"	f	file:
+insertRepMemoryCountInstrumentation	countreps.cpp	/^static VOID insertRepMemoryCountInstrumentation(INS ins, UINT32 opIdx)$/;"	f	file:
+insertRepMemoryTraceInstrumentation	countreps.cpp	/^static VOID insertRepMemoryTraceInstrumentation(INS ins, UINT32 opIdx)$/;"	f	file:
+lock	fork_jit_tool.cpp	/^PIN_LOCK lock;$/;"	v
+lock	inscount_tls.cpp	/^PIN_LOCK lock;$/;"	v
+lock	malloc_mt.cpp	/^PIN_LOCK lock;$/;"	v
+logMemoryAddress	countreps.cpp	/^static VOID logMemoryAddress (UINT32 op, BOOL first, ADDRINT baseEA, $/;"	f	file:
+main	buffer_linux.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	buffer_windows.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	countreps.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	detach.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	divide_by_zero_linux.c	/^int main()$/;"	f
+main	divide_by_zero_windows.c	/^int main()$/;"	f
+main	emudiv.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	fibonacci.cpp	/^int main(int argc, char **argv)$/;"	f
+main	follow_child_app1.cpp	/^int main(int argc, char **argv)$/;"	f
+main	follow_child_app2.cpp	/^int main(int argc, char **argv)$/;"	f
+main	follow_child_tool.cpp	/^int main(INT32 argc, CHAR **argv)$/;"	f
+main	fork_app.cpp	/^int main()$/;"	f
+main	fork_jit_tool.cpp	/^int main(INT32 argc, CHAR **argv)$/;"	f
+main	imageload.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	inscount0.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	inscount1.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	inscount2.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	inscount_tls.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	invocation.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	isampling.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	itrace.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	little_malloc.c	/^int main( int argc, char * argv[] )$/;"	f
+main	malloc_mt.cpp	/^int main(INT32 argc, CHAR **argv)$/;"	f
+main	malloctrace.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	nonstatica.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	pinatrace.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	proccount.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	replacesigprobed.cpp	/^int main( INT32 argc, CHAR *argv[] )$/;"	f
+main	safecopy.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	stack-debugger.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	statica.cpp	/^int main(INT32 argc, CHAR **argv)$/;"	f
+main	staticcount.cpp	/^int main(int argc, char * argv[])$/;"	f
+main	strace.cpp	/^int main(int argc, char *argv[])$/;"	f
+main	thread_unix.c	/^int main(int argc, char *argv[])$/;"	f
+main	thread_win.c	/^int main()$/;"	f
+main	w_malloctrace.cpp	/^int main(int argc, char *argv[])$/;"	f
+memOps	countreps.cpp	/^static memoryStats memOps[NumOps];$/;"	v	file:
+memoryOpsLogged	countreps.cpp	/^static UINT32 memoryOpsLogged = 0;$/;"	v	file:
+memoryOpsToLog	countreps.cpp	/^const  UINT32 memoryOpsToLog = 1000;$/;"	v
+memoryStats	countreps.cpp	/^    memoryStats() : reads(0), writes(0) {}$/;"	f	class:memoryStats
+memoryStats	countreps.cpp	/^class memoryStats$/;"	c	file:
+mlog_key	buffer_linux.cpp	/^TLS_KEY mlog_key;$/;"	v
+my_free	little_malloc.c	/^static void my_free( void * ptr )$/;"	f	file:
+my_malloc	little_malloc.c	/^static void * my_malloc( size_t size )$/;"	f	file:
+name	countreps.cpp	/^    const char * name;                          \/* Instruction name (we could get it from XED, but we nearly have it anyway) *\/$/;"	m	struct:opInfo	file:
+numThreads	inscount_tls.cpp	/^INT32 numThreads = 0;$/;"	v
+ofile	buffer_windows.cpp	/^ofstream ofile;$/;"	v
+opInfo	countreps.cpp	/^struct opInfo$/;"	s	file:
+opcode	countreps.cpp	/^    UINT32 opcode;                              \/* Opcode enumeration from XED *\/$/;"	m	struct:opInfo	file:
+opcodeIndex	countreps.cpp	/^static UINT32 opcodeIndex(UINT32 opcode)$/;"	f	file:
+opcodes	countreps.cpp	/^static const opInfo opcodes[] = {$/;"	v	file:
+operator +=	countreps.cpp	/^    memoryStats& operator+= (const memoryStats &other) { $/;"	f	class:memoryStats
+operator +=	countreps.cpp	/^    stats& operator+= (const stats &other) $/;"	f	class:stats
+optime	pinatrace.cpp	/^uint64_t optime=0;$/;"	v
+out	countreps.cpp	/^static ofstream out;$/;"	v	file:
+out	malloc_mt.cpp	/^FILE * out;$/;"	v
+out	safecopy.cpp	/^std::ofstream* out = 0;$/;"	v
+outFile	proccount.cpp	/^ofstream outFile;$/;"	v
+output	countreps.cpp	/^VOID memoryStats::output() const$/;"	f	class:memoryStats
+output	countreps.cpp	/^VOID stats::output() const$/;"	f	class:stats
+parent_pid	fork_jit_tool.cpp	/^pid_t parent_pid;$/;"	v
+pc	buffer_linux.cpp	/^    ADDRINT     pc;$/;"	m	struct:MEMREF	file:
+pc	buffer_windows.cpp	/^    ADDRINT     pc;$/;"	m	struct:MEMREF	file:
+printDynamicIntructionCounts	countreps.cpp	/^static VOID printDynamicIntructionCounts()$/;"	f	file:
+printMemoryAccessStats	countreps.cpp	/^static VOID printMemoryAccessStats()$/;"	f	file:
+printip	itrace.cpp	/^VOID printip(VOID *ip) { fprintf(trace, "%p\\n", ip); }$/;"	f
+read	buffer_linux.cpp	/^    BOOL        read;$/;"	m	struct:MEMREF	file:
+read	buffer_windows.cpp	/^    UINT32      read;$/;"	m	struct:MEMREF	file:
+reads	countreps.cpp	/^    UINT32 reads;                               \/* Number of reads per iteration *\/$/;"	m	struct:opInfo	file:
+reads	countreps.cpp	/^    UINT64 reads;$/;"	m	class:memoryStats	file:
+repeatedCount	countreps.cpp	/^    UINT64 repeatedCount;                       \/* Times we execute the inner instruction *\/$/;"	m	class:stats	file:
+returnArg	countreps.cpp	/^static ADDRINT returnArg (BOOL arg)$/;"	f	file:
+rtnInternalRangeList	nonstatica.cpp	/^vector< RTN_INTERNAL_RANGE> rtnInternalRangeList;$/;"	v
+rtnInternalRangeList	statica.cpp	/^vector< RTN_INTERNAL_RANGE> rtnInternalRangeList;$/;"	v
+size	buffer_linux.cpp	/^    UINT32      size;$/;"	m	struct:MEMREF	file:
+size	buffer_windows.cpp	/^    UINT32      size;$/;"	m	struct:MEMREF	file:
+size	countreps.cpp	/^    UINT32 size;                                \/* Size of the memory access(es) at each iteration *\/$/;"	m	struct:opInfo	file:
+start	nonstatica.cpp	/^    ADDRINT start;$/;"	m	struct:__anon3	file:
+start	statica.cpp	/^    ADDRINT start;$/;"	m	struct:__anon2	file:
+start	thread_unix.c	/^void * start(void * arg)$/;"	f
+statistics	countreps.cpp	/^static stats statistics[NumOps];$/;"	v	file:
+stats	countreps.cpp	/^    stats() : count(0), repeatedCount(0), zeroLength(0) {}$/;"	f	class:stats
+stats	countreps.cpp	/^class stats$/;"	c	file:
+takesConditionalRep	countreps.cpp	/^static BOOL takesConditionalRep(UINT32 opIdx)$/;"	f	file:
+thread_data_t	inscount_tls.cpp	/^    thread_data_t() : _count(0) {}$/;"	f	class:thread_data_t
+thread_data_t	inscount_tls.cpp	/^class thread_data_t$/;"	c	file:
+tid	buffer_windows.cpp	/^    THREADID    tid;$/;"	m	struct:MEMREF	file:
+tls_key	inscount_tls.cpp	/^static  TLS_KEY tls_key;$/;"	v	file:
+totalCount	countreps.cpp	/^static UINT64 totalCount = 0;$/;"	v	file:
+totalMemoryOps	countreps.cpp	/^static memoryStats totalMemoryOps;$/;"	v	file:
+trace	isampling.cpp	/^FILE * trace;$/;"	v
+trace	itrace.cpp	/^FILE * trace;$/;"	v
+trace	pinatrace.cpp	/^FILE * trace;$/;"	v
+trace	strace.cpp	/^FILE * trace;$/;"	v
+writes	countreps.cpp	/^    UINT32 writes;                              \/* Number of writes per iteration *\/$/;"	m	struct:opInfo	file:
+writes	countreps.cpp	/^    UINT64 writes;$/;"	m	class:memoryStats	file:
+zeroLength	countreps.cpp	/^    UINT64 zeroLength;                          \/* Times we start but don't execute the inner instruction because count is zero *\/$/;"	m	class:stats	file:
+~MLOG	buffer_linux.cpp	/^MLOG::~MLOG()$/;"	f	class:MLOG
