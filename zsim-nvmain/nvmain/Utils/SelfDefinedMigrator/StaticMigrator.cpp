@@ -678,8 +678,8 @@ void StaticMigrator::WriteDoneFlag()
 	//std::cout<<"write done flag"<<std::endl;
 	if( (fd = open("command",O_CREAT|O_RDWR|O_TRUNC,00777)) != -1 )
 	{
-		//std::cout<<"migration done is:"<<migration_done<< "migration done len is"<<migration_done_len<<std::endl;
-		write(fd , migra_done_str , strlen(migra_done_str));
+		size_t len = write(fd , migra_done_str , strlen(migra_done_str));
+		assert(len == strlen(migra_done_str));
 	}
 	close(fd);
 }
