@@ -49,7 +49,7 @@ Setup,Compiling and Configuration
 &#160; &#160; &#160; &#160;Before install hybrid simulator zsim-nvmain, it's essential that you have already install dependencies listing below.
 * gcc(>=4.6)
 * Intel Pin Toolkit(Already integrates in project, or you can download from [pin-2.13-61206-gcc.4.4.7-linux](http://software.intel.com/sites/landingpage/pintool/downloads/pin-2.13-61206-gcc.4.4.7-linux.tar.gz))
-* [boost,version 1.59 is ok](http://www.boost.org/users/history/version_1_59_0.html)
+* [boost](http://www.boost.org/users/history/version_1_59_0.html) (version 1.59 is ok)
 * [libconfig](http://www.hyperrealm.com/libconfig/libconfig-1.5.tar.gz)
 * [hdf5](https://www.hdfgroup.org/ftp/HDF5/releases/)
 
