@@ -301,7 +301,6 @@ bool HierDRAMCache::IssueCommand( NVMainRequest *req )
 	if( req->type==WRITE || req->type == WRITE_PRECHARGE)
 		set_dirty = true;
 	hit = dram_cache->Present(req->address , set_id , assoc_id , set_dirty);
-	uint64_t cur_cycle = GetEventQueue()->GetCurrentCycle();
 	//dram buffer hit
 	if( hit)
 	{
