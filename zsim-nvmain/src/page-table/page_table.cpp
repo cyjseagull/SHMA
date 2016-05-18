@@ -78,7 +78,11 @@ bool NormalPaging::map_page_table(Address addr ,void* pg_ptr , bool is_buffer)
 			extend_one_buffer_map(addr ,page_directory,pg_ptr,pd_entry_id ,buffer_entry_id, buffer_table_entry_num);
 		}
 		else
-			validate_entry(page_directory,pd_entry_id, pg_ptr);	
+		{
+			//std::cout<<"validate "<<pd_entry_id<<std::endl;
+			validate_entry(page_directory,pd_entry_id, pg_ptr, false);	
+			//std::cout<<"validate "<<pd_entry_id<<" end"<<std::endl;
+		}
 	}
 	return true;
 }
@@ -119,21 +123,25 @@ Address NormalPaging::access(MemReq &req )
 	bool pbuffer = false;
 	unsigned pg_dir_off = get_page_directory_off(addr,mode);
 	//first access memory get page directory address
-	void* ptr = NULL;
-	if( page_directory )
-	{
+	void* ptr = (void*)page_directory;
+	//if( page_directory )
+	//{
 	  //point to page table
-	  ptr = page_directory->get_next_level_address(pg_dir_off);
-	}
-	req.cycle += 10;
-	if( !ptr )
-	{
-		return PAGE_FAULT_SIG;
-	}
-	else
-	{
+	  //ptr = page_directory->get_next_level_address(pg_dir_off);
+	//}
+	//if( !ptr )
+	//{
+	//	return PAGE_FAULT_SIG;
+	//}
+	//else
+	//{
 		if( mode== Legacy_Normal )
 		{
+			ptr = page_directory->get_next_level_address(pg_dir_off);
+			if( !ptr )
+			{
+				return PAGE_FAULT_SIG;
+			}
 			unsigned pg_off = get_pagetable_off(addr,mode);
 			//second access memory get page directory address
 			pbuffer = point_to_buffer_table( (PageTable*)ptr,pg_off);
@@ -148,8 +156,14 @@ Address NormalPaging::access(MemReq &req )
 		else if( mode==Legacy_Huge)
 		{
 			pbuffer = point_to_buffer_table((PageTable*)ptr,pg_dir_off);
+			ptr = get_next_level_address<PageTable>((PageTable*)ptr,pg_dir_off);
+			req.cycle += 10;
+			if( !ptr )
+			{
+				return PAGE_FAULT_SIG;
+			}
 		}
-	}
+	//}
 	//assume page table walker time is 20cycles
 	req.cycle += 10;
 	bool set_dirty = false;

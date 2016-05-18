@@ -41,6 +41,8 @@ Page* BuddyAllocator::allocate_pages( unsigned int gfp_mask , unsigned order )
 		Page* page = allocate_pages(zone , order);
 		if(page==NULL)
 			std::cout<<"allocate failed inner"<<std::endl;
+		//else
+			//std::cout<<"page no:"<<std::hex<<page->pageNo<<std::endl;
 		futex_unlock(&buddy_lock);
 		return page;
 	}
@@ -192,6 +194,7 @@ Page* BuddyAllocator::rmqueue_page_smallest(MemoryNode* mem_node , Zone* zone , 
 		//update free page of zone
 		zone->free_pages -= 1UL>>order;
 		free_page_num -= 1UL<<order;
+		//std::cout<<"current_order:"<<current_order<<std::endl;
 		//expand
 		expand( mem_node ,zone , page_id ,order , current_order);
 		break;
@@ -218,12 +221,16 @@ void BuddyAllocator::expand(MemoryNode* mem_node,
 	//get low page number
 	uint64_t size=1<<high_order;
 	uint64_t new_page_id;
+	//std::cout<<"high order:"<<high_order<<std::endl;
+	//if(zone->free_area[high_order].block_list->get_size()==0)
+	//	return;
 	while( low_order < high_order)
 	{
 		high_order--;
 		area = &(zone->free_area[high_order]);
 	    size >>= 1;	
 		new_page_id = page_id+size;
+		//std::cout<<"new_page_id:"<<new_page_id<<std::endl;
 		page = mem_node->get_page_ptr(new_page_id);
 		//debug_printf("realloc page %lld,order: %d",new_page_id,high_order);
 		//add page to area to list head

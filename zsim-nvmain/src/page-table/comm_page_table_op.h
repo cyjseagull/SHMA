@@ -32,6 +32,7 @@ inline void set_next_level_address(PageTable* &table , unsigned entry_id , T* ne
 template<class T>
 inline void validate_entry(PageTable* table , unsigned entry_id , T* next_level_addr , bool map_to_buffer=false )
 {
+	//std::cout<<std::hex<<(*table)[entry_id]<<std::endl;
 	(*table)[entry_id]->validate((void*)next_level_addr , map_to_buffer);
 	if( map_to_buffer==false )
 		(*table)[entry_id]->set_buffer(false);

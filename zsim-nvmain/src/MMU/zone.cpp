@@ -40,14 +40,23 @@ void Zone::free_area_init_zone( MemoryNode* mem_node, uint64_t page_number)
 		free_area[i].block_list = new (&tmp_block_list[i]) FlexiList<Page>();
 		free_area[i].nr_free = 0;
 	}
-	unsigned long max_block_num = (page_number)/(2<<MAXORDER);
-	free_area[MAXORDER].nr_free = max_block_num;
-	std::cout<<"max block num is:"<<max_block_num<<std::endl;
+	unsigned long max_block_num = 0;
 	uint64_t page_index = 0;
-	for( unsigned long i=0; i< max_block_num ; i++)
+	//std::cout<<"page_number:"<<page_number<<std::endl;
+	for( int i= MAXORDER; i>0 && page_number >0 ; i--)
 	{
-		free_area[MAXORDER].block_list->push_block_back(mem_node->get_page_ptr(page_index));
-		page_index += (2<<MAXORDER);
+	   max_block_num = (page_number)/(1<<i);
+	   //std::cout<<"order "<<i<<" block num is:"<<max_block_num<<std::endl;
+	   if( max_block_num >0 )
+	   {
+		  free_area[i].nr_free = max_block_num;
+		  page_number -= max_block_num*(1<<i);
+		  for( unsigned long j=0; j< max_block_num ; j++)
+		  {
+		 	 free_area[i].block_list->push_block_back(mem_node->get_page_ptr(page_index));
+			 page_index += (1<<i);
+		  }
+	   }
 	}
 	std::cout<<"maxorder list size:"<<free_area[MAXORDER].block_list->get_size()<<std::endl;
 	std::cout<<"free area init finished"<<std::endl;
