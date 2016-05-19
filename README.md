@@ -76,6 +76,10 @@ export ZSIMPATH PINPATH NVMAINPATH LD_LIBRARY_PATH BOOST CPLUS_INCLUDE_PATH LIBR
 [root @node1 zsim-nvmain]# source env.sh  //init environmental values
 [root @node1 zsim-nvmain]# scons -j16    //compiling, -j16 represents that compiling with 16 cores
 ```
+if error "could not exec $PINPATH/intel64(ia32)/bin/pinbin" happens, it means that you are not authorized to execute pinbin, this can be solved with the following command:
+```javascript
+[root @node1 zsim-nvmain]# chmod a+x $PINPATH/intel64(ia32)/bin/pinbin  //init environmental values
+```
 
 
 **3.zsim Configuration Keys** (example zsim configuration files is in zsim-nvmain/config directory)
