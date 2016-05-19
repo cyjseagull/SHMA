@@ -81,7 +81,7 @@ If error "could not exec $PINPATH/intel64(ia32)/bin/pinbin" happens, it means th
 [root @node1 zsim-nvmain]# chmod a+x $PINPATH/intel64(ia32)/bin/pinbin 
 ```
 
-* Using a virtual machine
+* **Using a virtual machine**  
  If you use another OS, can't make system-wide configuration changes, or just want to test zsim without modifying your system, you can run zsim on a Linux VM. We have included a vagrant configuration file (http://vagrantup.com) that will provision an Ubuntu 12.04 VM to run zsim. You can also follow this Vagrantfile to figure out how to setup zsim on an Ubuntu system. Note that zsim will be much slower on a VM because it relies on fast context-switching, so we don't recommend this for purposes other than testing and development. Assuming you have vagrant installed (sudo apt-get install vagrant on Ubuntu or Debian), follow these steps:
 Copy the Vagrant file to the zsim root folder, boot up and provision the base VM with all dependencies, then ssh into the VM.
 ```javascript
