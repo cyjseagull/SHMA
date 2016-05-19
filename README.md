@@ -55,7 +55,7 @@ Setup,Compiling and Configuration
 
 
 **2.Compiling**
-* update environment script env.sh according to your machine configuration
+* Update environment script env.sh according to your machine configuration
 ```javascript
 #!/bin/sh
 PINPATH= path of pin_kit
@@ -70,7 +70,7 @@ LIBRARY_PATH=$LIBRARY_PATH:$HDF5/lib
 CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:$HDF5/include
 export ZSIMPATH PINPATH NVMAINPATH LD_LIBRARY_PATH BOOST CPLUS_INCLUDE_PATH LIBRARY_PATH
 ```
-* compiling and Installation
+* Compiling and Installation
 ```javascript
 [root @node1 SHMA]# cd zsim-nvmain
 [root @node1 zsim-nvmain]# source env.sh  //init environmental values
@@ -79,6 +79,20 @@ export ZSIMPATH PINPATH NVMAINPATH LD_LIBRARY_PATH BOOST CPLUS_INCLUDE_PATH LIBR
 If error "could not exec $PINPATH/intel64(ia32)/bin/pinbin" happens, it means that you are not authorized to execute pinbin, this can be solved with the following command:
 ```javascript
 [root @node1 zsim-nvmain]# chmod a+x $PINPATH/intel64(ia32)/bin/pinbin 
+```
+
+* Using a virtual machine
+ If you use another OS, can't make system-wide configuration changes, or just want to test zsim without modifying your system, you can run zsim on a Linux VM. We have included a vagrant configuration file (http://vagrantup.com) that will provision an Ubuntu 12.04 VM to run zsim. You can also follow this Vagrantfile to figure out how to setup zsim on an Ubuntu system. Note that zsim will be much slower on a VM because it relies on fast context-switching, so we don't recommend this for purposes other than testing and development. Assuming you have vagrant installed (sudo apt-get install vagrant on Ubuntu or Debian), follow these steps:
+Copy the Vagrant file to the zsim root folder, boot up and provision the base VM with all dependencies, then ssh into the VM.
+```javascript
+[root @node1 zsim-nvmain]# cp misc/Vagrantfile .
+[root @node1 zsim-nvmain]# vagrant up
+[root @node1 zsim-nvmain]# vagrant ssh
+```
+Vagrant automatically syncs the zsim root folder of your host machine to /vagrant/ on the guest machine. Now that you're in the VM, navigate to that synced folder, and simply build and use zsim (steps 5 and 6 above)
+```javascript
+[root @node1 zsim-nvmain]# cd cd /vagrant/
+[root @node1 zsim-nvmain]# scons -j4
 ```
 
 
