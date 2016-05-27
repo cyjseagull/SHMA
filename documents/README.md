@@ -3,12 +3,15 @@
 &#160; &#160; &#160; &#160;We conduct some experiments with 2GHz, 32 cores configuration. Experimental results are shown in Figure 1. Figure 1(a) depicts the normalized performance of HDRC, SHMA-HMDyn, SHMA-Static and a system with 32GB DRAM only, all with respect to a system with 32GB PCM. For all these applications, HDRC only obtains 69.1% performance of the baseline configuration, SHMA-HMDyn, SHMA-Static and a system with 32GB DRAM(the performance upper bound) achieve 15.0%, 14.7% and 22.3% performance improvement on average. Compared to HDRC, SHMA-Static and SHM-HMDyn exhibit 45.9% and 45.6% performance improvement respectively. 
 
 ![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/Performance_result.png)  
-&#160; &#160; &#160; &#160;Fig.1 (a) Instruction per cycle normalized to a system with 32GB PCM, without DRAM cache,     
-&#160; &#160; &#160; &#160;(b) DRAM cache utilization and (c) average access frequency of every DRAM cache page, normalized to HDRC  
+&#160; &#160; &#160; &#160;<font size=2>**Fig.1 (a) Instruction per cycle normalized to a system with 32GB PCM, without DRAM cache,     
+&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160; &#160;(b) DRAM cache utilization and (c) average access frequency of every DRAM cache page,  
+&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;normalized to HDRC**  </font>
 
 
-Table I:Instruction per cycle of selected applications (normalized to a system with  
-&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160;32GB PCM) varies withdifferent CPU parameters
+
+
+
+**<font size=2>Table I:Instruction per cycle of selected applications (normalized to a system with 32GB PCM) varies withdifferent CPU parameters</font>**
 <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0>
  <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes;'>
   <td rowspan=2 valign=top style=';border:solid windowtext 1.0pt;
@@ -331,8 +334,8 @@ Table I:Instruction per cycle of selected applications (normalized to a system w
 
 
 ![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/Energy.png)  
-&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;Fig. 2: (a) Power, (b) Energy of HDRC, SHMA-HMDyn, SHMA-Static and a system  
-&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;with 32GB PCM(both are normalized to a system with 32GB DRAM)
+&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;<font size=2>**Fig. 2 (a) Power, (b) Energy of HDRC, SHMA-HMDyn, SHMA-Static and a system</font>**  
+&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;<font size=2>**with 32GB PCM(both are normalized to a system with 32GB DRAM)</font>**  
 
 &#160; &#160; &#160; &#160;To figure out how modifying hardware parameters might change the experimental results, we compare the IPC of each selected application under4GHz, 4cores configuration with 2GHz, 32cores configuration in Table I. We can observe that performance improvement is more remarkable in 4GHz configuration than 2GHz configuration to SHMA. Because speed gap between memory and 4GHz CPUs is more huge than 2GHz CPUs. Reduction of average memory access latency in SHMA makes greater influence on reducing CPUs’ stall time and cores contentions of 4GHz CPUs configuration than 2GHz CPUs configuration. On the other hand, our applications hold little shared data, hence the number of cores impact their performance barely.
 
