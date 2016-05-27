@@ -4,14 +4,10 @@
 
 ![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/Performance_result.png)  
 &#160; &#160; &#160; &#160;<font size=2>**Fig.1 (a) Instruction per cycle normalized to a system with 32GB PCM, without DRAM cache,     
-&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160; &#160;(b) DRAM cache utilization and (c) average access frequency of every DRAM cache page,  
-&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;normalized to HDRC**  </font>
+&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160; &#160;&#160;&#160;&#160;&#160;&#160;(b) DRAM cache utilization and (c) average access frequency of every DRAM cache page,normalized to HDRC**  </font>
 
 
-
-
-
-**<font size=2>Table I:Instruction per cycle of selected applications (normalized to a system with 32GB PCM) varies withdifferent CPU parameters</font>**
+**<font size=2>Table I:Instruction per cycle of selected applications (normalized to a system with 32GB PCM) varies with different CPU parameters</font>**
 <table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0>
  <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes;'>
   <td rowspan=2 valign=top style=';border:solid windowtext 1.0pt;
@@ -330,8 +326,10 @@
   </td>
  </tr>
 </table>  
-
-
+<p>
+<p>
+<p>
+<p>
 
 ![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/Energy.png)  
 &#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;<font size=2>**Fig. 2 (a) Power, (b) Energy of HDRC, SHMA-HMDyn, SHMA-Static and a system</font>**  
@@ -344,8 +342,8 @@
 
 &#160; &#160; &#160; &#160;As shown in Figure 1(a), we do our experiment with 2GHz, 32 cores configuration and measure IPC of the system with 32GB DRAM. For all these applications, the system with 32GB DRAM (the performance upper bound) achieves22.3% performance improvement compared to the system with 32GB PCM. Performance gap between SHMA-static (SHMA-HMDyn) and the upper bound is within 5% (6%). We can conclude that SHMA and its promoted versions can achieve good performance in DRAM-NVM hybrid memory architecture.
 
-**<font size=5>Details of Last Level Page Table Entry and TLB Entry</font>**
-&#160; &#160; &#160; &#160;Concrete extended last level page table entry in different paging modes and modified TLB entry of SHMA in MIPS R2000/3000 architecture are shown in Figure 3 and Figure 4 respectively.
+**<font size=5>Section II Details of Last Level Page Table Entry and TLB Entry</font>**  
+&#160; &#160; &#160; &#160;Concrete extended last level page table entry in different paging modes and modified TLB entry of SHMA in MIPS R2000/3000 architecture are shown in Figure 3 and Figure 4 respectively.  
 
 ![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/TLB_entry.png)  
 &#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;&#160; &#160; &#160; &#160;<font size=2>**Fig. 3 Extended last level page table entry of SHMA in different paging mode**</font>
