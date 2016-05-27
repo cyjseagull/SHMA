@@ -3,8 +3,8 @@
 &#160; &#160; &#160; &#160;We conduct some experiments with 2GHz, 32 cores configuration. Experimental results are shown in Figure 1. Figure 1(a) depicts the normalized performance of HDRC, SHMA-HMDyn, SHMA-Static and a system with 32GB DRAM only, all with respect to a system with 32GB PCM. For all these applications, HDRC only obtains 69.1% performance of the baseline configuration, SHMA-HMDyn, SHMA-Static and a system with 32GB DRAM(the performance upper bound) achieve 15.0%, 14.7% and 22.3% performance improvement on average. Compared to HDRC, SHMA-Static and SHM-HMDyn exhibit 45.9% and 45.6% performance improvement respectively. 
 
 ![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/Performance_result.png)  
-&#160; &#160; &#160; &#160;<font size=2>**Fig.1 (a) Instruction per cycle normalized to a system with 32GB PCM, without DRAM cache,(b) DRAM cache utilization 
-&#160; &#160; &#160; &#160;and(c) average access frequency of every DRAM cache page,normalized to HDRC**</font>
+&#160; &#160; &#160; &#160;<font size=2>**Fig.1 (a) Instruction per cycle normalized to a system with 32GB PCM, without DRAM cache,(b) DRAM cache  
+&#160; &#160; &#160; &#160;utilization and(c) average access frequency of every DRAM cache page,normalized to HDRC**</font>
 
 
 **<font size=2>Table I:Instruction per cycle of selected applications (normalized to a system with 32GB PCM)  
