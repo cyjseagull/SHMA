@@ -767,7 +767,7 @@ LongModePaging::LongModePaging(PagingStyle select): mode(select),cur_pdp_num(0),
   }
   else if(select == LongMode_Middle )			//2MB
   {
-	zinfo->page_size = 4*power(2,10);
+	zinfo->page_size = 4*power(2,20);
 	zinfo->page_shift=21;
   }
   else if(select == LongMode_Huge )			//1GB
