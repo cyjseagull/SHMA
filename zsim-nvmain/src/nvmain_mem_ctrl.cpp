@@ -245,6 +245,9 @@ NVMainMemory::NVMainMemory(std::string& nvmainTechIni, std::string& outputFile, 
     curCycle = 0;
     updateCycle = 0;
 	nvmain_access_count = 0;
+	issued_num = 0;
+	recorder_num = 0;
+	request_complete =0;
 	nvmain_read_access_count = 0;
 	nvmain_write_access_count = 0;
 	prefetch_time = 0;
@@ -356,6 +359,7 @@ uint64_t NVMainMemory::access(MemReq& req) {
 	uint64_t respCycle = req.cycle + minLatency;
     assert(respCycle > req.cycle);
     if ((zinfo->hasDRAMCache || (req.type != PUTS) /*discard clean writebacks going to mainMemory*/) && zinfo->eventRecorders[req.srcId]) {
+	
 		Address addr = req.lineAddr << lineBits;
         bool isWrite = ((req.type == PUTX) || (req.type == PUTS));
 		nvmain_access_count++;
@@ -533,8 +537,8 @@ uint64_t NVMainMemory::access(MemReq& req) {
 			  }
 		  }
 	  }
-	
-		//########end counter tlb#######
+	//########end counter tlb#######
+	recorder_num++;
     memEv->setMinStartCycle(req.cycle);
 	TimingRecord tr = {addr, req.cycle, respCycle, req.type, memEv, memEv};
 	zinfo->eventRecorders[req.srcId]->pushRecord(tr);
@@ -789,7 +793,7 @@ void NVMainMemory::enqueue(NVMainAccEvent* ev, uint64_t cycle) {
     // If command cannot be issued due to contention, retry next cycle.
     if (!nvmainPtr->IsIssuable(request, NULL)) {
         //info("[%s] %s access to %lx requeued. Curent cycle %ld, requeue cycle %ld", getName(), ev->isWrite()? "Write" : "Read", ev->getAddr(), cycle, cycle+1);
-        ev->requeue(cycle+1);
+        ev->requeue(cycle+10);
         delete request;
         return;
     }
@@ -802,6 +806,7 @@ void NVMainMemory::enqueue(NVMainAccEvent* ev, uint64_t cycle) {
 		(*it)->IssueCommand(request);
 	}
     //info("[%s] [Enqueue] Address %lx curCycle %lu, cycle %lu, updateCycle %lu, inflight requests %ld", getName(), ev->getAddr(), curCycle, cycle, updateCycle, inflightRequests.size());
+	issued_num++;
     bool enqueued = nvmainPtr->IssueCommand(request);
     //assert(enqueued);
 	if(enqueued)
@@ -836,11 +841,11 @@ void NVMainMemory::enqueue(NVMainAccEvent* ev, uint64_t cycle) {
         nextSchedEvent->enqueue(cycle + minLatency);
         nextSchedRequest = request;
     }
-	
     return;
 }
 
 bool NVMainMemory::RequestComplete(NVM::NVMainRequest *creq) {
+	request_complete++;
     assert(inflightRequests.size() > 0);
     auto it = inflightRequests.begin();
     for (; it != inflightRequests.end(); ++it) {
@@ -872,18 +877,19 @@ bool NVMainMemory::RequestComplete(NVM::NVMainRequest *creq) {
     inflightRequests.erase(it);
 
     //info("[%s] [RequestComplete] %s access to %lx DONE at %ld (%ld cycles), %ld inflight reqs", getName(), ev->isWrite()? "W" : "R", ev->getAddr(), curCycle, lat, inflightRequests.size());
-
     delete creq;
     return true;
 }
 
 void NVMainMemory::printStats() {
-    //info("Print NVMain stats for %s, curCycle %ld, updateCycle %ld", getName(), dynamic_cast<OOOCore*>(zinfo->cores[0])->getCycles(), updateCycle);
     std::ofstream out(nvmainStatsFile, std::ios_base::app);
     nvmainPtr->CalculateStats();
     nvmainPtr->GetStats()->PrintAll(out);
-
     out << "===" << std::endl;
+	out<<"nvmain access count:"<<std::dec<<nvmain_access_count<<std::endl;
+	out<<"recorder count:"<<std::dec<<recorder_num<<std::endl;
+	out<<"issued count:"<<std::dec<<issued_num<<std::endl;
+	out<<"request complete count:"<<std::dec<<request_complete<<std::endl;
 }
 #else //no nvmain, have the class fail when constructed
 NVMainMemory::NVMainMemory(std::string& nvmainTechIni, std::string& outputFile, std::string& traceName,

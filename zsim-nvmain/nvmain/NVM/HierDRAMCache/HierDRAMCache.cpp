@@ -275,7 +275,7 @@ bool HierDRAMCache::IsIssuable( NVMainRequest *req, FailReason *reason )
 		req->address.GetTranslatedAddress(NULL,NULL,NULL,NULL,&drc_channel, NULL);
 		assert( drc_channel < numChannels);
 		assert(GetChild(req)->GetTrampoline() == drcChannels[drc_channel]);
-		ret = drcChannels[channel]->IsIssuable(req , reason);
+		ret = drcChannels[drc_channel]->IsIssuable(req , reason);
 	}
 	if( hit )
 		return ret;

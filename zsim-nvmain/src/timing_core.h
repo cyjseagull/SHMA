@@ -90,7 +90,7 @@ class TimingCore : public Core {
 		}
     private:
         inline void loadAndRecord(Address addr);
-		ADDRINT TlbTranslate( ADDRINT virtual_addr , bool is_inst);
+		ADDRINT TlbTranslate( ADDRINT virtual_addr , bool is_inst , bool is_write = false);
         inline void storeAndRecord(Address addr);
         inline void bblAndRecord(Address bblAddr, BblInfo* bblInstrs);
         inline void record(uint64_t startCycle);

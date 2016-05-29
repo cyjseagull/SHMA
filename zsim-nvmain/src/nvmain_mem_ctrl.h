@@ -136,6 +136,9 @@ class NVMainMemory : public MemObject, public NVM::NVMObject { //one NVMain cont
 		std::ofstream fnvm;
 	public:
 		uint64_t nvmain_access_count,nvmain_read_access_count,nvmain_write_access_count;
+		uint64_t request_complete;
+		uint64_t recorder_num;
+		uint64_t issued_num;
     public:
         //NVMainMemory(std::string& nvmainTechIni, std::string& outputFile, std::string& traceName, uint32_t capacityMB, uint64_t _minLatency, uint32_t _domain, const g_string& _name);
         NVMainMemory(std::string& nvmainTechIni, std::string& outputFile, std::string& traceName, uint32_t capacityMB, uint64_t _minLatency, uint32_t _domain, const g_string& _name , std::string fetcher_name="BlockFetcher");	

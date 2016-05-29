@@ -35,6 +35,7 @@ class PageTableWalker: public BasePageTableWalker
 			period = 0;
 			dirty_evict = 0;
 			total_evict = 0;
+			allocated_page = 0;
 			futex_init(&walker_lock);
 		}
 		~PageTableWalker();
@@ -57,6 +58,7 @@ class PageTableWalker: public BasePageTableWalker
 		void calculate_stats()
 		{
 			info("%s evict time:%lu \t dirty evict time: %lu \n",getName(),total_evict,dirty_evict);
+			info("%s allocated pages:%lu \n", getName(),allocated_page);
 		}
 
 		inline Address do_page_fault(MemReq& req, PAGE_FAULT fault_type)
@@ -70,6 +72,7 @@ class PageTableWalker: public BasePageTableWalker
 				if(page)
 				{
 					paging->map_page_table( req.lineAddr,(void*)page);
+					allocated_page++;
 					return page->pageNo;
 				}
 			}
@@ -192,6 +195,7 @@ public:
 		uint64_t period; 
 	private:
 		uint32_t procIdx;
+		Address allocated_page;
 		Address total_evict;
 		Address dirty_evict;
 		lock_t walker_lock;

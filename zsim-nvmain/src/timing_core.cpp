@@ -100,7 +100,7 @@ void TimingCore::loadAndRecord(Address addr) {
 
 void TimingCore::storeAndRecord(Address addr) {
     //uint64_t startCycle = curCycle;
-	addr = TlbTranslate(addr,false);
+	addr = TlbTranslate(addr,false, true);
     uint64_t startCycle = curCycle;
 	//std::cout<<"store:"<<std::hex<<addr<<","<<std::hex<<(addr>>6)<<" , srcid:"<<std::hex<<coreId<<std::endl;
     curCycle = l1d->store(addr, curCycle);
@@ -151,7 +151,7 @@ void TimingCore::BblAndRecordFunc(THREADID tid, ADDRINT bblAddr, BblInfo* bblInf
 }
 
 //TLB simulation 
-ADDRINT TimingCore::TlbTranslate( ADDRINT virtual_addr , bool is_inst)
+ADDRINT TimingCore::TlbTranslate( ADDRINT virtual_addr , bool is_inst,bool is_write)
 {
 	futex_lock(&tlb_lock);
 	//tlb_access_num++;
@@ -182,9 +182,13 @@ ADDRINT TimingCore::TlbTranslate( ADDRINT virtual_addr , bool is_inst)
 	  MemReq req;
 	  req.lineAddr = virtual_addr;
 	  req.cycle = curCycle;
+	  if(is_write)
+		req.type = GETX;
+	  else
+		req.type = GETS;
 	  debug_printf("access vaddr:%llx",virtual_addr);
 	  Address addr = tlb->access(req);
-	Address line_addr= (addr>>zinfo->page_shift);
+	//Address line_addr= (addr>>zinfo->page_shift);
 	//std::cout<<name<<"(va:0x"<<std::hex<<virtual_addr<<","<<std::hex<<addr<<")"<<" (vpn: 0x"<<std::hex<<(virtual_addr>>zinfo->page_shift)<<" , ppn: 0x"<<std::hex<<line_addr<<" )"<<std::endl;
 	  curCycle = req.cycle;	//get updated cycle
 	  //std::cout<<name<<" (va: 0x"<<std::hex<<req.lineAddr<<" , pa: 0x"<<std::hex<<addr<<" )"<<std::endl;
