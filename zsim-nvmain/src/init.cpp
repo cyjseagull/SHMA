@@ -805,7 +805,6 @@ static void InitSystem(Config& config) {
 						stringstream ss;
 						ss << name << coreIdx;
                         g_string tlb_name(ss.str().c_str());
-						std::cout<<"begin new tlb"<<std::endl;
 						//BaseTlb* tlb = TlbFactory::CreateTlb( tlb_type , tlb_name.c_str() , tlb_size , tlb_hit_lat,tlb_res_lat , stringToPolicy(evict_policy_str));
 						BaseTlb* tlb = NULL;
 						if( tlb_type == "CommonTlb")

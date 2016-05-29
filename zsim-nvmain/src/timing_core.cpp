@@ -184,8 +184,8 @@ ADDRINT TimingCore::TlbTranslate( ADDRINT virtual_addr , bool is_inst)
 	  req.cycle = curCycle;
 	  debug_printf("access vaddr:%llx",virtual_addr);
 	  Address addr = tlb->access(req);
-	//Address line_addr= (addr>>6);
-	//std::cout<<name<<" (va: 0x"<<std::hex<<(virtual_addr>>12)<<" , ppn: 0x"<<std::hex<<line_addr<<" )"<<std::endl;
+	Address line_addr= (addr>>zinfo->page_shift);
+	//std::cout<<name<<"(va:0x"<<std::hex<<virtual_addr<<","<<std::hex<<addr<<")"<<" (vpn: 0x"<<std::hex<<(virtual_addr>>zinfo->page_shift)<<" , ppn: 0x"<<std::hex<<line_addr<<" )"<<std::endl;
 	  curCycle = req.cycle;	//get updated cycle
 	  //std::cout<<name<<" (va: 0x"<<std::hex<<req.lineAddr<<" , pa: 0x"<<std::hex<<addr<<" )"<<std::endl;
 	//debug_printf("tlb translate: vaddr:%llx , paddr:%llx",virtual_addr,addr);

@@ -307,7 +307,6 @@ bool NormalPaging::remove_page_table( Address addr , Address size)
 }
 
 /*--------------PAE Paging------------*/
-//PageTable* PAEPaging::page_directory_pointer;
 PAEPaging::PAEPaging(PagingStyle select): mode(select) , cur_pdt_num(0),cur_pt_num(0)
 { 
 	//init page directory pointer , its entry num is 4
@@ -336,12 +335,15 @@ PAEPaging::~PAEPaging()
 /*****-----functional interface of paging----*****/
 bool PAEPaging::map_page_table(Address addr, void* pg_ptr , bool pbuffer)
 {
+	//page directory pointer offset
 	unsigned pdp_id = get_page_directory_pointer_off( addr , mode);
+	//page directory offset
 	unsigned pd_id = get_page_directory_off(addr,mode);
 	unsigned buffer_entry_id = get_buffer_table_off(addr,buffer_table_shift,mode);
 	PageTable* table;
 	if( mode == PAE_Normal)
 	{
+		//page table offset
 		unsigned pt_id = get_pagetable_off(addr , mode);
 		if( (table = allocate_page_table(pdp_id , pd_id))==NULL )
 		{
@@ -359,6 +361,7 @@ bool PAEPaging::map_page_table(Address addr, void* pg_ptr , bool pbuffer)
 	}
 	else if( mode == PAE_Huge)
 	{
+		//allocate page directory
 		if( (table=allocate_pdt(pdp_id))==NULL)
 		{
 			debug_printf("allocate page directory failed !");
@@ -450,17 +453,20 @@ PageTable* PAEPaging::allocate_page_table( unsigned pdpt_entry_id , unsigned pd_
 	//page directory
 	PageTable* table = get_next_level_address<PageTable>( page_directory_pointer , pdpt_entry_id);
 	PageTable* page=NULL;
+	//allocate page directory first
 	if( !table)
 	{
 		//page directory
 		table = new PageTable(ENTRY_512);
+		//connect page directory pointer with page directory
 		validate_entry( page_directory_pointer , pdpt_entry_id , table);
 		//page table 
 		page = new PageTable(ENTRY_512);
+		//connect page directory with page table
 		validate_entry( table, pd_entry_id ,page);
 		cur_pt_num++;	
 		cur_pdt_num++;
-		return page;
+		return page; //return page table
 	}
 	else
 	{
@@ -473,6 +479,7 @@ PageTable* PAEPaging::allocate_page_table( unsigned pdpt_entry_id , unsigned pd_
 			cur_pt_num++;
 		}
 		//page table already exist
+		return page;
 	}
 	return page;
 }
@@ -767,7 +774,7 @@ LongModePaging::LongModePaging(PagingStyle select): mode(select),cur_pdp_num(0),
   }
   else if(select == LongMode_Middle )			//2MB
   {
-	zinfo->page_size = 4*power(2,20);
+	zinfo->page_size = 2*power(2,20);
 	zinfo->page_shift=21;
   }
   else if(select == LongMode_Huge )			//1GB

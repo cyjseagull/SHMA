@@ -191,12 +191,15 @@ void OOOCore::predFalseMemOp() {
 
 void OOOCore::branch(Address pc, bool taken, Address takenNpc, Address notTakenNpc) {
     //branchPc = this->RandomizeAddress(pc);
-	branchPc = this->TlbTranslate(pc,true);
+	//branchPc = this->TlbTranslate(pc,true);
+	branchPc = pc;
     branchTaken = taken;
 	//branchTakenNpc = this->RandomizeAddress(takenNpc);
     //branchNotTakenNpc = this->RandomizeAddress(notTakenNpc);
-	branchTakenNpc = this->TlbTranslate(takenNpc,true);
-	branchNotTakenNpc = this->TlbTranslate(notTakenNpc , true);
+	//branchTakenNpc = this->TlbTranslate(takenNpc,true);
+	//branchNotTakenNpc = this->TlbTranslate(notTakenNpc , true);
+	branchTakenNpc = takenNpc;
+	branchNotTakenNpc = notTakenNpc;
 	access_num +=3;
 }
 
@@ -299,7 +302,6 @@ inline void OOOCore::bbl(Address bblAddr, BblInfo* bblInfo) {
             case UOP_LOAD:
                 {
                     // dispatchCycle = MAX(loadQueue.minAllocCycle(), dispatchCycle);
-					//std::cout<<"load"<<std::endl;
                     uint64_t lqCycle = loadQueue.minAllocCycle();
                     if (lqCycle > dispatchCycle) {
 #ifdef LSU_IW_BACKPRESSURE
@@ -453,7 +455,9 @@ inline void OOOCore::bbl(Address bblAddr, BblInfo* bblInfo) {
         Address wrongPathAddr = branchTaken? branchNotTakenNpc : branchTakenNpc;
         uint64_t reqCycle = fetchCycle;
         for (uint32_t i = 0; i < 5*64/lineSize; i++) {
-            uint64_t fetchLat = l1i->load(wrongPathAddr + lineSize*i, curCycle) - curCycle;
+			Address tmp_addr = TlbTranslate(wrongPathAddr+lineSize*i, true);
+            //uint64_t fetchLat = l1i->load(wrongPathAddr + lineSize*i, curCycle) - curCycle;
+            uint64_t fetchLat = l1i->load(tmp_addr, curCycle) - curCycle;
             cRec.record(curCycle, curCycle, curCycle + fetchLat);
             uint64_t respCycle = reqCycle + fetchLat;
             if (respCycle > lastCommitCycle) {
@@ -475,7 +479,10 @@ inline void OOOCore::bbl(Address bblAddr, BblInfo* bblInfo) {
         // Do not model fetch throughput limit here, decoder-generated stalls already include it
         // We always call fetches with curCycle to avoid upsetting the weave
         // models (but we could move to a fetch-centric recorder to avoid this)
-        uint64_t fetchLat = l1i->load(fetchAddr, curCycle) - curCycle;
+
+        //uint64_t fetchLat = l1i->load(fetchAddr, curCycle) - curCycle;
+		Address tmp_addr = TlbTranslate(fetchAddr, true);
+        uint64_t fetchLat = l1i->load(tmp_addr, curCycle) - curCycle;
         cRec.record(curCycle, curCycle, curCycle + fetchLat);
         fetchCycle += fetchLat;
     }

@@ -29,7 +29,6 @@ class CommonTlb: public BaseTlb
 				tlb_hit_time(0),tlb_evict_time(0),tlb_name_(name), evict_policy(policy)
 		{
 			assert(tlb_size>0);
-			std::cout<<"new tlb"<<std::endl;
 			tlb = gm_memalign<T*>(CACHE_LINE_BYTES,tlb_size);
 			tlb_trie.clear();
 			tlb_trie_pa.clear();
