@@ -110,7 +110,7 @@ Vagrant automatically syncs the zsim root folder of your host machine to /vagran
 ③ dtlb: name of data TLB corresponding to this page table walker;  
 **(4) sys.mem.zone: memory management configuration** 
 **zone_dma/zone_dma32/zone_normal/zone_highmem**: set OS zone size(MB)  
-**(5) sys.enable_shared_memory**: enable shared memory(mainly dynamic-link library) simulation (enabled by default)
+**(5) sys.enable_shared_memory**: true, enable shared memory(mainly dynamic-link library) simulation ( default is true )
 
 
 
