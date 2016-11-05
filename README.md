@@ -111,15 +111,62 @@ Vagrant automatically syncs the zsim root folder of your host machine to /vagran
 **(4) sys.mem.zone: memory management configuration** 
 **zone_dma/zone_dma32/zone_normal/zone_highmem**: set OS zone size(MB)  
 **(5) sys.enable_shared_memory**: true, enable shared memory(mainly dynamic-link library) simulation ( default is true )
-
-
+* **Enable Simpoints**    
+**(1) configuration key**  
+**startFastForwarded=true   
+**simPoints=<directory of simpoints>   
+**(2) how to get simpoints**  
+**create .bb files with valgrind: cmd is execution command of the executable programs   
+```javascript
+ valgrind --tool=exp-bbv --interval-size=<instructions of a simpoint,example:1000000000> <cmd> 
+```  
+**get simpoints with .bb files with SimPoint(get from https://github.com/southerngs/simpoint)  
+```javascript
+simpoint -k <simpoints num> -loadFVFile <path of .bb files> -saveSimpoints <file store generated simpoints> -saveSimpointWeights <file store weights of generated simpoints> -sampleSize <instructions of a simpoint, eg:1000000000>
+```
+**(3) format of simpoints**  
+<the first simpoint period> 0  
+<the second simpoint period> 1  
+... ...  
+<the ith simpoint period> i-1  
+... ...  
+example( simpoint file of msf with 31 simpoints):
+```javascript
+ 38 0
+19 1
+64 2
+13 3
+58 4
+43 5
+55 6
+10 7
+14 8
+39 9
+15 10
+30 11
+9 12
+42 13
+24 14
+4 15
+0 16
+12 17
+48 18
+0 21
+1 22
+2 23
+3 24
+4 25
+5 26
+6 27
+7 28
+8 29
+9 30
+```   
 
 * **SHMA(Software-Managed DRAM Cache) Related Configuration**(example in zsim-nvmain/config/shma.cfg)  
 **(1) sys.tlbs.tlb_type**: must be set to be "HotMonitorTlb";  
 **(2) sys.init_access_threshold**: set initial value of fetching_threshold, default is 0;  
 **(3) sys.adjust_interval**: period of adjusting fetching_threshold automatically, defalut is 10000000 cycles (1000cycles is basic units);
-
-
 **4.nvmain Configuration Keys** (example nvmain configuration files is in zsim-nvmain/config/nvmain-config directory)
 * **Enabling DRAM-NVM hierarchical hybrid architecture**( zsim-nvmain/config/nvmain-config/hierarchy)  
 **(1) EventDriven**: true;  
@@ -152,6 +199,12 @@ Vagrant automatically syncs the zsim root folder of your host machine to /vagran
 **(4) PromotionChannel**: channel id of fast memory(DRAM);  
 **(5) CONFIG_CHANNEL**: configuration file path of every main memory channel;  
 
+* **Enabling Flat DRAM-NVM hybrid   architectures**(zsim-nvmain/config/nvmain-config/rbla)  
+**(1) FAST_CONFIG**: configuration file of fast memory (eg DRAM)  
+**(2) SLOW_CONFIG**: configuration file of slow memory (eg NVM)  
+**(3) Decoder**: ***FlatDecoder**, decoder of flat DRAM-NVMA hybrid architecture  
+**(4) CMemType**:**FlatRBLANVMain**, memory type  
+
 
 TLB, Page Table and Memory Management Simulation Modules
 -----------------------
@@ -170,6 +223,9 @@ Implementations of RBLA and MultiQueue Policies
 
 * **hot page migrator based on MultiQueue Alogrithm (MultiQueue)**  
 &#160; &#160; &#160; &#160;MultiQueue classify NVM pages into hot pages and cold pages using multiqueue algorithm accroding to both page access frequency and time locality. Its implementation is shown as following picture:![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/MultiQueue.png)
+
+* **Architecture of flat memory supporting different channel configurations of DRAM and NVM**  
+&#160; &#160; &#160; &#160;Considering that DRAM and NVM with different channel configurations have the overlapping address space in the low end, we divide the continuous overlapped address space into {channel_nums} and mapping them to different address space interleavingly to make full use of channel parallization, basic architecuture of flat memory is shown as the following picture:![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/flat_memory_architecture.PNG)
 
 
 Happy hacking and hope you find SHMA useful for hybrid memory architecture research.
