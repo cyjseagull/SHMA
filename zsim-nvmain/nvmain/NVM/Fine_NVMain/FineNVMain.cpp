@@ -192,6 +192,8 @@ void FineNVMain::SetConfig( Config *conf, std::string memoryName, bool createChi
 								 "CONFIG_DRAM_CHANNEL" , "DRAMBufferControllers");
 
 			reserve_region_param->SetParams(reservedConfig[0]);	//set reserve region param
+			for( unsigned i=0; i<reserved_channels;i++)
+				reservedControllers[i]->SetParams(reserve_region_param);
 			SetTranslators(	reservedConfig[0] ,cacheTranslator , 
 							reserve_region_param , cache_width,
 							cache_word_size , cache_size);

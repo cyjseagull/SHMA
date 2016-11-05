@@ -8,6 +8,7 @@
 
 #include <list>
 #include "stdint.h"
+#define MAXLEN 1024
 #define SWAP_CLUSTER_MAX (32ULL)
 #define MAXORDER 11
 #define PAGE_BUDDY_MAPCOUNT_VALUE (-128)		//if page is belong to buddy system, its mapcount should be -128
@@ -40,6 +41,8 @@ const char* const c_zone_highmem="mem.zone.zone_highmem";
 
 const char* const CounterTlb="HotMonitorTlb";
 
+const int HOTTLB=1;
+const int COMMONTLB=0;
 struct Pair
 {
 	Pair( unsigned one , unsigned two) : first(one),second(two)

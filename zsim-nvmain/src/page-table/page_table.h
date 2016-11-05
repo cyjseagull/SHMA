@@ -22,11 +22,13 @@ class BasePaging: public MemObject
 		virtual PageTable* get_root_directory()=0;
 		//virtual Address access(MemReq& req )=0;
 		virtual bool unmap_page_table(Address addr)=0;
-		virtual bool map_page_table(Address addr, void* pg_ptr , bool pbuffer = false) = 0;
+		virtual int map_page_table(Address addr, void* pg_ptr , bool pbuffer = false) = 0;
 		virtual bool allocate_page_table(Address addr , Address size)=0;
 		virtual void remove_root_directory()=0;
 		virtual bool remove_page_table( Address addr , Address size)
 		{ return true; }
+		
+		virtual void calculate_stats(){}
 };
 
 /*#------legacy paging(supports 4KB&&4MB)--------#*/
@@ -36,7 +38,7 @@ class NormalPaging: public BasePaging
 		NormalPaging(PagingStyle select);
 		~NormalPaging();
 
-		bool map_page_table( Address addr , void* pg_ptr , bool pbuffer=false );
+		int map_page_table( Address addr , void* pg_ptr , bool pbuffer=false );
 		bool unmap_page_table( Address addr );	
 		//access
 		Address access( MemReq& req );
@@ -56,8 +58,14 @@ class NormalPaging: public BasePaging
 		PageTable* get_root_directory()
 		{   return page_directory;	}
 	
+		void calculate_stats()
+		{
+			long unsigned overhead = (long unsigned)cur_page_table_num*1024;
+			info("page table number: %d", cur_page_table_num);
+			info("overhead of extended storage:%f MB", (double)overhead/(double)(1024*1024));
+		}
 	protected:
-		PageTable* allocate_one_pagetable(unsigned pd_entry_id );
+		PageTable* allocate_one_pagetable(unsigned pd_entry_id, int& allocate_time );
 		bool allocate_page_table(entry_list pd_entry);
 		//allocate page table for [addr , addr+size]
 		bool remove_page_table(entry_list pd_entry);
@@ -82,7 +90,7 @@ class PAEPaging: public BasePaging
 		~PAEPaging();
 		//access
 		Address access(MemReq& req );
-		bool map_page_table( Address addr , void* pg_ptr , bool pbuffer = false);
+		int map_page_table( Address addr , void* pg_ptr , bool pbuffer = false);
 		bool unmap_page_table( Address addr );		
 
 		//PAE-Huge mode
@@ -107,16 +115,25 @@ class PAEPaging: public BasePaging
 
 		PageTable* get_root_directory()
 		{  return page_directory_pointer;	}
+		
+		void calculate_stats()
+		{
+			long unsigned overhead = (long unsigned)cur_pt_num*512;
+
+			info("page table number: %d", cur_pt_num);
+			info("overhead of extended storage:%f MB", (double)overhead/(double)(1024*1024));
+		}
 
 	protected:
 	   //allocate page directory table,at most to 4 
 		bool allocate_pdt(entry_list pdpt_entry);
-		PageTable* allocate_pdt(unsigned pdpt_entry_id);
+		PageTable* allocate_pdt(unsigned pdpt_entry_id, int& alloc_time);
 
 
 		//allocate page table , at most to 512
 		bool allocate_page_table(pair_list pdp_entry);
-		PageTable* allocate_page_table(unsigned pdpt_entry_id , unsigned pdp_entry_id);
+		PageTable* allocate_page_table(unsigned pdpt_entry_id ,
+				unsigned pdp_entry_id, int& alloc_time);
 
 		bool remove_pdt( entry_list pdpt_entry);
 		bool remove_pdt( unsigned pdp_entry_id);
@@ -140,7 +157,7 @@ class LongModePaging: public BasePaging
 	public:
 		LongModePaging(PagingStyle selection);
 		~LongModePaging();
-		bool map_page_table( Address addr , void* pg_ptr , bool pbuffer=false);
+		int map_page_table( Address addr , void* pg_ptr , bool pbuffer=false);
 		bool unmap_page_table( Address addr );		
 		//access
 		Address access(MemReq& req);
@@ -163,15 +180,22 @@ class LongModePaging: public BasePaging
 		PageTable* get_root_directory()
 		{ return pml4;		}
 
+		void calculate_stats()
+		{
+			long unsigned overhead = (long unsigned)cur_pt_num*512;
+			info("page table number: %d", cur_pt_num);
+			info("overhead of extended storage:%f MB", (double)overhead/(double)(1024*1024));
+		}
 	protected:
 		//allocate multiple
-		PageTable* allocate_page_directory_pointer( unsigned pml4_entry_id);
+		PageTable* allocate_page_directory_pointer( unsigned pml4_entry_id, int& alloc_time);
 		bool allocate_page_directory_pointer(entry_list pml4_entry);
 		
-		PageTable* allocate_page_directory( unsigned pml4_entry_id , unsigned pdpt_entry_id);
+		PageTable* allocate_page_directory( unsigned pml4_entry_id , unsigned pdpt_entry_id, int& alloc_time);
 		bool allocate_page_directory(pair_list high_level_entry);
 
-		PageTable* allocate_page_table( unsigned pml4_entry_id , unsigned pdpt_entry_id , unsigned pdt_entry_id);
+		PageTable* allocate_page_table( unsigned pml4_entry_id , 
+				unsigned pdpt_entry_id , unsigned pdt_entry_id, int& alloc_time);
 		bool allocate_page_table(triple_list high_level_entry);
 
 		//remove

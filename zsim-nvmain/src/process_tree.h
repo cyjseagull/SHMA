@@ -67,9 +67,9 @@ class ProcessTreeNode : public GlobAlloc {
         ProcessTreeNode* getNextChild() {
             if (curChildren == children.size()) { //allocate a new child
                 uint32_t childProcIdx = __sync_fetch_and_add(&zinfo->numProcs, 1);
-                if (childProcIdx >= (uint32_t)zinfo->lineSize) {
-                    panic("Cannot simulate more than sys.lineSize=%d processes (to avoid aliasing), limit reached", zinfo->lineSize);
-                }
+                //if (childProcIdx >= (uint32_t)zinfo->lineSize) {
+                  //  panic("Cannot simulate more than sys.lineSize=%d processes (to avoid aliasing), limit reached", zinfo->lineSize);
+                //}
                 ProcessTreeNode* child = new ProcessTreeNode(*this);
                 child->procIdx = childProcIdx;
                 child->started = false;

@@ -67,7 +67,7 @@ class NVMain : public NVMObject
     void IssuePrefetch( NVMainRequest *request );
     virtual bool IssueCommand( NVMainRequest *request );
     virtual bool IssueAtomic( NVMainRequest *request );
-    bool IsIssuable( NVMainRequest *request, FailReason *reason );
+    bool IsIssuable( NVMainRequest *request, FailReason *reason=NULL );
 
     bool RequestComplete( NVMainRequest *request );
 
@@ -84,7 +84,11 @@ class NVMain : public NVMObject
 	virtual uint64_t GetBufferSize(){ return 0; }
 	virtual unsigned GetBufferWordSize(){ return 0; }
 	virtual void SetMigrator( NVMObject* migrator){};
-	static uint64_t memory_size;
+	virtual int GetChannels()
+	{
+		return numChannels;
+	}
+	uint64_t memory_size;
     ncounter_t totalReadRequests;
     ncounter_t totalWriteRequests;
   protected:

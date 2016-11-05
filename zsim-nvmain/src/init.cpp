@@ -429,6 +429,10 @@ CacheGroup* BuildCacheGroup(Config& config, const string& name, bool isTerminal)
 
 
 static void InitSystem(Config& config) {
+	//########parse simpoints file#######
+	//string simpoints_file = config.get<const char*>();	
+	//#######parse simpoints file end####
+	zinfo->mem_access_time = config.get<unsigned>("sys.mem_access_time",100);
 	debug_printf("begin init system (core/cache/tlb)");
 	zinfo->memory_size = 0;
 	//default page size is 4KB, block size is 4KB
@@ -670,12 +674,25 @@ static void InitSystem(Config& config) {
             if (!assignedCaches.count(icache)) panic("%s: Invalid icache parameter %s", group, icache.c_str());
             if (!assignedCaches.count(dcache)) panic("%s: Invalid dcache parameter %s", group, dcache.c_str());
 			/***-----------init cores---------****/
-			PageTableWalker* page_table_walker=NULL;
+			//zinfo->tlb_type = config.get<const char*>("sys.tlbs.tlb_type" , "CommonTlb");
+			debug_printf("init cores");
+			string tlb_type = config.get<const char*>("sys.tlbs.tlb_type" , "CommonTlb");
+			zinfo->tlb_type = COMMONTLB;
+			if(tlb_type == "HotMonitorTlb")
+				zinfo->tlb_type = HOTTLB;
+			debug_printf("tlb type is:%s", tlb_type.c_str());
+			union
+			{
+				PageTableWalker<TlbEntry>* common_pgt;
+				PageTableWalker<ExtendTlbEntry>* hot_pgt;
+			};
 			if( config.exists( "sys.tlbs") )
 			{
-				//zinfo->pg_walkers = new BasePageTableWalker* [cores];
 				zinfo->pg_walkers = gm_memalign<BasePageTableWalker*>(CACHE_LINE_BYTES, cores);
-				page_table_walker = gm_memalign<PageTableWalker>(CACHE_LINE_BYTES,cores );
+				if( tlb_type == "CommonTlb")
+					common_pgt = gm_memalign<PageTableWalker<TlbEntry> >(CACHE_LINE_BYTES,cores );
+				else if( tlb_type == "HotMonitorTlb")
+					hot_pgt = gm_memalign<PageTableWalker<ExtendTlbEntry> >(CACHE_LINE_BYTES,cores );
 			}
 			else
 				zinfo->pg_walkers = NULL;
@@ -683,6 +700,7 @@ static void InitSystem(Config& config) {
 			std::cout<<"mode_str:"<<mode_str<<std::endl;
 			PagingStyle mode = string_to_pagingmode(mode_str.c_str());
 			zinfo->paging_mode = mode;
+			zinfo->paging_array = NULL;
 			if( config.exists("sys.tlbs"))
 			{
 				union
@@ -702,7 +720,6 @@ static void InitSystem(Config& config) {
 					longmode_paging = gm_memalign<LongModePaging>(CACHE_LINE_BYTES, zinfo->numProcs);
 				for( unsigned i=0; i<zinfo->numProcs; i++)
 				{
-					//zinfo->paging_array[i] = PagingFactory::CreatePaging( zinfo->paging_mode );
 					if( mode_str == "Legacy")
 						zinfo->paging_array[i] = new (&normal_paging[i])NormalPaging(zinfo->paging_mode);
 					if( mode_str == "PAE")
@@ -721,7 +738,7 @@ static void InitSystem(Config& config) {
 				CommonTlb<TlbEntry> * common_tlb;
 				HotMonitorTlb<ExtendTlbEntry>* hot_monitor_tlb;
 			};
-			string tlb_type = config.get<const char*>("sys.tlbs.tlb_type" , "CommonTlb");
+			//string tlb_type = config.get<const char*>("sys.tlbs.tlb_type" , "CommonTlb");
 			zinfo->counter_tlb = false;  //default is false
 			if (tlb_type == CounterTlb )
 					zinfo->counter_tlb = true;
@@ -784,21 +801,22 @@ static void InitSystem(Config& config) {
 						stringstream ss;
 						ss << pgt_name << coreIdx;
                         g_string pg_table_name(ss.str().c_str());
-						//debug_printf("create page table walker");
-						zinfo->pg_walkers[j] = new (&page_table_walker[j])PageTableWalker(pg_table_name.c_str() ,mode);
-						std::cout<<"create page table walker"<<zinfo->pg_walkers[j]->getName()<<std::endl;
+						
+						if( tlb_type == "CommonTlb")
+							zinfo->pg_walkers[j] = new (&common_pgt[j])PageTableWalker<TlbEntry>(pg_table_name.c_str() ,mode);
+						if( tlb_type == "HotMonitorTlb")
+							zinfo->pg_walkers[j] = new (&hot_pgt[j])PageTableWalker<ExtendTlbEntry>( pg_table_name.c_str(), mode);
 					}
 					for( const char* grp : tlb_group_names)
 					{
-						std::cout<<"create tlb"<<std::endl;
 						string tmp(grp);
 					    string name = tlb_prefix+tmp;
 						//default tlb entry num is 128
 						unsigned tlb_size = config.get<unsigned>(name +".entry_num",128);
 						//default is 1
 						unsigned tlb_hit_lat = config.get<unsigned>(name+".hit_latency" , 1);
+						zinfo->tlb_hit_lat = tlb_hit_lat;
 						unsigned tlb_res_lat = config.get<unsigned>(name+".response_latency",1);
-						//string tlb_type = config.get<const char*>(name+".tlb_type" , "CommonTlb");
 						//default tlb type is CommonTlb
 						debug_printf("tlb hit latency %d , response latency %d",tlb_hit_lat,tlb_res_lat);
 						//default eviction policy is LRU
@@ -806,7 +824,6 @@ static void InitSystem(Config& config) {
 						stringstream ss;
 						ss << name << coreIdx;
                         g_string tlb_name(ss.str().c_str());
-						//BaseTlb* tlb = TlbFactory::CreateTlb( tlb_type , tlb_name.c_str() , tlb_size , tlb_hit_lat,tlb_res_lat , stringToPolicy(evict_policy_str));
 						BaseTlb* tlb = NULL;
 						if( tlb_type == "CommonTlb")
 						{
@@ -820,7 +837,7 @@ static void InitSystem(Config& config) {
 						/***----connect page table walker with TLB----***/
 						assert(zinfo->pg_walkers[j]);
 						tlb->set_parent(zinfo->pg_walkers[j]);
-						std::cout<<"create tlb:"<<tlb->getName()<<std::endl;
+						//std::cout<<"create tlb:"<<tlb->getName()<<std::endl;
 						if(tmp=="itlb")
 							itlb = tlb;
 						else if(tmp =="dtlb")
@@ -998,6 +1015,8 @@ static void InitSystem(Config& config) {
 	}
 	//default:enable share memory
 	zinfo->enable_shared_memory = config.get<bool>("sys.enable_shared_memory", true);
+	if( 1==zinfo->numProcs)
+		zinfo->enable_shared_memory = false;
 }
 
 static void PreInitStats() {

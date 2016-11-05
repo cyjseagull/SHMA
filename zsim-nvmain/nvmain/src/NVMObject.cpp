@@ -386,7 +386,6 @@ GlobalEventQueue *NVMObject::GetGlobalEventQueue( )
 void NVMObject::SetParent( NVMObject *p )
 {
     NVMObject_hook *hook = new NVMObject_hook( p );
-
     parent = hook;
     SetEventQueue( p->GetEventQueue( ) );
     SetGlobalEventQueue( p->GetGlobalEventQueue( ) );

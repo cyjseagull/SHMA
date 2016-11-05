@@ -35,23 +35,6 @@
 
 namespace NVM {
 
-int mlog2( int num )
-{
-    int retVal = -1;
-    int newNum = num;
-
-    if( num < 2 )
-        return 0;
-
-    while( newNum != 0 )
-    {
-        retVal++;
-        newNum >>= 1;
-    }
-
-    return retVal;
-}
-
 std::string GetFilePath( std::string file )
 {
     size_t last_sep;

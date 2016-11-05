@@ -69,6 +69,7 @@
 #include "memory_hierarchy.h"
 #include "ooo_core.h"
 
+
 /* Command-line switches (used to pass info from harness that cannot be passed through the config file, most config is file-based) */
 //proces id
 KNOB<INT32> KnobProcIdx(KNOB_MODE_WRITEONCE, "pintool",
@@ -331,6 +332,7 @@ VOID FFIInit() {
         ffiPoint = 0;
         ffiInstrsDone = 0;
         ffiInstrsLimit = ffiPoints[0];
+		std::cout<<"ffiInstsLimit:"<<std::dec<<ffiInstrsLimit<<std::endl;
 
         ffiFFStartInstrs = gm_calloc<uint64_t>(1);
         ffiPrevFFStartInstrs = gm_calloc<uint64_t>(1);
@@ -344,27 +346,36 @@ VOID FFIInit() {
 
 //Set the next ffiPoint, or finish
 VOID FFIAdvance() {
-	std::cout<<"next ffipoint"<<std::endl;
+	//std::cout<<"next ffipoint"<<std::endl;
     const g_vector<uint64_t>& ffiPoints = procTreeNode->getFFIPoints();
     ffiPoint++;
     if (ffiPoint >= ffiPoints.size()) {
+		std::cout<<std::dec<<ffiPoint<<"th, last ffiPoint reached, limit:"<<std::dec<<ffiInstrsLimit<<std::endl;
         info("Last ffiPoint reached, %ld instrs, limit %ld", ffiInstrsDone, ffiInstrsLimit);
         SimEnd();
     } else {
         info("ffiPoint reached, %ld instrs, limit %ld", ffiInstrsDone, ffiInstrsLimit);
         ffiInstrsLimit += ffiPoints[ffiPoint];
+		std::cout<<std::dec<<ffiPoint<<"th, ffiPoint reached, limit:"<<std::dec<<ffiInstrsLimit<<std::endl;
     }
 }
 
 VOID FFIBasicBlock(THREADID tid, ADDRINT bblAddr, BblInfo* bblInfo) {
     ffiInstrsDone += bblInfo->instrs;
+	//std::cout<<"ffidone:"<<std::dec<<ffiInstrsDone<<std::endl;
     if (unlikely(ffiInstrsDone >= ffiInstrsLimit)) {
+		
+		//std::cout<<"enter none-fast-forward:"<<std::dec<<ffiInstrsDone<<std::endl;
+		//std::cout<<"fast-forward:"<<std::dec<<*ffiFFStartInstrs
+		//<<" prev instr:"<<std::dec<<*ffiPrevFFStartInstrs<<std::endl;
+
         FFIAdvance();
         assert(procTreeNode->isInFastForward());
         futex_lock(&zinfo->ffLock);
         info("FFI: Exiting fast-forward");
         ExitFastForward();
         futex_unlock(&zinfo->ffLock);
+		//std::cout<<"enter none-fast-forward:"<<std::dec<<ffiInstrsDone<<std::endl;
         FFITrackNFFInterval();
         SimThreadStart(tid);
     }
@@ -373,7 +384,12 @@ VOID FFIBasicBlock(THREADID tid, ADDRINT bblAddr, BblInfo* bblInfo) {
 // One-off, called after we go from NFF to FF
 VOID FFIEntryBasicBlock(THREADID tid, ADDRINT bblAddr, BblInfo* bblInfo) {
     ffiInstrsDone += *ffiFFStartInstrs - *ffiPrevFFStartInstrs; //add all instructions executed in the NFF phase
+	//std::cout<<"from NFF to FF, start instr:"<<std::dec<<*ffiFFStartInstrs
+	//	<<" prev instr:"<<std::dec<<*ffiPrevFFStartInstrs<<" ffi done:"<<
+	//	std::dec<<ffiInstrsDone<<std::endl;
+
     FFIAdvance();
+	//std::cout<<"advanced ffiInstsLimit:"<<std::dec<<ffiInstrsLimit<<std::endl;
     assert(ffiNFF);
     ffiNFF = false;
     fPtrs[tid] = GetFFPtrs();
@@ -433,6 +449,7 @@ volatile uint32_t perProcessEndFlag;
 VOID SimEnd();
 
 VOID CheckForTermination() {
+	//std::cout<<"check for temination"<<std::endl;
     assert(zinfo->terminationConditionMet == false);
     if (zinfo->maxPhases && zinfo->numPhases >= zinfo->maxPhases) {
         zinfo->terminationConditionMet = true;
@@ -461,7 +478,7 @@ VOID CheckForTermination() {
         for (uint32_t i = 0; i < zinfo->numCores; i++) {
             totalInstrs += zinfo->cores[i]->getInstrs();
         }
-
+		//std::cout<<"totalInsts"<<totalInstrs<<std::endl;
         if (totalInstrs >= zinfo->maxTotalInstrs) {
             zinfo->terminationConditionMet = true;
             info("Max total (aggregate) instructions reached (%ld)", totalInstrs);
@@ -489,6 +506,7 @@ VOID CheckForTermination() {
  * has not incremented, so it denotes the END of the current phase
  */
 VOID EndOfPhaseActions() {
+	//std::cout<<"end of phase action"<<std::endl;
     zinfo->profSimTime->transition(PROF_WEAVE);
     if (zinfo->globalPauseFlag) {
         info("Simulation entering global pause");
@@ -515,10 +533,13 @@ VOID EndOfPhaseActions() {
 
 
 uint32_t TakeBarrier(uint32_t tid, uint32_t cid) {
+	//std::cout<<"take barrier"<<std::endl;
     uint32_t newCid = zinfo->sched->sync(procIdx, tid, cid);
     clearCid(tid); //this is after the sync for a hack needed to make EndOfPhase reliable
+	//std::cout<<"take barrier1"<<std::endl;
     setCid(tid, newCid);
 
+	//std::cout<<"take barrier2"<<std::endl;
     if (procTreeNode->isInFastForward()) {
         info("Thread %d entering fast-forward", tid);
         clearCid(tid);
@@ -530,6 +551,7 @@ uint32_t TakeBarrier(uint32_t tid, uint32_t cid) {
         zinfo->sched->leave(procIdx, tid, newCid);
         SimEnd(); //need to call this on a per-process basis...
     }
+	//std::cout<<"return newCid"<<std::endl;
     return newCid;
 }
 
@@ -585,6 +607,7 @@ VOID Instruction(INS ins) {
             INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR) IndirectRecordBranch, IARG_FAST_ANALYSIS_CALL, IARG_THREAD_ID,
                     IARG_INST_PTR, IARG_BRANCH_TAKEN, IARG_BRANCH_TARGET_ADDR, IARG_FALLTHROUGH_ADDR, IARG_END);
         }
+	 //std::cout<<"instruction end"<<std::endl;
     }
 
     //Intercept and process magic ops
@@ -620,6 +643,7 @@ VOID Trace(TRACE trace, VOID *v) {
         // Visit every basic block in the trace
         for (BBL bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl = BBL_Next(bbl)) {
             BblInfo* bblInfo = Decoder::decodeBbl(bbl, zinfo->oooDecode);
+			//std::cout<<"bbl insts:"<<bblInfo->instrs<<std::endl;
 			//insert call relative to bbl
 			//function ptr: IndirectBasicBlock
 			//IARG_FAST_ANALYSIS_CALL: use alternate linkages 
@@ -628,8 +652,10 @@ VOID Trace(TRACE trace, VOID *v) {
 			//				  pass a pin-specific thread id for the calling thread
 			//IARG_ADDRINT:
 			//call BblFunc
+			if( bblInfo )
             BBL_InsertCall(bbl, IPOINT_BEFORE /*could do IPOINT_ANYWHERE if we redid load and store simulation in OOO*/, (AFUNPTR)IndirectBasicBlock, IARG_FAST_ANALYSIS_CALL,IARG_THREAD_ID, IARG_ADDRINT, BBL_Address(bbl), IARG_PTR, bblInfo, IARG_END);
         }
+		//std::cout<<"bbl analyse ended"<<std::endl;
     }
 	//call Load/Store
     //Instruction instrumentation now here to ensure proper ordering
@@ -869,7 +895,7 @@ uint32_t CountActiveThreads() {
 				  and [linear virtual address region]
   file_name: name of parsed file
  */
-void ParseFile( g_vector<Section*>& libs_to_region,
+void ParseFile( g_vector<Section>& libs_to_region,
 		const char* file_name )
 {
 	char buf[129];
@@ -896,7 +922,7 @@ void ParseFile( g_vector<Section*>& libs_to_region,
 					tmp_start = strtoul(buf, NULL, 16)>>zinfo->page_shift;
 					tmp_end = strtoul( dash+1, NULL, 16)>>zinfo->page_shift;
 					std::cout<<std::hex<<tmp_start<<" - "<<std::hex<<tmp_end<<std::endl;
-					Section* res = new Section( tmp_start, tmp_end);
+					Section res(tmp_start, tmp_end);
 					libs_to_region.push_back(res);
 				}				
 			}
@@ -921,7 +947,7 @@ void GetSharedMemory( THREADID tid, THREADID procIdx )
 	//get path of maps 
 	ss<<"/proc/"<<tid<<"/maps";
 	file_name = ss.str();
-	g_vector<Section*> shared_lib_region;
+	g_vector<Section> shared_lib_region;
 	ParseFile(shared_lib_region, file_name.c_str());
 	//sort in decending order
 	zinfo->shared_region[procIdx] = shared_lib_region;
@@ -938,7 +964,17 @@ void SimThreadStart(THREADID tid) {
 	{
 		if( zinfo->shared_region.size() < zinfo->numProcs)
 			zinfo->shared_region.resize( zinfo->numProcs);
-		GetSharedMemory( syscall(SYS_gettid), procIdx);
+		if( zinfo->shared_mem_inited.size() < zinfo->numProcs)
+		{
+			zinfo->shared_mem_inited.resize(zinfo->numProcs);
+			for(unsigned i=0; i<zinfo->numProcs; i++)
+				zinfo->shared_mem_inited[i] = false;
+		}
+		if( !zinfo->shared_mem_inited[procIdx] )
+		{
+			zinfo->shared_mem_inited[procIdx] = true;
+			GetSharedMemory( syscall(SYS_gettid), procIdx);
+		}
 	}
 
     zinfo->sched->start(procIdx, tid, procTreeNode->getMask());
@@ -990,6 +1026,7 @@ VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v) {
 }
 
 VOID SimThreadFini(THREADID tid) {
+	//std::cout<<"sim thread fini"<<std::endl;
     // zinfo->sched->leave(); //exit syscall (SyscallEnter) already leaves
     zinfo->sched->finish(procIdx, tid);
     activeThreads[tid] = false;
@@ -997,6 +1034,7 @@ VOID SimThreadFini(THREADID tid) {
 }
 
 VOID ThreadFini(THREADID tid, const CONTEXT *ctxt, INT32 flags, VOID *v) {
+	//std::cout<<"thread fini"<<std::endl;
     //NOTE: Thread has no valid cid here!
     if (fPtrs[tid].type == FPTR_NOP) {
         info("Shadow/NOP thread %d finished", tid);
@@ -1036,6 +1074,7 @@ VOID SyscallEnter(THREADID tid, CONTEXT *ctxt, SYSCALL_STANDARD std, VOID *v) {
 }
 
 VOID SyscallExit(THREADID tid, CONTEXT *ctxt, SYSCALL_STANDARD std, VOID *v) {
+	//std::cout<<"exit system call"<<std::endl;
     assert(inSyscall[tid]); inSyscall[tid] = false;
 
     PostPatchAction ppa = VirtSyscallExit(tid, ctxt, std);
@@ -1072,6 +1111,7 @@ VOID SyscallExit(THREADID tid, CONTEXT *ctxt, SYSCALL_STANDARD std, VOID *v) {
  * to figure out how to make syscall post-patching work in this case.
  */
 VOID ContextChange(THREADID tid, CONTEXT_CHANGE_REASON reason, const CONTEXT* from, CONTEXT* to, INT32 info, VOID* v) {
+	//std::cout<<"context change"<<std::endl;
     const char* reasonStr = "?";
     switch (reason) {
         case CONTEXT_CHANGE_REASON_FATALSIGNAL:
@@ -1118,7 +1158,7 @@ VOID ContextChange(THREADID tid, CONTEXT_CHANGE_REASON reason, const CONTEXT* fr
 // Pre-exec
 BOOL FollowChild(CHILD_PROCESS childProcess, VOID * userData) {
     //Finish all threads in this process w.r.t. the global scheduler
-
+	//std::cout<<"follow child"<<std::endl;
     uint32_t activeCount = CountActiveThreads();
     if (activeCount > 1) warn("exec() of a multithreaded process! (%d live threads)", activeCount);
 
@@ -1153,7 +1193,10 @@ BOOL FollowChild(CHILD_PROCESS childProcess, VOID * userData) {
 static ProcessTreeNode* forkedChildNode = NULL;
 
 VOID BeforeFork(THREADID tid, const CONTEXT* ctxt, VOID * arg) {
-    forkedChildNode = procTreeNode->getNextChild();
+	//std::cout<<"before fork"<<std::endl;
+	forkedChildNode = procTreeNode->getNextChild();
+	//(zinfo->numProcs)++;
+	//std::cout<<"fork, proc num:"<<zinfo->numProcs<<std::endl;
     info("Thread %d forking, child procIdx=%d", tid, forkedChildNode->getProcIdx());
 }
 
@@ -1162,6 +1205,8 @@ VOID AfterForkInParent(THREADID tid, const CONTEXT* ctxt, VOID * arg) {
 }
 
 VOID AfterForkInChild(THREADID tid, const CONTEXT* ctxt, VOID * arg) {
+	//(zinfo->numProcs)++;
+	//std::cout<<"fork, proc num:"<<zinfo->numProcs<<std::endl;
     assert(forkedChildNode);
     procTreeNode = forkedChildNode;
     procIdx = procTreeNode->getProcIdx();
@@ -1259,13 +1304,14 @@ void DeleGlobalObjects()
 
 VOID Fini(int code, VOID * v) {
     info("Finished, code %d", code);
+	//std::cout<<"finish"<<std::endl;
     //NOTE: In fini, it appears that info() and writes to stdout in general won't work; warn() and stderr still work fine.
     SimEnd();
 }
 
 VOID SimEnd() {
-    info("process %d simend", procIdx);
 
+    info("process %d simend", procIdx);
     if (__sync_bool_compare_and_swap(&perProcessEndFlag, 0, 1) == false) { //failed, note DEPENDS ON STRONG CAS
         while (true) { //sleep until thread that won exits for us
             struct timespec tm;
@@ -1306,6 +1352,14 @@ VOID SimEnd() {
                 dynamic_cast<NVMainMemory*>(zinfo->memoryControllers[i])->printStats();
             }
         }
+
+		if( zinfo->paging_array)
+		{
+			for( unsigned i=0; i < zinfo->numProcs && zinfo->paging_array[i]; i++)
+			{
+				zinfo->paging_array[i]->calculate_stats();
+			}
+		}
 		uint64_t total_access_time = 0;
 		//print tlb statistic
 		if( zinfo->cores )
@@ -1341,10 +1395,12 @@ VOID SimEnd() {
 		}	
         zinfo->sched->notifyTermination();
     }
-
+	//if( zinfo->paging_array && zinfo->paging_array[procIdx])
+	//	delete (zinfo->paging_array[procIdx]);
+	//(zinfo->numProcs)--;
+	//std::cout<<"termination, proc number:"<<zinfo->numProcs<<std::endl;
     //Uncomment when debugging termination races, which can be rare because they are triggered by threads of a dying process
     //sleep(5);
-	//DeleGlobalObjects();
     exit(0);
 }
 
@@ -1433,6 +1489,7 @@ static uint32_t cpuidEcx[MAX_THREADS];
 
 VOID FakeCPUIDPre(THREADID tid, REG eax, REG ecx) {
     //info("%d precpuid", tid);
+	//std::cout<<"fakecpuidpre"<<std::endl;
     cpuidEax[tid] = eax;
     cpuidEcx[tid] = ecx;
 }
@@ -1441,6 +1498,7 @@ VOID FakeCPUIDPre(THREADID tid, REG eax, REG ecx) {
  * call after CPUID executed 
  */
 VOID FakeCPUIDPost(THREADID tid, ADDRINT* eax, ADDRINT* ebx, ADDRINT* ecx, ADDRINT* edx) {
+	//std::cout<<"fakecpuidpost"<<std::endl;
     uint32_t eaxIn = cpuidEax[tid];
     uint32_t ecxIn = cpuidEcx[tid];
 
@@ -1490,6 +1548,7 @@ VOID FakeCPUIDPost(THREADID tid, ADDRINT* eax, ADDRINT* ebx, ADDRINT* ecx, ADDRI
 
 //RDTSC faking
 VOID FakeRDTSCPost(THREADID tid, REG* eax, REG* edx) {
+	//std::cout<<"fakeRDTSCPost"<<std::endl;
     if (fPtrs[tid].type == FPTR_NOP) return; //avoid virtualizing NOP threads.
 
     uint32_t cid = getCid(tid);
@@ -1547,9 +1606,9 @@ class SyncEvent: public Event {
 };
 
 VOID FFThread(VOID* arg) {
+	//std::cout<<"ff control"<<std::endl;
     futex_lock(&zinfo->ffToggleLocks[procIdx]); //initialize
     info("FF control Thread TID %ld", syscall(SYS_gettid));
-
     while (true) {
         //block ourselves until someone wakes us up with an unlock
         bool locked = futex_trylock_nospin_timeout(&zinfo->ffToggleLocks[procIdx], 5*BILLION /*5s timeout*/);
@@ -1658,6 +1717,7 @@ int main(int argc, char *argv[]) {
     PIN_InitSymbols();
     if (PIN_Init(argc, argv)) return Usage();
 	
+
     //Register an internal exception handler (ASAP, to catch segfaults in init)
     PIN_AddInternalExceptionHandler(InternalExceptionHandler, NULL);
 	//get process idx

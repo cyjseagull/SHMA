@@ -38,6 +38,7 @@ class CommonTlb: public BaseTlb
 				free_entry_list.push_back( tlb[i]);
 			}
 			insert_num = 0;
+			futex_init(&tlb_lock);	
 		}
 
 		 ~CommonTlb()
@@ -109,6 +110,7 @@ class CommonTlb: public BaseTlb
 			debug_printf("look up tlb vpage_no: %llx",vpage_no);
 			//TLB hit,update lru_seq of tlb entry to the newest lru_seq
 			T* result_node = NULL;
+			futex_lock( &tlb_lock);
 			if( tlb_trie.count(vpage_no))
 			{
 				result_node = tlb_trie[vpage_no];
@@ -117,11 +119,13 @@ class CommonTlb: public BaseTlb
 			{
 				result_node->lru_seq = ++lru_seq;
 			}
+			futex_unlock(&tlb_lock);
 			return result_node;
 		}
 
 	    T* insert( Address vpage_no , T& entry)
 		{
+			futex_lock(&tlb_lock);
 			//whether entry is already exists
 			debug_printf("insert tlb of vpage no %llx",vpage_no);
 			assert( !tlb_trie.count(vpage_no));
@@ -140,8 +144,10 @@ class CommonTlb: public BaseTlb
 				new_entry->lru_seq = ++lru_seq;
 				tlb_trie[vpage_no] = new_entry;
 				tlb_trie_pa[new_entry->p_page_no] = new_entry;
+				futex_unlock(&tlb_lock);
 				return new_entry;
 			}	
+			futex_unlock(&tlb_lock);
 			return NULL;
 		}
 
@@ -156,6 +162,7 @@ class CommonTlb: public BaseTlb
 		bool flush_all()
 		{
 			free_entry_list.clear();
+			futex_lock(&tlb_lock);
 			tlb_trie_pa.clear();
 			tlb_trie.clear();
 			//get cleared tlb entry to free_entry_list
@@ -164,6 +171,7 @@ class CommonTlb: public BaseTlb
 				tlb[i]->set_invalid();
 				free_entry_list.push_back(tlb[i]);
 			}
+			futex_unlock(&tlb_lock);
 			return true;
 		}
 
@@ -185,7 +193,7 @@ class CommonTlb: public BaseTlb
 			assert(tlb_trie.count(tlb_entry->v_page_no));
 			tlb_trie.erase(tlb_entry->v_page_no);
 			tlb_trie_pa.erase(tlb_entry->p_page_no);
-		
+
 			tlb_entry->set_invalid();
 			free_entry_list.push_back(tlb_entry);
 			return tlb_entry;//return physical address recorded in this tlb entry
@@ -295,5 +303,6 @@ class CommonTlb: public BaseTlb
 		BasePageTableWalker* page_table_walker;
 		//eviction policy
 		EVICTSTYLE evict_policy;
+		lock_t tlb_lock;
 };
 #endif

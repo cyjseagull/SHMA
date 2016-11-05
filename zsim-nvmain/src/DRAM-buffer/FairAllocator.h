@@ -36,10 +36,10 @@ class FairAllocator: public BaseDRAMBufferManager
 
 		uint64_t min_free_pages;
 		g_vector<int> proc_busy_pages;
-		//clean page number descriptor of every process
 		g_vector<g_unordered_set<Address> > clean_pools;
-		//dirty page number descriptor of every process
 		g_vector<g_unordered_set<Address> > dirty_pools;
+
+		lock_t pool_lock;
 
 		g_list<Address> global_clean_pool;	
 		g_list<Address> global_dirty_pool;

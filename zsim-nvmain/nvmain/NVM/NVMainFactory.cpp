@@ -17,6 +17,8 @@ NVMain* NVMainFactory::CreateNVMain( std::string nvm_type)
 	}
 	if( nvm_type == "RBLANVMain" )
 		main_mem = new RBLA_NVMain();
+	if( nvm_type == "FLATNVMain")
+		main_mem = new FlatNVMain();
 	return main_mem;
 }
 
@@ -26,7 +28,7 @@ NVMain* NVMainFactory::CreateNewNVMain( std::string nvm_type)
 	if( !main_mem )
 	{
 		NVM::Warning("didn't set main memory type! default set NVMain object as main memory");
-		//main_mem = CreateNVMain("NVMain");
+		main_mem = CreateNVMain("NVMain");
 	}
 	return main_mem;
 }

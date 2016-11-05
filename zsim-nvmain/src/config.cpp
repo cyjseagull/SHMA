@@ -31,7 +31,7 @@
 #include <vector>
 #include "libconfig.h++"
 #include "log.h"
-
+#include <iostream>
 // We need minor specializations to work with older versions of libconfig
 #if defined(LIBCONFIGXX_VER_MAJOR) && defined(LIBCONFIGXX_VER_MINOR) && defined(LIBCONFIGXX_VER_REVISION)
 #define LIBCONFIG_VERSION (LIBCONFIGXX_VER_MAJOR*10000 +  LIBCONFIGXX_VER_MINOR*100 + LIBCONFIGXX_VER_REVISION)
@@ -355,6 +355,7 @@ std::vector<T> ParseList(const std::string& listStr) {
         stringstream ss(n);
         T x;
         ss >> x;
+		//std::cout<<"ffipoint is:"<<x<<std::endl;
         if (ss.fail()) panic("%s in list [%s] could not be parsed", n.c_str(), listStr.c_str());
         res.push_back(x);
     }

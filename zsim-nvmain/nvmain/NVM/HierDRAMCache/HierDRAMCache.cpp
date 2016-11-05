@@ -68,6 +68,7 @@ HierDRAMCache::HierDRAMCache( ):NVMain(),
 	total_access_time = 0;
 	mem_type = "NVMain";
 	mainMemory = NULL;
+	memory_size = 0;
 }
 
 HierDRAMCache::~HierDRAMCache( )
@@ -112,6 +113,7 @@ void HierDRAMCache::SetConfig(Config *conf,std::string mem_name,  bool createChi
         GetGlobalEventQueue( )->AddSystem( mainMemory, mainMemoryConfig);
 		//main memory name is "offChipMemory"
         mainMemory->SetConfig( mainMemoryConfig, "MainMemory", createChildren );
+		memory_size = mainMemory->GetMemorySize();
         /* Orphan the interconnect created by NVMain */
         std::vector<NVMObject_hook *>& childNodes = GetChildren( );
         childNodes.clear();
@@ -370,8 +372,13 @@ bool HierDRAMCache::IssueCommand( NVMainRequest *req )
 			cachingMap[req].first_bool = false;
 			cachingMap[req].second_bool = false;
 			outstandingFills[fillReq] = req;
-			uint64_t channel;
-			fillReq->address.GetTranslatedAddress(NULL,NULL,NULL,NULL,&channel,NULL);
+			uint64_t channel,bank, rank, col, row, subarray;
+
+			//fillReq->address.GetTranslatedAddress(NULL,NULL,NULL,NULL,&channel,NULL);
+			GetDecoder()->Translate( req->address.GetCacheAddress() , &row, 
+					&col,&bank, &rank, &channel, &subarray );
+		    req->address.SetTranslatedAddress( row, col, bank, rank, channel, subarray );
+
 			assert(channel< numChannels);
 			assert(GetChild(fillReq)->GetTrampoline()==drcChannels[channel]);
 			if( drcChannels[channel]->IsIssuable(fillReq, NULL))

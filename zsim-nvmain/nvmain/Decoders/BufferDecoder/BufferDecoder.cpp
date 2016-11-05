@@ -30,7 +30,8 @@
 *******************************************************************************/
 
 #include "Decoders/BufferDecoder/BufferDecoder.h"
-#include "src/common/common_functions.h"
+#include <cassert>
+//#include "include/common/common_functions.h"
 using namespace NVM;
 BufferDecoder::BufferDecoder():buffer_width_(0),main_mem_width_(0),
 			buffer_mask_(0),base_buffer_addr(0),buffer_shift(0),

@@ -34,7 +34,9 @@
 #include "process_stats.h"
 #include "stats.h"
 #include "zsim.h"
-
+#include "common/global_const.h"
+#include <set>
+#include <wordexp.h>
 using std::string;
 using std::stringstream;
 
@@ -83,6 +85,7 @@ bool ProcessTreeNode::notifyStart() {
 }
 
 bool ProcessTreeNode::notifyEnd() {
+	//std::cout<<"proc "<<procIdx<<" notifyEnd()"<<std::endl;
     if (inFastForward) exitFastForward();
     assert(zinfo->procExited[procIdx] == PROC_RUNNING);
     uint32_t remaining;
@@ -96,6 +99,7 @@ bool ProcessTreeNode::notifyEnd() {
         remaining = __sync_sub_and_fetch(&zinfo->globalActiveProcs, 1);
         return (remaining == 0);
     }
+	std::cout<<"proc "<<procIdx<<" notifyEnd()"<<std::endl;
 }
 
 void ProcessTreeNode::enterFastForward() {
@@ -181,7 +185,54 @@ static void PopulateLevel(Config& config, const std::string& prefix, std::vector
         uint32_t restarts = config.get<uint32_t>(p_ss.str() +  ".restarts", 0);
         g_string syscallBlacklistRegex = config.get<const char*>(p_ss.str() +  ".syscallBlacklistRegex", ".*");
         g_vector<bool> mask(ParseMask(config.get<const char*>(p_ss.str() +  ".mask", DefaultMaskStr().c_str()), zinfo->numCores));
+
+		//########parse simpoints file#######
+		g_string file = config.get<const char*>(p_ss.str()+".simPoints", "");
+		wordexp_t p;
+		wordexp(file.c_str(),&p,0);
+
         g_vector<uint64_t> ffiPoints(ParseList<uint64_t>(config.get<const char*>(p_ss.str() +  ".ffiPoints", "")));
+		//must be absolute path
+		//if( simpoints_file !="" && startFastForwarded)
+		if( p.we_wordv[0] != NULL)
+		{
+			g_string simpoints_file(p.we_wordv[0]);
+			std::cout<<"simpoints file is:"<<simpoints_file<<std::endl;
+
+			//default is 10^9 instructions
+			uint32_t step = config.get<uint32_t>(p_ss.str()+".simPointLen",1000000000);
+			std::cout<<"step:"<<step<<std::endl;
+			std::set<uint64_t> simpoints;
+			//open simpoints_file
+			std::ifstream fp(simpoints_file.c_str(), std::ios::in);
+			char line[MAXLEN];
+			uint64_t point_value;
+			std::string line_str;
+			std::string::size_type pos;
+			while( fp.getline( line, sizeof(line)))
+			{
+				line_str = line;
+				pos = line_str.find(" ");
+				if( pos != std::string::npos)
+					point_value = (uint64_t)atoi(line_str.substr(0,pos).c_str())*step;
+				else
+					point_value = (uint64_t)atoi( line_str.substr(0,strlen(line)).c_str() )*step;
+				simpoints.insert(point_value);
+				std::cout<<"insert:"<<point_value<<std::endl;
+			}
+			std::set<uint64_t>::iterator it = simpoints.begin();
+			Address last_point = 0;
+			for( ; it!=simpoints.end(); it++)
+			{
+				ffiPoints.push_back(*it-last_point); //fast-forward
+				ffiPoints.push_back(step); //simulate
+				last_point = *it + step;
+			}
+
+		}
+
+		//#######parse simpoints file end####
+        //g_vector<uint64_t> ffiPoints(ParseList<uint64_t>(config.get<const char*>(p_ss.str() +  ".ffiPoints", "")));
 		//enable dump instructions
         if (dumpInstrs) {
             if (dumpHeartbeats || dumpCycles) warn("Dumping eventual stats on two different conditions; you won't be able to distinguish both!");
@@ -236,7 +287,7 @@ void CreateProcessTree(Config& config) {
 
     PopulateLevel(config, std::string(""), globProcVector, rootNode, procIdx, groupIdx);
 
-    if (procIdx > (uint32_t)zinfo->lineSize) panic("Cannot simulate more than sys.lineSize=%d processes (address spaces will get aliased), %d specified", zinfo->lineSize, procIdx);
+    //if (procIdx > (uint32_t)zinfo->lineSize) panic("Cannot simulate more than sys.lineSize=%d processes (address spaces will get aliased), %d specified", zinfo->lineSize, procIdx);
 
     zinfo->procTree = rootNode;
     zinfo->numProcs = procIdx;

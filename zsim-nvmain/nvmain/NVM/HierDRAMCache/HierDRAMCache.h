@@ -69,6 +69,11 @@ class HierDRAMCache : public NVMain
 		write_hit = drc_write_hit_rate;
 	}
 
+	virtual uint64_t GetMemorySize()
+	{
+		return memory_size;
+	}
+
     void Cycle( ncycle_t );
 
     void RegisterStats( );
@@ -124,6 +129,7 @@ class HierDRAMCache : public NVMain
 	double drc_read_miss_rate;
 	double drc_write_hit_rate;
 	double drc_write_miss_rate;
+	uint64_t memory_size;
 };
 };
 

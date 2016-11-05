@@ -40,8 +40,25 @@
 #include <sstream>
 
 namespace NVM {
+/*template <class T>
+int mlog2( int num );*/
 
-int mlog2( int num );
+template <class T>
+int mlog2( T num )
+{
+    int retVal = -1;
+    T newNum = num;
+
+    if( num < 2 )
+        return 0;
+
+    while( newNum != 0 )
+    {
+        retVal++;
+        newNum >>= 1;
+    }
+    return retVal;
+}
 std::string GetFilePath( std::string file );
 
 template <typename T1, typename T2>

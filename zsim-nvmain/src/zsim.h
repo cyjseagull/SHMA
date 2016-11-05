@@ -37,6 +37,7 @@
 #include "pad.h"
 #include "g_std/g_vector.h"
 #include "g_std/g_multimap.h"
+#include "g_std/g_unordered_set.h"
 #include "g_std/g_string.h"
 #include "common/global_const.h"
 #include "src/NVMObject.h"
@@ -235,6 +236,8 @@ struct GlobSimInfo {
 	BasePaging** paging_array;
 	BasePageTableWalker** pg_walkers;
 	/*####tlb related #####*/
+	int tlb_type;
+	int tlb_hit_lat;
 	bool counter_tlb;
 	bool prefetch_set;
 	BasePageTableWalker* page_table_walker;
@@ -248,9 +251,10 @@ struct GlobSimInfo {
 	/****shared memory related***/
 	//and memory  region in case that some library isn't continuous)  
 	//ascending order
-	g_vector< g_vector<Section*> >shared_region; 
+	g_vector< g_vector<Section> >shared_region; 
 	bool enable_shared_memory;
-	
+	g_vector<bool> shared_mem_inited;
+	unsigned mem_access_time;
 };
 
 

@@ -22,8 +22,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 #include <map>
 #include <string>
 #include <math.h>
@@ -164,7 +162,18 @@ NVMainMemory::NVMainMemory(std::string& nvmainTechIni, std::string& outputFile, 
 	std::string mem_type = "NVMain";
 	if( nvmainConfig->KeyExists("CMemType"))
 		mem_type = nvmainConfig->GetString("CMemType");
-	nvmainPtr = NVM::NVMainFactory::CreateNewNVMain(mem_type);
+	if( mem_type == "FineNVMain")
+	{
+		NVM::FineNVMain *nvm_ptr = gm_memalign<NVM::FineNVMain>(CACHE_LINE_BYTES, 1);
+		nvmainPtr = new (nvm_ptr) NVM::FineNVMain();     
+	}
+	/*else if( mem_type == "FLATNVMain")
+	{
+		NVM::FlatNVMain* nvm_ptr = gm_memalign<NVM::FlatNVMain>(CACHE_LINE_BYTES,1);
+		nvmainPtr = new (nvm_ptr) NVM::FlatNVMain();
+	}*/
+	else
+		nvmainPtr = NVM::NVMainFactory::CreateNewNVMain(mem_type);
     nvmainStatsPtr = new NVM::Stats();
     nvmainSimInterface = new NVM::NullInterface();
     nvmainEventQueue = new NVM::EventQueue();
@@ -201,7 +210,6 @@ NVMainMemory::NVMainMemory(std::string& nvmainTechIni, std::string& outputFile, 
 		{
 			nvmainPtr->SetMigrator(hook);
 			migrator_setted = true;
-			//add migrator to nvmain
 		}
 	}
     //Setup child and parent modules
@@ -242,6 +250,7 @@ NVMainMemory::NVMainMemory(std::string& nvmainTechIni, std::string& outputFile, 
 	}
 	/***-----get memory size------***/
 	zinfo->memory_size = nvmainPtr->GetMemorySize();
+	cout<<"memory size is:"<<std::dec<<(zinfo->memory_size/(1024*1024*1024))<<"GB"<<endl;
     curCycle = 0;
     updateCycle = 0;
 	nvmain_access_count = 0;
@@ -282,9 +291,6 @@ NVMainMemory::NVMainMemory(std::string& nvmainTechIni, std::string& outputFile, 
     nextSchedRequest = NULL;
     nextSchedEvent = NULL;
     eventFreelist = NULL;
-	e = 2.718;
-	T = 2000;
-	N = 999;
 	srand((unsigned)time(NULL));
 	lastCycle = 0;
 	previous_action = InitZero;
@@ -317,6 +323,7 @@ NVMainMemory::NVMainMemory(std::string& nvmainTechIni, std::string& outputFile, 
 	}
 	fdrc.open("dram.log");
 	fnvm.open("nvm.log");
+	adjust_time = 0;
 	futex_init(&access_lock);
 }
 
@@ -403,7 +410,7 @@ uint64_t NVMainMemory::access(MemReq& req) {
 						Address vpn = entry->v_page_no;
 						request.lineAddr = addr;
 						request.cycle = req.cycle;
-						Address dram_addr = dynamic_cast<PageTableWalker*>(zinfo->pg_walkers[core_id])->do_dram_page_fault(request,vpn ,core_id , DRAM_BUFFER_FAULT , entry , is_itlb , evict);
+						Address dram_addr = dynamic_cast<PageTableWalker<ExtendTlbEntry>* >(zinfo->pg_walkers[core_id])->do_dram_page_fault(request,vpn ,core_id , DRAM_BUFFER_FAULT , entry , is_itlb , evict);
 						memEv->setBufferAddr();
 						memEv->setAddr( dram_addr );
 						if( zinfo->prefetch_set && zinfo->dram_manager->get_memory_usage()<= 0.3 )
@@ -449,6 +456,7 @@ uint64_t NVMainMemory::access(MemReq& req) {
 			//################period threshold adjustment#####################
 			 if( curCycle - lastCycle >= zinfo->adjust_interval )
 			 {
+				 adjust_time += period_touch_vec.size();
 				//#####adjust threshold of every process####################
 				for( uint32_t i=0; i< period_touch_vec.size(); i++)
 				{
@@ -469,8 +477,12 @@ uint64_t NVMainMemory::access(MemReq& req) {
 						//#########should use DRAM buffer cherishly
 						else
 						{
-							assert( mm );
-							Address caching_cycle = mm->GetCachingCycles();
+							//assert( mm );
+							//std::cout<<"mm:"<<std::hex<<mm<<std::endl;
+							std::cout<<"before"<<std::endl;
+							Address caching_cycle =dynamic_cast<NVM::FineNVMain*>(nvmainPtr)->GetCachingCycles();
+							std::cout<<"after"<<std::endl;
+							std::cout<<"period_access_vec "<<i<<" ,size:"<<period_access_vec.size()<<std::endl;
 							double prefetch_benefit = (double)period_access_vec[i]*15+previous_caching-caching_cycle; 	
 							if( previous_caching == 0)
 							{
@@ -623,7 +635,7 @@ inline bool NVMainMemory::Prefetch( unsigned core_id, Address vpn , Address cycl
 				Address vpn = near_entry->v_page_no;
 				request.lineAddr = near_entry->p_page_no<<(zinfo->page_shift);
 				request.cycle = cycle;
-				dynamic_cast<PageTableWalker*>(zinfo->pg_walkers[core_id])->do_dram_page_fault(request,vpn ,core_id , DRAM_BUFFER_FAULT , near_entry , is_itlb , evict);
+				dynamic_cast<PageTableWalker<ExtendTlbEntry>* >(zinfo->pg_walkers[core_id])->do_dram_page_fault(request,vpn ,core_id , DRAM_BUFFER_FAULT , near_entry , is_itlb , evict);
 				prefetch_time++;
 				return true;
 		}
@@ -890,6 +902,7 @@ void NVMainMemory::printStats() {
 	out<<"recorder count:"<<std::dec<<recorder_num<<std::endl;
 	out<<"issued count:"<<std::dec<<issued_num<<std::endl;
 	out<<"request complete count:"<<std::dec<<request_complete<<std::endl;
+	out<<"adjust times of mountain climbing algorithm:"<<adjust_time<<std::endl;
 }
 #else //no nvmain, have the class fail when constructed
 NVMainMemory::NVMainMemory(std::string& nvmainTechIni, std::string& outputFile, std::string& traceName,

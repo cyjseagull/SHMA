@@ -55,6 +55,7 @@
 #include "src/NVMObject.h"
 #include "src/SimInterface.h"
 #include "NVM/Fine_NVMain/FineNVMain.h"
+#include "NVM/Flat_NVMain/FlatNVMain.h"
 #include "g_std/g_vector.h"
 #include "g_std/g_unordered_set.h"
 #define MIN(x, y) ({ __typeof__(x) xx = (x); __typeof__(y) yy = (y); (xx < yy)? xx : yy;})
@@ -170,15 +171,12 @@ class NVMainMemory : public MemObject, public NVM::NVMObject { //one NVMain cont
 	private:
 		lock_t access_lock;
 		NVM::FineNVMain* mm;
-		//simulated annealing/mountain climbing algorithm related	
-		double e;
-		double T;	//origin T
-		int N;
 		//threshold adjustment algorithm related
 		int delta_hit_t, delta_clean_miss_t , delta_dirty_miss_t;
 		int64_t previous_benefit;
 		ThresAdAction previous_action;
 		uint64_t prefetch_time;
+		uint64_t adjust_time;
 	private:
 		inline void LookupTlb(uint32_t coreId, Address addr , bool isWrite,ExtendTlbEntry* &entry, bool& is_tlb , TLBSearchResult& over_thres);
 		inline bool Prefetch( unsigned coreId , Address vpn , Address cycle);

@@ -127,10 +127,8 @@ g_vector<g_string> PinCmd::getPinCmdArgs(uint32_t procIdx) {
 g_vector<g_string> PinCmd::getFullCmdArgs(uint32_t procIdx, const char** inputFile) {
     assert(procIdx < procInfo.size()); //must be one of the topmost processes
     g_vector<g_string> res = getPinCmdArgs(procIdx);
-    for( unsigned int i=0; i<args.size();i++)
-		std::cout<<args[i]<<" ";
-	std::cout<<std::endl;
-    g_string cmd = procInfo[procIdx].cmd;
+    
+	g_string cmd = procInfo[procIdx].cmd;
 
     /* Loader injection: Turns out that Pin mingles with the simulated binary, which decides the loader used,
      * even when PIN_VM_LIBRARY_PATH is used. This kill the invariance on libzsim.so's loaded address, because
@@ -148,11 +146,17 @@ g_vector<g_string> PinCmd::getFullCmdArgs(uint32_t procIdx, const char** inputFi
 
     //Parse command -- use glibc's wordexp to parse things like quotes, handle argument expansion, etc correctly
     wordexp_t p;
+	std::cout<<"cmd:"<<cmd<<std::endl;
     wordexp(cmd.c_str(), &p, 0);
     for (uint32_t i = 0; i < p.we_wordc; i++) {
+		std::cout<<"cmd:"<<g_string(p.we_wordv[i])<<std::endl;
         res.push_back(g_string(p.we_wordv[i]));
     }
     wordfree(&p);
+
+    for( unsigned int i=0; i<res.size();i++)
+		std::cout<<res[i]<<" ";
+	std::cout<<std::endl;
 
     //Input redirect
     *inputFile = (procInfo[procIdx].input == "")? NULL : procInfo[procIdx].input.c_str();

@@ -25,6 +25,8 @@
 #include "include/NVMainRequest.h"
 #include "core.h"
 #include "ooo_core.h"
+
+template <class T>
 class PageTableWalker: public BasePageTableWalker
 {
 	public:
@@ -37,18 +39,54 @@ class PageTableWalker: public BasePageTableWalker
 			total_evict = 0;
 			allocated_page = 0;
 			mmap_cached = 0;
+			tlb_shootdown_overhead = 0;
+			hscc_tlb_shootdown = 0;
+			pcm_map_overhead = 0;
+			hscc_map_overhead = 0;
+			tlb_miss_exclude_shootdown = 0;
+			tlb_miss_overhead = 0;
 			futex_init(&walker_lock);
 		}
-		~PageTableWalker();
+		~PageTableWalker(){}
 		/*------tlb hierarchy related-------*/
 		//bool add_child(const char* child_name ,  BaseTlb* tlb);
 		/*------simulation timing and state related----*/
-	
-		uint64_t access( MemReq& req);		
-		void write_through( MemReq& req);
+		uint64_t access( MemReq& req)
+		{
+
+			assert(paging);
+			period++;
+			Address addr = PAGE_FAULT_SIG;
+			Address init_cycle = req.cycle;
+			addr = paging->access(req);
+
+			tlb_miss_exclude_shootdown += (req.cycle - init_cycle);
+			//page fault
+			if( addr == PAGE_FAULT_SIG )	
+			{
+				addr = do_page_fault(req , PCM_PAGE_FAULT);
+			}
+			tlb_miss_overhead += (req.cycle - init_cycle);
+			//suppose page table walking time when tlb miss is 20 cycles
+			return addr;	//find address
+		}
+
+		void write_through( MemReq& req)
+		{
+			assert(paging);
+			paging->access(req);
+		}
+
 		BasePaging* GetPaging()
 		{ return paging;}
-		void SetPaging( uint32_t proc_id , BasePaging* copied_paging);
+		void SetPaging( uint32_t proc_id , BasePaging* copied_paging)
+		{
+			futex_lock(&walker_lock);
+			procIdx = proc_id;
+			paging = copied_paging;
+			futex_unlock(&walker_lock);
+		}
+
 		void convert_to_dirty( Address block_id)
 		{
 			zinfo->dram_manager->convert_to_dirty( procIdx , block_id );
@@ -60,9 +98,15 @@ class PageTableWalker: public BasePageTableWalker
 		{
 			info("%s evict time:%lu \t dirty evict time: %lu \n",getName(),total_evict,dirty_evict);
 			info("%s allocated pages:%lu \n", getName(),allocated_page);
+			info("%s TLB shootdown overhead:%llu \n", getName(), tlb_shootdown_overhead);
+			info("%s HSCC TLB shootdown overhead:%llu \n", getName(), hscc_tlb_shootdown);
+			info("%s PCM page mapping overhead:%llu \n", getName(), pcm_map_overhead);
+			info("%s DRAM page mapping overhead:%llu \n", getName(), hscc_map_overhead);
+			info("%s TLB miss overhead(exclude TLB shootdown and page fault): %llu", getName(),tlb_miss_exclude_shootdown);
+			info("%s TLB miss overhead (include TLB shootdown and page fault): %llu",getName(), tlb_miss_overhead);
 		}
-
-		inline Address do_page_fault(MemReq& req, PAGE_FAULT fault_type)
+		
+		Address do_page_fault(MemReq& req, PAGE_FAULT fault_type)
 		{
 		    //allocate one page from Zone_Normal area
 		    debug_printf("page falut, allocate free page through buddy allocator");
@@ -72,20 +116,71 @@ class PageTableWalker: public BasePageTableWalker
 				page = zinfo->buddy_allocator->allocate_pages(0);
 				if(page)
 				{
+					//TLB shootdown
+					Address vpn = req.lineAddr>>(zinfo->page_shift);
+					BaseTlb* tmp_tlb = NULL;
+					T* entry = NULL;
+					for( uint64_t i = 0; i<zinfo->numCores; i++)
+					{
+						tmp_tlb = zinfo->cores[i]->getInsTlb();
+						union
+						{	
+							CommonTlb<T>* com_tlb;
+							HotMonitorTlb<T>* hot_tlb;
+						};
+						if( zinfo->tlb_type == COMMONTLB )
+						{
+							com_tlb = dynamic_cast<CommonTlb<T>* >(tmp_tlb); 
+							entry = com_tlb->look_up(vpn);
+						}
+						else if( zinfo->tlb_type == HOTTLB)
+						{
+							hot_tlb = dynamic_cast<HotMonitorTlb<T>* >(tmp_tlb); 
+							entry = hot_tlb->look_up(vpn);
+						}
+						//instruction TLB IPI
+						if( entry )
+						{
+							entry->set_invalid();
+							tlb_shootdown_overhead += zinfo-> tlb_hit_lat; 
+							req.cycle += zinfo->tlb_hit_lat;
+							entry = NULL;
+						}
+						tmp_tlb = zinfo->cores[i]->getDataTlb();
+						if( zinfo->tlb_type == COMMONTLB)
+						{
+							com_tlb = dynamic_cast<CommonTlb<T>* >(tmp_tlb); 
+							entry = com_tlb->look_up(vpn);
+						}
+						else if( zinfo->tlb_type == HOTTLB)
+						{
+							hot_tlb = dynamic_cast<HotMonitorTlb<T>* >(tmp_tlb); 
+							entry = hot_tlb->look_up(vpn);
+						}
+						if(entry )
+						{
+							entry->set_invalid();
+							tlb_shootdown_overhead += zinfo-> tlb_hit_lat; 
+							req.cycle += zinfo->tlb_hit_lat;
+							entry = NULL;
+						}
+					}
+					//*********TLB shoot down ended
 					if( zinfo->enable_shared_memory)
 					{
-						if( !map_shared_region(req.lineAddr, page) )
+						if( !map_shared_region(req, page) )
 						{
-							paging->map_page_table( req.lineAddr,(void*)page);
-							//std::cout<<"proc "<<procIdx<<" "<<std::hex<<
-							//	(req.lineAddr>>zinfo->page_shift)<<" private"<<std::endl;
+							Address overhead = paging->map_page_table( req.lineAddr,(void*)page);
+							pcm_map_overhead += overhead;
+							req.cycle += overhead;
 						}
-						//else
-						//	std::cout<<"proc "<<procIdx<<" "<<std::hex<<
-						//		(req.lineAddr>>zinfo->page_shift)<<" shared"<<std::endl;
 					}
 					else
-						paging->map_page_table( req.lineAddr,(void*)page);
+					{
+						Address overhead = paging->map_page_table( req.lineAddr,(void*)page);
+						pcm_map_overhead += overhead;
+						req.cycle += overhead;
+					}
 					allocated_page++;
 					return page->pageNo;
 				}
@@ -95,23 +190,26 @@ class PageTableWalker: public BasePageTableWalker
 		}
 
 		
-		bool inline map_shared_region( Address vaddr , void* page)
+		bool inline map_shared_region( MemReq& req , void* page)
 		{
+			Address vaddr = req.lineAddr;
 			//std::cout<<"find out shared region"<<std::endl;
 			if( !zinfo->shared_region[procIdx].empty())
 			{
 				int vm_size = zinfo->shared_region[procIdx].size();
 				//std::cout<<"mmap_cached:"<<std::dec<<mmap_cached
 				//	<<" vm size:"<<std::dec<<vm_size<<std::endl;
-				Address vm_start = zinfo->shared_region[procIdx][mmap_cached]->start;
-				Address vm_end = zinfo->shared_region[procIdx][mmap_cached]->end;
+				Address vm_start = zinfo->shared_region[procIdx][mmap_cached].start;
+				Address vm_end = zinfo->shared_region[procIdx][mmap_cached].end;
 				Address vpn = vaddr>>(zinfo->page_shift);
 				//belong to the shared memory region
 				//examine whether in mmap_cached region (examine mmap_cached firstly)
 				if( find_shared_vm(vaddr,
 						zinfo->shared_region[procIdx][mmap_cached]) )
 				{
-					map_all_shared_memory( vaddr, (void*)page);	
+					Address overhead = map_all_shared_memory( vaddr, (void*)page);
+					req.cycle += overhead;
+					pcm_map_overhead += overhead;
 					return true;
 				}
 				//after mmap_cached
@@ -123,7 +221,9 @@ class PageTableWalker: public BasePageTableWalker
 						if( find_shared_vm(vaddr, 
 							zinfo->shared_region[procIdx][mmap_cached]))
 						{
-							map_all_shared_memory(vaddr, (void*)page);
+							Address overhead = map_all_shared_memory(vaddr, (void*)page);
+							req.cycle += overhead;
+							pcm_map_overhead += overhead;
 							return true;
 						}
 					}
@@ -138,7 +238,9 @@ class PageTableWalker: public BasePageTableWalker
 						if( find_shared_vm(vaddr, 
 							zinfo->shared_region[procIdx][mmap_cached]))
 						{
-							map_all_shared_memory(vaddr, (void*)page);
+							Address overhead = map_all_shared_memory(vaddr, (void*)page);
+							req.cycle += overhead;
+							pcm_map_overhead += overhead;
 							return true;
 						}
 					}
@@ -148,21 +250,23 @@ class PageTableWalker: public BasePageTableWalker
 			return false;
 		}
 
-		bool inline find_shared_vm(Address vaddr, Section* vm_sec)
+		bool inline find_shared_vm(Address vaddr, Section vm_sec)
 		{
 			Address vpn = vaddr >>(zinfo->page_shift);
-			if( vpn >= vm_sec->start && vpn < vm_sec->end )
+			if( vpn >= vm_sec.start && vpn < vm_sec.end )
 				return true;
 			return false;
 		}
 
-		void inline map_all_shared_memory( Address va, void* page)
+		int inline map_all_shared_memory( Address va, void* page)
 		{
+			int latency = 0;
 			for( uint32_t i=0; i<zinfo->numProcs; i++)
 			{
 				assert(zinfo->paging_array[i]);
-				zinfo->paging_array[i]->map_page_table(va,page);
+				latency += zinfo->paging_array[i]->map_page_table(va,page);
 			}
+			return latency;
 		}
 
 		DRAMBufferBlock* allocate_page( )
@@ -171,17 +275,17 @@ class PageTableWalker: public BasePageTableWalker
 			{
 				zinfo->dram_manager->evict( zinfo->dram_evict_policy);
 			}
+			//std::cout<<"allocate page table"<<std::endl;
 			return (zinfo->dram_manager)->allocate_one_page( procIdx);
 		}
 
-		template <typename T>
 		void reset_tlb( T* tlb_entry)
 		{
 			tlb_entry->set_in_dram(false);
 			tlb_entry->clear_counter();
 		}
+		
 
-		template <typename T>
 		Address do_dram_page_fault(MemReq& req, Address vpn ,uint32_t coreId, PAGE_FAULT fault_type , T* entry , bool is_itlb , bool &evict)
 		{
 			debug_printf("fetch pcm page %d to DRAM",(req.lineAddr>>zinfo->page_shift));
@@ -200,6 +304,7 @@ class PageTableWalker: public BasePageTableWalker
 						evict = true;
 						dirty_evict++;
 						Address dst_addr = origin_ppn<<(zinfo->page_shift);
+						//write back
 						if( NVMainMemory::fetcher)
 						{
 							NVM::NVMainRequest* nvmain_req = new NVM::NVMainRequest();
@@ -221,27 +326,58 @@ class PageTableWalker: public BasePageTableWalker
 					Address vaddr = dram_block->get_vaddr();	
 					T* tlb_entry = NULL;
 					HotMonitorTlb<T>* recover_tlb = NULL;
+					//TLB shootdown1: shootdown evicted pages
+					//TLB shootdown2: related to installed pages
+					Address vpage_installed = entry->v_page_no;
 					for( uint32_t i=0; i<zinfo->numCores; i++)
 					{
 						recover_tlb = dynamic_cast<HotMonitorTlb<T>* >
 									  (zinfo->cores[i]->getInsTlb());;
 						tlb_entry = recover_tlb->look_up( vaddr );
+						//instruction TLB shootdown(for PCM pages )
+						//assume IPI is equal to TLB hit cycle
 						if( tlb_entry)
 						{
 							reset_tlb( tlb_entry);
+							hscc_tlb_shootdown += zinfo->tlb_hit_lat;
+							req.cycle += zinfo->tlb_hit_lat;	//IPI latency 
 							tlb_entry = NULL;
 						}
+						//instruction TLB shootdown(for DRAM pages)
+						tlb_entry = recover_tlb->look_up(vpage_installed);
+						if( tlb_entry)
+						{
+							reset_tlb(tlb_entry);
+							hscc_tlb_shootdown += zinfo->tlb_hit_lat;
+							req.cycle += zinfo->tlb_hit_lat;  //IPI latency
+							tlb_entry = NULL;
+						}
+						//data TLB shootdown( for PCM pages)
 						recover_tlb = dynamic_cast<HotMonitorTlb<T>* >
 									  (zinfo->cores[i]->getDataTlb());;
 						tlb_entry = recover_tlb->look_up( vaddr );
 						if( tlb_entry )
 						{
 							reset_tlb(tlb_entry);
+							hscc_tlb_shootdown += zinfo->tlb_hit_lat;
+							req.cycle += zinfo->tlb_hit_lat; //IPI latency
+							tlb_entry = NULL;
+						}
+						//data TLB shootdown(for DRAM pages)
+						tlb_entry = recover_tlb->look_up(vpage_installed);
+						if( tlb_entry )
+						{
+							reset_tlb(tlb_entry);
+							hscc_tlb_shootdown += zinfo->tlb_hit_lat;
+							req.cycle += zinfo->tlb_hit_lat; //IPI latency
 							tlb_entry = NULL;
 						}
 					}
+					
 					Page* page_ptr = zinfo->memory_node->get_page_ptr(origin_ppn); 
-					paging->map_page_table((vaddr<<zinfo->page_shift),(void*)page_ptr,false);
+					Address overhead = paging->map_page_table((vaddr<<zinfo->page_shift),(void*)page_ptr,false);
+					req.cycle += overhead;
+					hscc_map_overhead += overhead;
 					dram_block->invalidate();
 				}
 				//call memory controller interface to cache page
@@ -257,18 +393,24 @@ class PageTableWalker: public BasePageTableWalker
 				{
 					req.cycle += 200;
 				}
+
 				dram_block->validate(req.lineAddr>>(zinfo->block_shift));
 				HotMonitorTlb<T>* tlb = NULL;		
+
 				if( is_itlb )
 					tlb = dynamic_cast<HotMonitorTlb<T>* >(zinfo->cores[coreId]->getInsTlb());
 				else
 					tlb = dynamic_cast<HotMonitorTlb<T>* >(zinfo->cores[coreId]->getDataTlb());
+				
 				tlb->remap_to_dram((dram_addr>>(zinfo->block_shift)) , entry);
+
 			    dram_block->set_src_addr( entry->p_page_no );
 				dram_block->set_vaddr( entry->v_page_no);
 				debug_printf("after remap , vpn:%llx , ppn:%llx",entry->v_page_no , entry->p_page_no);
 				//update extended page table
-				paging->map_page_table((vpn<<zinfo->page_shift),(void*)dram_block,true);
+				Address overhead= paging->map_page_table((vpn<<zinfo->page_shift),(void*)dram_block,true);
+				req.cycle += overhead;
+				hscc_map_overhead += overhead;	
 				return dram_addr;
 			}
 			return INVALID_PAGE_ADDR;
@@ -277,7 +419,14 @@ public:
 		PagingStyle mode;
 		g_string pg_walker_name;
 	    BasePaging* paging;
-		uint64_t period; 
+		uint64_t period;
+		unsigned long long tlb_shootdown_overhead;
+		unsigned long long hscc_tlb_shootdown;
+		unsigned long long pcm_map_overhead;
+		unsigned long long hscc_map_overhead;
+
+		unsigned long long tlb_miss_exclude_shootdown;
+		unsigned long long tlb_miss_overhead;
 	private:
 		uint32_t procIdx;
 		int mmap_cached;
@@ -285,7 +434,7 @@ public:
 		Address total_evict;
 		Address dirty_evict;
 		lock_t walker_lock;
-		std::list<NVM::NVMainRequest*> failed_cache_request;
+		//std::list<NVM::NVMainRequest*> failed_cache_request;
 };
 #endif
 

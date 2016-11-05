@@ -44,7 +44,7 @@
 #include "include/NVMHelpers.h"
 #include "Prefetchers/PrefetcherFactory.h"
 #include "include/Exception.h"
-#include "src/nvmain_mem_ctrl.h"
+#include "nvmain_mem_ctrl.h"
 #include <sstream>
 #include <cassert>
 

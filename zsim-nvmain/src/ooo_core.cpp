@@ -148,7 +148,7 @@ uint64_t OOOCore::getPhaseCycles() const {return curCycle % zinfo->phaseLength;}
 void OOOCore::contextSwitch(int32_t gid) {
 	//std::cout<<"context switch gid:"<<gid<<std::endl;
     if (gid == -1) {
-		std::cout<<"context switch"<<std::endl;
+		//std::cout<<"context switch"<<std::endl;
         // Do not execute previous BBL, as we were context-switched
         prevBbl = NULL;
         //Invalidate virtually-addressed filter caches

@@ -50,7 +50,7 @@
 #include <cassert>
 
 using namespace NVM;
-uint64_t NVMain::memory_size = 0;
+//uint64_t NVMain::memory_size = 0;
 NVMain::NVMain( )
 {
     config = NULL;
@@ -67,6 +67,7 @@ NVMain::NVMain( )
     successfulPrefetches = 0;
     unsuccessfulPrefetches = 0;
 	mem_width = 0;
+	memory_size = 0;
 	std::cout<<"************create nvmain---"<<std::endl;
 }
 
@@ -133,13 +134,15 @@ void NVMain::SetConfig( Config *conf, std::string memoryName, bool createChildre
             rows = static_cast<int>(p->ROWS);
             subarrays = 1;
         }
+        if( config->KeyExists( "Decoder" ) )
+			translator = DecoderFactory::CreateNewDecoder( config->GetString( "Decoder" ) );
+        else
+            translator = new AddressTranslator( );
+
         cols = static_cast<int>(p->COLS);
         banks = static_cast<int>(p->BANKS);
         ranks = static_cast<int>(p->RANKS);
         channels = static_cast<int>(p->CHANNELS);
-		word_size = static_cast<uint64_t>( p->tBURST * p->RATE * p->BusWidth/8);
-
-		std::cout<<"word size is "<<word_size<<std::endl;
 		std::cout<<"cols is"<<cols<<std::endl;
 		std::cout<<"rows is"<<rows<<std::endl;
 		std::cout<<"ranks is"<<ranks<<std::endl;
@@ -147,14 +150,6 @@ void NVMain::SetConfig( Config *conf, std::string memoryName, bool createChildre
 		std::cout<<"ranks is"<<ranks<<std::endl;
 		std::cout<<"channels is"<<channels<<std::endl;
 		std::cout<<"subarrays is"<<subarrays<<std::endl;
-		if( !config->KeyExists("DRCVariant") )
-		{
-			memory_size += ((uint64_t)word_size *(uint64_t)cols *(uint64_t)rows *(uint64_t)banks * (uint64_t)ranks * (uint64_t)channels *(uint64_t)subarrays);
-		}
-        if( config->KeyExists( "Decoder" ) )
-			translator = DecoderFactory::CreateNewDecoder( config->GetString( "Decoder" ) );
-        else
-            translator = new AddressTranslator( );
 
         method = new TranslationMethod( );
 
@@ -172,7 +167,6 @@ void NVMain::SetConfig( Config *conf, std::string memoryName, bool createChildre
         translator->SetDefaultField( CHANNEL_FIELD );
 
         SetDecoder( translator );
-
         memoryControllers = new MemoryController* [channels];
         channelConfig = new Config* [channels];
         for( int i = 0; i < channels; i++ )
@@ -198,6 +192,8 @@ void NVMain::SetConfig( Config *conf, std::string memoryName, bool createChildre
                 
                 channelConfig[i]->Read( channelConfigFile );
             }
+			else
+				channelConfig[i] = config;
             /* Initialize memory controller */
             memoryControllers[i] = 
                 MemoryControllerFactory::CreateNewController( channelConfig[i]->GetString( "MEM_CTL" ) );
@@ -219,6 +215,15 @@ void NVMain::SetConfig( Config *conf, std::string memoryName, bool createChildre
             memoryControllers[i]->RegisterStats( );
         }
     }
+	Params *channel_p = new Params( );
+	channel_p->SetParams( channelConfig[0] );
+	word_size = static_cast<uint64_t>( channel_p->tBURST * channel_p->BusWidth/8);
+
+	std::cout<<"word size is "<<word_size<<std::endl;
+	if( !config->KeyExists("DRCVariant") )
+	{
+		memory_size = ((uint64_t)word_size *(uint64_t)cols *(uint64_t)rows *(uint64_t)banks * (uint64_t)ranks * (uint64_t)channels *(uint64_t)subarrays);
+	}
 
     if( p->MemoryPrefetcher != "none" )
     {

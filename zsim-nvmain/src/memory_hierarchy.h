@@ -145,7 +145,7 @@ class BaseTlb: public MemObject{
 		virtual BasePageTableWalker* get_page_table_walker(){ return NULL;};
 		virtual uint64_t calculate_stats()=0;
 		virtual uint64_t get_access_time(){ return 0; }
-		
+			
 		virtual ~BaseTlb(){};
 };
 
