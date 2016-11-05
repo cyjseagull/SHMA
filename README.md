@@ -225,7 +225,7 @@ Implementations of RBLA and MultiQueue Policies
 &#160; &#160; &#160; &#160;MultiQueue classify NVM pages into hot pages and cold pages using multiqueue algorithm accroding to both page access frequency and time locality. Its implementation is shown as following picture:![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/MultiQueue.png)
 
 * **Architecture of flat memory supporting different channel configurations of DRAM and NVM**  
-&#160; &#160; &#160; &#160;Considering that DRAM and NVM with different channel configurations have the overlapping address space in the low end, we divide the continuous overlapped address space into {channel_nums} and mapping them to different address space interleavingly to make full use of channel parallization, basic architecuture of flat memory is shown as the following picture:![Image of Yaktocat](https://github.com/cyjseagull/SHMA/blob/master/images/flat_memory_architecture.PNG)
+&#160; &#160; &#160; &#160;Considering that DRAM and NVM with different channel configurations have the overlapping address space in the low end, we divide the continuous overlapped address space into {channel_nums} and mapping them to different address space interleavingly to make full use of channel parallization
 
 
 Happy hacking and hope you find SHMA useful for hybrid memory architecture research.
