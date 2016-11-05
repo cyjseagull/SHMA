@@ -113,26 +113,26 @@ Vagrant automatically syncs the zsim root folder of your host machine to /vagran
 **(5) sys.enable_shared_memory**: true, enable shared memory(mainly dynamic-link library) simulation ( default is true )
 * **Enable Simpoints**    
 **(1) configuration key**  
-**startFastForwarded=true   
-**simPoints=<directory of simpoints>   
+startFastForwarded=true   
+simPoints=directory of simpoints  
 **(2) how to get simpoints**  
-**create .bb files with valgrind: cmd is execution command of the executable programs   
+create .bb files with valgrind: cmd is execution command of the executable programs   
 ```javascript
  valgrind --tool=exp-bbv --interval-size=<instructions of a simpoint,example:1000000000> <cmd> 
 ```  
-**get simpoints with .bb files with SimPoint(get from https://github.com/southerngs/simpoint)  
+get simpoints with .bb files with SimPoint(get from https://github.com/southerngs/simpoint)  
 ```javascript
 simpoint -k <simpoints num> -loadFVFile <path of .bb files> -saveSimpoints <file store generated simpoints> -saveSimpointWeights <file store weights of generated simpoints> -sampleSize <instructions of a simpoint, eg:1000000000>
 ```
 **(3) format of simpoints**  
-<the first simpoint period> 0  
-<the second simpoint period> 1  
+(the first simpoint period) 0  
+(the second simpoint period) 1  
 ... ...  
-<the ith simpoint period> i-1  
+(the ith simpoint period) i-1  
 ... ...  
 example( simpoint file of msf with 31 simpoints):
 ```javascript
- 38 0
+38 0
 19 1
 64 2
 13 3
