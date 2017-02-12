@@ -106,9 +106,10 @@ Vagrant automatically syncs the zsim root folder of your host machine to /vagran
 ④ **evict_policy**: evict policy, default is "LRU";  
 **(3) sys.pgt_walker( page table walker configuration)**  
 ① mode: paging mode configuration, SHMA supports seven paging modes, namely, **Legacy_Normal**(4GB address space, page size is 4KB), **Legacy_Huge**(4GB address space, page size is 4MB), **PAE_Normal**(64GB address space, page size is 4KB),**PAE_Huge**(64GB address space, page size is 2MB),**LongMode_Normal**(address length is 48 bits,page size is 4KB), **LongMode_Middle**(address length is 48 bits, page size is 2MB) and **LongMode_Huge**（address length is 48bits, page size is 1GB);  
-② itlb: instruction TLB name corresponding to this page table walker;
-③ dtlb: name of data TLB corresponding to this page table walker; 
+② itlb: instruction TLB name corresponding to this page table walker;  
+③ dtlb: name of data TLB corresponding to this page table walker;   
 ④ reversed_pgt:  true, enable  reversed  page table; false, disable  reversed page table; when simulating single process, default is false; while simulating multiple processes, default is true;
+
 **(4) sys.mem.zone: memory management configuration** 
 **zone_dma/zone_dma32/zone_normal/zone_highmem**: set OS zone size(MB)  
 **(5) sys.enable_shared_memory**: true, enable shared memory simulation ( default is true )
