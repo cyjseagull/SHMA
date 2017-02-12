@@ -1,15 +1,21 @@
-; Memory configuration file examples 
-;*######DRAM buffer: 1GB(1channel*1rank*8banks*32cols*65536rows*tburst*8); bandwidth:400*2*8=6.4GB/s; 16-way assoc, 4KB cache line #####*
-;*##### buffer memory translation: SA:R:RK:BK:C:CH  ###*
-;*##### main memory: 32GB( 4channels*8ranks*8banks*32cols*65536rows*tburst*8=32GB) ####*
-;*##### main memory translation: SA:R:RK:BK:C:CH  ###*
+;     A 20nm 1.8V 8Gb PRAM with 40MB/s Program Bandwidth
+; 
+; Phase Change Memory has a very high resistance ratio, allowing for 
+; global sense amplifiers. This configuration assumes global sense
+; amplifiers, which decrease area at the cost of increased tRCD.
+; 
+;###### NVM tCAS-tRCD-tRP-tRAS: 5-22-60-17  ####
+;###### memory capacity = 4channels*8ranks*8banks*65536rows*32cols*64B(offset)=32GB  ######
+;####bandwidth = 400*2*64/8 = 6.4GB/s ####
+ 
 ;================================================================================
 ; Interface specifications
 
-; 400 MHz clock (800 MT/s DDR)
+; 666 MHz clock (1333 MT/s LPDDR). Clock period = 1.5 ns
+;CLK 666
 CLK 400
 
-; Multipler. 1 for DDR, 2 for DDR2, 4 for DDR3
+; Multipler. 2 for DDR and LPDDR2-S2, 4 for DDR2 and LPDDR2-S4/N, 8 for DDR3, LPDDR3 and DDR4
 MULT 4
 
 ; Data Rate. 1 for SDR, 2 for DDR
@@ -28,87 +34,94 @@ BPC 8
 ; NVMain use CLK and CPUFreq to do the synchronization. The ratio CLK/CPUFreq
 ; is actually used. So a simple CLK=1 and CPUFreq=4 still works for simulation. 
 ; However, it is straightforward to make it informative.
-CPUFreq 4000
+CPUFreq 3200
 EventDriven true
 ;================================================================================
 
 ;********************************************************************************
 ; General memory system configuration
+
+; Number of banks per rank 
 BANKS 8
-RANKS 1
-CHANNELS 1
-ROWS 65536
-COLS 32
-; whether enable sub-array level parallelism (SALP)
-; options: 
-;   No SALP: MATHeight = ROWS
-;   SALP: number of subarrays = ROWS / MATHeight
+
+; Number of ranks per channel
+RANKS 8
+
+; Number of channels in the system
+CHANNELS 4
+
+; Number of rows in one bank
+ROWS 65536 
+
+; Number of VISIBLE columns in one LOGIC bank 
+COLS 32 ; 32 horizontal tiles * 2048 bitlines / (8 device width * 8 burst cycles)
+
+; Assume one large mat (no local sense amplifiers)
 MATHeight 65536
 
-; Whether use refresh? 
-UseRefresh true
+; No refresh needed in PCM
+UseRefresh false
 
-; the refresh granularity (the number of banks refreshed together in a rank)
-; this must NOT be 0 when UseRefresh is true
-BanksPerRefresh 4
-
-; RefreshRows is the number of rows to refresh per refresh operation 
-; for example, RefreshRows = ROWS/8192 for DRAM
+; Not used in PCM, but we'll assign valid numbers anyway.
+BanksPerRefresh 2
 RefreshRows 8
+DelayedRefreshThreshold 1
 
-; the number of refresh that can be delayed
-; options: 1 -- 8 (DDR-3 defines the maximum 9*tREFI)
-; when 1 is applied, immediate refresh is used, otherwise the refresh can be
-; delayed
-DelayedRefreshThreshold 1; 
 ;********************************************************************************
 
 ;================================================================================
 ; Memory device timing parameters (in memory cycle) 
+
 tBURST 8 ; length of data burst
 
-tCMD 1 
-tRAS 14
-tRCD 5
-tAL 0
-tCCD 4
-tCWD 4
-tWTR 3
-tWR 6
-tRP 5
-tCAS 5 ; tCAS is also known as tCL
+tRAS 34 ; tCAS+tRCD+7
+tRCD 22 ;55ns
+tCAS 5 ;12.5ns
+tWTR 3 ;7.5ns
+tCCD 4 ;10ns
+tWR 6 ;15ns
+tRTP 3 ;7.5ns
+tWP 60 ;150ns
 
-tRTRS 1 ; for DDR-1, tRTRS can be 0
-tRTP 3
-tRFC 64
-tOST 1 ; ODT switching time
+tRRDR 2 ;5ns
+tRRDW  11 ;27.5ns
 
-tRRDR 3 ; tRRDR is used for tRRD by default
-tRRDW 3
+tCWD 4   ; 10ns
 
-; Row Activation Window (RAW), which specifies the maximum Activation in a
-; rolling window. tRAW is the corresponding window width (in cycle).
-; Options:
-;   for 2D DRAM, RAW = 4, Four Activation Window (FAW)
-;   for WideI/O DRAM, RAW = 2, Two Activation Window (TAW)
+tAL 0    ; 0 or 1
+
+
+tCMD 1   ; Commands are 1 address bus cycle
+
+tRP 60   ; Precharge isn't needed. Writes occur only if needed
+         ; and take tWP time during a precharge (write-back)
+         ; or immediately (write-through)
+
+; The next set of timings is mainly based on control circuits, and the times
+; are taken from normal LPDDR2 datasheets.
+
+tRTRS 1  ; for DDR-1, tRTRS can be 0
+         ; FIFO buffers
+tOST 0   ; No ODT circuitry in LPDDR
+
+; These are mostly unknown at this point, but will likely
+; be similar as they are meant to preserve power integrity
 RAW 4
-tRAW 12
+tRAW 20
+; Powerdown entry and exit timings
+tRDPDEN 13     ; tCAS+tBurst=5+8=13
+tWRPDEN 74    ; Wait for write to complete ... tAL + tCWD + tBURST + tWP=0+6+60+8=74 
+ 
+tWRAPDEN 74   ; No precharge, so same as tWRPDEN
+ 
+tPD 2         ; Time from powerdown command to actually in powerdown mode
+tXP 3         ; Time to power-up from power-down mode - 7.5ns
 
-; powerdown mode enter and exit 
-tRDPDEN 9
-tWRPDEN 19
-tWRAPDEN 22
-tPD 1
-tXP 3
-tXPDLL 17
-tXS 5
-tXSDLL 512
-
-; refresh window between two refreshes to a cell (in cycle, e.g., 64ms/tCK)
-; options: for DDR3, 64ms (normal) or 32ms (thermal extended)
-;          for LPDDR3, 32ms (normal) or 16ms (thermal extended)
-;          for 3D DRAM, 32ms/16ms/8ms are all possible
-tREFW 25600000
+tXPDLL 200000 ; No DLL in LPDDR, will be used for deep power-down (tDPD) - 500us
+ 
+; Refresh timings - not used in PCM, but we'll assign valid numbers anyway.
+tRFC 100
+tREFW 42666667
 ;================================================================================
 
 ;********************************************************************************
@@ -123,48 +136,24 @@ tREFW 25600000
 ;
 ;   Other energy values are taken from CACTI
 ;
-
-; whether use low power mode?
-UseLowPower true
-
-; PowerDown mode 
-; Option:
-;    FASTEXIT: Precharge PowerDown with Fast Exit
-;    SLOWEXIT: Precharge PowerDown with Slow Exit
-;    <TO DO>: extend to support more power down mode 
-PowerDownMode FASTEXIT
-
-EnergyModel current
-
+EnergyModel energy
+Erd 0.081200 
+Eopenrd 0.001616
+Ewr 1.684811
 ; Subarray write energy per bit
-Ewrpb 0.000202
+Ewrpb = 0.000202
 
-Erd 3.405401
-Eopenrd 1.081080
-Ewr 1.023750
-Eref 38.558533
-Eactstdby 0.090090
-Eprestdby 0.083333
-Epda 0.000000
-Epdpf 0.078829
-Epdps 0.000000
+; Energy leaked in 1 sec (or just the wattage) in milli Joules 
+Eleak 3120.202
+
+Epdpf 0
+Epdps 0
+Epda 0
+Eref 0
 
 ; DRAM style power calculation. All values below in mA, taken from datasheet.
 
 Voltage 1.5
-
-EIDD0 85 
-EIDD1 54
-EIDD2P0 30
-EIDD2P1 30
-EIDD2N 37
-EIDD2NT 37
-EIDD3P 35
-EIDD3N 40
-EIDD4R 160
-EIDD4W 165
-EIDD5B 200
-EIDD6 12
 ;********************************************************************************
 
 ;================================================================================
@@ -173,15 +162,6 @@ EIDD6 12
 ; Specify which memory controller to use
 ; options: PerfectMemory, FCFS, FRFCFS, FRFCFS-WQF, DRC (for 3D DRAM Cache)
 MEM_CTL FRFCFS
-BufferLineSize 4096  ;4KB
-ASSOC 16
-FillQueueSize 8
-MM_CONFIG hybrid_example.config
-DRC_CHANNEL0 DRAM_channel.config
-
-; whether dump the memory request trace?
-CTL_DUMP false
-
 ; whether use close-page row buffer management policy?
 ; options: 
 ;   0--Open-Page, the row will be closed until a row buffer miss occurs
@@ -195,7 +175,8 @@ ClosePage 0
 ScheduleScheme 2
 
 ; address mapping scheme
-; options: SA:R:RK:BK:CH:C (SA-Subarray, R-row, C:column, BK:bank, RK:rank, CH:channel)
+; options: R:RK:BK:CH:C (R-row, C:column, BK:bank, RK:rank, CH:channel)
+;AddressMappingScheme SA:R:CH:RK:BK:C
 AddressMappingScheme SA:R:RK:BK:C:CH
 
 ; interconnect between controller and memory chips
@@ -204,12 +185,8 @@ INTERCONNECT OffChipBus
 
 ; FRFCFS-WQF specific parameters
 ReadQueueSize 32 ; read queue size
-
 WriteQueueSize 32 ; write queue size
-
 HighWaterMark 32 ; write drain high watermark. write drain is triggerred if it is reached
-
-
 LowWaterMark 16 ; write drain low watermark. write drain is stopped if it is reached
 ;================================================================================
 
@@ -218,7 +195,7 @@ LowWaterMark 16 ; write drain low watermark. write drain is stopped if it is rea
 ;
 PrintGraphs false
 PrintPreTrace false
-PreTraceFile mcf.trace
+PreTraceFile pcm.trace
 EchoPreTrace false
 PeriodicStatsInterval 100000000
 
@@ -233,21 +210,14 @@ EnduranceModel NullModel
 EnduranceDist Normal
 EnduranceDistMean 1000000 
 EnduranceDistVariance  100000
-FlipNWriteGranularity 32
 
+WriteMode WriteBack
 ; Everything below this can be overridden for heterogeneous channels
-;CONFIG_CHANNEL0 lp_rram.config
-;CONFIG_CHANNEL1 hp_rram.config
+;CONFIG_CHANNEL0 pcm_channel0.config
+;CONFIG_CHANNEL1 pcm_channel1.config
 
-; whether set the DRAM in powerdown mode at the beginning?
+; Set the memory is in powerdown mode at the beginning?
 InitPD false
 
 IgnoreData true
-;================================================================================
 
-WriteMode WriteBack
-;AddHook PostTrace
-;PostTraceFile drampower2.trace
-;PostTraceWriter DRAMPower2Trace
-;DRAMPower2XML nvmain_config.xml 
-CMemType HierDRAMCache 

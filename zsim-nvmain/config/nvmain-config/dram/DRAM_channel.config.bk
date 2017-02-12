@@ -1,14 +1,13 @@
 ; Memory configuration file examples 
-; As an example, the Micron DDR3-1333_4Gb_8B_x8 memory chip is defined
  
 ;================================================================================
 ; Interface specifications
 
-; 400 MHz clock (800 MT/s DDR). Clock period = 2.5 ns
-CLK 400
+; 666 MHz clock (1333 MT/s DDR). Clock period = 1.5 ns
+CLK 666
 
 ; Multipler. 1 for DDR, 2 for DDR2, 4 for DDR3
-MULT 2
+MULT 4
 
 ; Data Rate. 1 for SDR, 2 for DDR
 RATE 2
@@ -26,8 +25,7 @@ BPC 8
 ; NVMain use CLK and CPUFreq to do the synchronization. The ratio CLK/CPUFreq
 ; is actually used. So a simple CLK=1 and CPUFreq=4 still works for simulation. 
 ; However, it is straightforward to make it informative.
-CPUFreq 4000
-;CPUFreq 2600
+CPUFreq 3200
 EventDriven true
 ;================================================================================
 
@@ -36,13 +34,8 @@ EventDriven true
 
 ; Number of banks per rank 
 BANKS 8
-;BANKS 4
-
-; Number of ranks per channel
-RANKS 1
-
-; Number of channels in the system
-CHANNELS 1
+RANKS 8
+CHANNELS 4 
 
 ; Number of rows in one bank
 ROWS 65536
@@ -61,11 +54,11 @@ UseRefresh true
 
 ; the refresh granularity (the number of banks refreshed together in a rank)
 ; this must NOT be 0 when UseRefresh is true
-BanksPerRefresh 4
+BanksPerRefresh 8
 
 ; RefreshRows is the number of rows to refresh per refresh operation 
 ; for example, RefreshRows = ROWS/8192 for DRAM
-RefreshRows 4
+RefreshRows 8
 
 ; the number of refresh that can be delayed
 ; options: 1 -- 8 (DDR-3 defines the maximum 9*tREFI)
@@ -77,27 +70,26 @@ DelayedRefreshThreshold 1;
 ;================================================================================
 ; Memory device timing parameters (in memory cycle) 
 
-;tBURST 4 ; length of data burst
 tBURST 8 ; length of data burst
 
-tCMD 1 
-tRAS 14
-tRCD 5
+tRAS 24
+tCAS 9 ; tCAS is also known as tCL
+tRCD 9
+tRP 9
+tRTP 4 ;greater of 4cycles or 7.5ns
 tAL 0
-tCCD 4
-tCWD 4
-tWTR 3
-tWR 6
-tRP 5
-tCAS 5 ; tCAS is also known as tCL
+tCCD 4 ;min=4CK
+tWTR 4 ;greater of 4CK or 7.5ns
+tWR 10; min=15ns
+tRFC 74
+tRRDR 4 ; tRRDR is used for tRRD by default
+tRRDW 4
 
+tCMD 1 
+tCWD 4
 tRTRS 1 ; for DDR-1, tRTRS can be 0
-tRTP 3
-tRFC 64
 tOST 1 ; ODT switching time
 
-tRRDR 3 ; tRRDR is used for tRRD by default
-tRRDW 3
 
 ; Row Activation Window (RAW), which specifies the maximum Activation in a
 ; rolling window. tRAW is the corresponding window width (in cycle).
@@ -108,20 +100,21 @@ RAW 4
 tRAW 12
 
 ; powerdown mode enter and exit 
-tRDPDEN 9
-tWRPDEN 19
-tWRAPDEN 22
-tPD 1
-tXP 3
-tXPDLL 17
-tXS 5
+tRDPDEN 14 ; RL+4CK+1CK=tAL+tCL+5
+tWRPDEN 17 ; WL+2+tWR/tCK=tAL+tCWL+2+tWR/tCK=5+2+10=17
+tWRAPDEN 21 ; WL+2+WR+1=tAL+tCWL+WR+3=5+10+3=18
+tPD 4 ; min=tCKE(MIN)
+tXP 4 ; greater of 3CK or 6ns
+tXPDLL 10 ;greater of 10CK or 24ns
+tXS 5 ; greater of 5CK or tRFC+10ns
 tXSDLL 512
 
 ; refresh window between two refreshes to a cell (in cycle, e.g., 64ms/tCK)
 ; options: for DDR3, 64ms (normal) or 32ms (thermal extended)
 ;          for LPDDR3, 32ms (normal) or 16ms (thermal extended)
 ;          for 3D DRAM, 32ms/16ms/8ms are all possible
-tREFW 25600000
+;tREFW 25600000
+tREFW 42666667
 ;================================================================================
 
 ;********************************************************************************
@@ -166,18 +159,18 @@ Epdps 0.000000
 
 Voltage 1.5
 
-EIDD0 85 
-EIDD1 54
-EIDD2P0 30
+EIDD0 70 
+EIDD1 85
+EIDD2P0 12
 EIDD2P1 30
-EIDD2N 37
-EIDD2NT 37
-EIDD3P 35
+EIDD2N 40
+EIDD2NT 50
+EIDD3P 30
 EIDD3N 40
-EIDD4R 160
-EIDD4W 165
-EIDD5B 200
-EIDD6 12
+EIDD4R 125
+EIDD4W 125
+EIDD5B 165
+EIDD6 8
 ;********************************************************************************
 
 ;================================================================================
