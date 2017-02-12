@@ -106,11 +106,13 @@ Vagrant automatically syncs the zsim root folder of your host machine to /vagran
 ④ **evict_policy**: evict policy, default is "LRU";  
 **(3) sys.pgt_walker( page table walker configuration)**  
 ① mode: paging mode configuration, SHMA supports seven paging modes, namely, **Legacy_Normal**(4GB address space, page size is 4KB), **Legacy_Huge**(4GB address space, page size is 4MB), **PAE_Normal**(64GB address space, page size is 4KB),**PAE_Huge**(64GB address space, page size is 2MB),**LongMode_Normal**(address length is 48 bits,page size is 4KB), **LongMode_Middle**(address length is 48 bits, page size is 2MB) and **LongMode_Huge**（address length is 48bits, page size is 1GB);  
-② itlb: instruction TLB name corresponding to this page table walker;  
-③ dtlb: name of data TLB corresponding to this page table walker;  
+② itlb: instruction TLB name corresponding to this page table walker;
+③ dtlb: name of data TLB corresponding to this page table walker; 
+④ reversed_pgt:  true, enable  reversed  page table; false, disable  reversed page table; when simulating single process, default is false; while simulating multiple processes, default is true;
 **(4) sys.mem.zone: memory management configuration** 
 **zone_dma/zone_dma32/zone_normal/zone_highmem**: set OS zone size(MB)  
-**(5) sys.enable_shared_memory**: true, enable shared memory(mainly dynamic-link library) simulation ( default is true )
+**(5) sys.enable_shared_memory**: true, enable shared memory simulation ( default is true )
+
 * **Enable Simpoints**    
 **(1) configuration key**  
 startFastForwarded=true   
@@ -167,6 +169,7 @@ example( simpoint file of msf with 31 simpoints):
 **(1) sys.tlbs.tlb_type**: must be set to be "HotMonitorTlb";  
 **(2) sys.init_access_threshold**: set initial value of fetching_threshold, default is 0;  
 **(3) sys.adjust_interval**: period of adjusting fetching_threshold automatically, defalut is 10000000 cycles (1000cycles is basic units);
+**(4) sys.mem_access_time**: cycles of per memory access caused by page table walking;
 **4.nvmain Configuration Keys** (example nvmain configuration files is in zsim-nvmain/config/nvmain-config directory)
 * **Enabling DRAM-NVM hierarchical hybrid architecture**( zsim-nvmain/config/nvmain-config/hierarchy)  
 **(1) EventDriven**: true;  

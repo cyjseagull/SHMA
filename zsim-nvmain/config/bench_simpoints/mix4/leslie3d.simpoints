@@ -1,0 +1,36 @@
+\begin{table}[tbp]
+\centering
+\caption{{\textnormal{Page Evictions in HSCC-Dynamic and HDRC for Applications with Large Memory Footprint. }}}
+\scriptsize
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\multirow{2}{1.1cm}{\tabincell{r}{\textbf{Application}}} &  \multicolumn{3}{c|}{\tabincell{c}{\textbf{page eviction in HSCC-Dynamic}}} & \multicolumn{3}{c|}{\textbf{page eviction in HDRC} }\\
+\cline{2-4}
+\cline{5-7}
+ &clean & dirty & total & clean & dirty & total \\
+\hline
+mcf &0&0&0&99.77\%&0.096\%& 99.87\% \\
+\hline
+MST &0&0&0 &99.40\%&0.15\%& 99.55\% \\
+\hline
+SetCover &59.89\%&17.58\% &77.47\% &99.86\% &0.070\%&99.93\% \\
+\hline
+KNN &0.99\% &0& 0.99\% &98.17\% &0.29\% &98.46\% \\
+\hline
+BFS &0&0&0& 99.56\%&0.188\% &99.75\% \\
+\hline
+mix1 & 0&0&0&62.37\%&0.026\%&62.40\% \\
+\hline
+mix2 &0&0&0&98.09\%&0.104\%& 98.19\% \\
+\hline
+mix3 &74.64\% &8.79\% &83.43\% &99.83\% &0.09\%&99.92\% \\
+\hline
+mix4 &0 &0&0 &99.82\% &0.014\%& 99.83\% \\
+\hline
+mix5 &58.22\% &10.36\% &68.58\% &99.88\% &0.027\%&99.91\% \\
+\hline
+mix6 &58.51\% &17.66\% &76.17\% &99.93\% &0.023\%&99.95\% \\
+\hline
+\end{tabular}
+\label{tab:page_eviction}
+\end{table} 
