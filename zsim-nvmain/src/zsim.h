@@ -36,13 +36,10 @@
 #include "locks.h"
 #include "pad.h"
 #include "g_std/g_vector.h"
-#include "g_std/g_list.h"
 #include "g_std/g_multimap.h"
 #include "g_std/g_unordered_set.h"
-#include "g_std/g_unordered_map.h"
 #include "g_std/g_string.h"
 #include "common/global_const.h"
-#include "common/common_functions.h"
 #include "src/NVMObject.h"
 
 //forward declaration
@@ -66,7 +63,6 @@ class BaseTlb;
 class BuddyAllocator;
 class MemoryNode;
 class BasePaging;
-class Content;
 struct ClockDomainInfo {
     uint64_t realtimeOffsetNs;
     uint64_t monotonicOffsetNs;
@@ -106,7 +102,6 @@ struct GlobSimInfo {
     //System configuration values, all read-only, set at initialization
     uint32_t numCores;
     uint32_t lineSize;
-    uint32_t lineNum;
 
     //Cores
     Core** cores;
@@ -156,7 +151,6 @@ struct GlobSimInfo {
 
     lock_t ffLock; //global, grabbed in all ff entry/exit ops.
     lock_t cidLock; //global, grabbed in all ff entry/exit ops.
-	lock_t enter_lock; //global
 	//lock_t pg_walker_lock[];
 
     volatile uint32_t globalActiveProcs; //used for termination
@@ -260,8 +254,6 @@ struct GlobSimInfo {
 	g_vector< g_vector<Section> >shared_region; 
 	bool enable_shared_memory;
 	g_vector<bool> shared_mem_inited;
-	g_unordered_map<uint32_t, g_list<Content*> > reversed_pgt;
-	lock_t reversed_pgt_lock; 
 	unsigned mem_access_time;
 };
 

@@ -377,7 +377,7 @@ bool NVMain::IssueCommand( NVMainRequest *request )
     
 	GetDecoder()->Translate( request->address.GetPhysicalAddress( ), 
                            &row, &col, &bank, &rank, &channel, &subarray );
-	//std::cout<<"translate by nvmain, row:"<<row<<",col:"<<col<<", bank"<<bank<<" , rank:"<<rank<<" , channel:"<<channel<<" , subarray:"<<subarray<<std::endl;	
+	
     request->address.SetTranslatedAddress( row, col, bank, rank, channel, subarray );
     request->bulkCmd = CMD_NOP;
     /* Check for any successful prefetches. */

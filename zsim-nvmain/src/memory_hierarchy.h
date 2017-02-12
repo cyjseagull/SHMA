@@ -38,8 +38,9 @@
 #include "g_std/g_vector.h"
 #include "galloc.h"
 #include "locks.h"
+#include "common/trie.h"
 #include "common/global_const.h"
-#include <iostream>
+
 /** TYPES **/
 
 /* Addresses are plain 64-bit uints. This should be kept compatible with PIN addrints */
@@ -129,19 +130,15 @@ class BaseCache : public MemObject {
         virtual void setParents(uint32_t _childId, const g_vector<MemObject*>& parents, Network* network) = 0;
         virtual void setChildren(const g_vector<BaseCache*>& children, Network* network) = 0;
         virtual uint64_t invalidate(Address lineAddr, InvType type, bool* reqWriteback, uint64_t reqCycle, uint32_t srcId) = 0;
-		virtual uint64_t clflush( Address pAddr, uint64_t curCycle){ return curCycle;}
-		virtual uint64_t clflush_all( Address lineAddr, InvType type, bool* reqWriteback, uint64_t reqCycle, uint32_t srcId){ return reqCycle;}
 		virtual void calculate_stats(){};
-		
 };
 
 /*--------Base class for TLB object----------*/
 //forward declarition
 class BasePageTableWalker;
-class BasePageTableWalker;
 class BaseTlb: public MemObject{
 	public:
-		virtual void clear_counter(){ std::cout<<"base clear counter"<<std::endl; }
+		virtual void clear_counter(){}
 		//flush all entries of tlb
 		virtual bool flush_all() = 0;
 		virtual void set_parent(BasePageTableWalker* base_pg_walker) = 0;
@@ -152,31 +149,8 @@ class BaseTlb: public MemObject{
 		virtual ~BaseTlb(){};
 };
 
-/*#-----------base class of paging--------------#*/
-class PageTable;
-class BasePDTEntry;
-class BasePaging: public MemObject
-{
-	public:
-		virtual ~BasePaging(){};
-		virtual PagingStyle get_paging_style()=0;
-		virtual PageTable* get_root_directory()=0;
-		virtual Address access(MemReq& req )=0;
-		virtual bool unmap_page_table(Address addr)=0;
-		virtual int map_page_table(Address addr, void* pg_ptr , bool pbuffer, BasePDTEntry*& mapped_entry){	return 0;	};
-		virtual uint64_t remap_page_table( Address ppn,Address dst_ppn,
-			bool src_dram, bool dst_dram){return 0; };
-
-		virtual int map_page_table(Address addr, void* pg_ptr , bool pbuffer = false)=0;
-		virtual bool allocate_page_table(Address addr , Address size)=0;
-		virtual void remove_root_directory()=0;
-		virtual bool remove_page_table( Address addr , Address size)
-		{ return true; }
-		
-		virtual void calculate_stats(){}
-};
-
 /*--------Base class for PageTableWalker object----------*/
+class BasePaging;
 class BasePageTableWalker: public MemObject
 {
 	public:
@@ -187,7 +161,6 @@ class BasePageTableWalker: public MemObject
 		virtual void convert_to_dirty( Address block_id){}
 		virtual void calculate_stats(){}
 };
-
 /*--------Base class for DRAM buffer Allocator---------*/
 class DRAMBufferBlock;
 class BaseDRAMBufferManager: public GlobAlloc
@@ -202,22 +175,5 @@ class BaseDRAMBufferManager: public GlobAlloc
 		virtual bool should_reclaim(){ return false; }
 		virtual bool should_cherish(){ return false;}
 		virtual bool should_more_cherish(){ return false;}
-		virtual DRAMBufferBlock* get_page_ptr( uint64_t entry_id )=0;
-};
-
-class BasePDTEntry;
-struct Content: public GlobAlloc
-{
-  public:
-	Content( BasePDTEntry* entry=NULL, Address page_no=0):
-		  pgt_entry(entry), vpn(page_no){}
-	
-	Address get_vpn(){ return vpn; }
-	BasePDTEntry* get_pgt_entry(){	return pgt_entry; }
-
-  private:
-	Content( Content& forbid_copy){};
-	BasePDTEntry* pgt_entry;
-	Address vpn;
 };
 #endif  // MEMORY_HIERARCHY_H_

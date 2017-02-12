@@ -9,7 +9,6 @@
 #include "NVM/HierDRAMCache/HierDRAMCache.h"
 #include "NVM/RBLA_NVMain/RBLA_NVMain.h"
 #include "NVM/Flat_NVMain/FlatNVMain.h"
-#include "NVM/Flat_RBLA_NVMain/FlatRBLANVMain.h"
 #include "src/NVMObject.h"
 #include "string.h"
 

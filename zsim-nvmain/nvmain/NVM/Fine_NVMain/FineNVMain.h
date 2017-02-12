@@ -45,8 +45,6 @@
 #include <map>
 #include <iterator>
 #include <algorithm>
-
-#include "locks.h"
 namespace NVM {
 
 class FineNVMain : public NVMain
@@ -136,11 +134,6 @@ class FineNVMain : public NVMain
 		read_hit = drc_read_hit_rate;
 		write_hit = drc_write_hit_rate;
 	}
-
-	unsigned GetFastReadCycles(){ return t_fast_read; }
-	unsigned GetSlowReadCycles(){ return t_slow_read; }
-	
-	unsigned GetSlowWriteCycle(){ return t_slow_write; }
 	uint64_t mem_size;
 	uint64_t access_time;
 	uint64_t cache_size;
@@ -197,8 +190,7 @@ class FineNVMain : public NVMain
 	uint64_t drc_read_hits;
 	uint64_t drc_write_hits;
 	double drc_write_hit_rate;
-	
-	unsigned t_fast_read, t_slow_read, t_slow_write;
+
 	//end statistical
     void GeneratePrefetches( NVMainRequest *request,
 							std::vector<NVMAddress>& prefetchList );
@@ -215,13 +207,9 @@ class FineNVMain : public NVMain
 	{
 		return x.second > y.second;
 	}
-	inline unsigned GetReadLatency( Params* p);
-	inline unsigned GetWriteLatency( Params* p);
 
 	Params* reserve_region_param;
 	bool is_configed;
-	uint64_t clflush_wb_overhead;
-	lock_t issue_lock;
 };
 };
 #endif

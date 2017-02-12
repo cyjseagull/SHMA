@@ -39,7 +39,6 @@
 #include "Decoders/Migrator/Migrator.h"
 #include "Decoders/BufferDecoder/BufferDecoder.h"
 #include "Decoders/MQMigrator/MQMigrator.h"
-#include "Decoders/FlatDecoder/FlatDecoder.h"
 using namespace NVM;
 
 AddressTranslator *DecoderFactory::CreateDecoder( std::string decoder )
@@ -57,11 +56,6 @@ AddressTranslator *DecoderFactory::CreateDecoder( std::string decoder )
 	{
 		std::cout<<"create mq migrator"<<std::endl;
 		trans = new MQMigrator();
-	}
-	else if( decoder == "FlatDecoder")
-	{
-		std::cout<<"create flat decoder"<<std::endl;
-		trans = new FlatDecoder();
 	}
     return trans;
 }

@@ -40,18 +40,22 @@ class HotMonitorTlb: public BaseTlb
 			Address vpn = virt_addr >>(zinfo->page_shift);
 			Address ppn;
 			T* entry = ordinary_tlb->look_up(vpn);
-			uint32_t access_counter = 0;
-			uint32_t origin_child_id = req.childId;
+			Address dram_ppn = INVALID_PAGE_ADDR;
+			uint32_t access_counter = (uint32_t)(-1);
 			//tlb miss
 			if( !entry )
 			{
 				ppn = ordinary_tlb->page_table_walker->access(req);
+				if( req.lineAddr != virt_addr)
+				{
+					dram_ppn = req.lineAddr; 
+				}
 				if( zinfo->multi_queue)
 				{
 					access_counter = req.childId; 
 				}
 				debug_printf("hot monitor insert (%llx,%llx)",vpn,ppn);
-				insert(vpn,ppn, access_counter);
+				insert(vpn,dram_ppn,ppn, access_counter);
 			}
 			//tlb hit
 			else
@@ -60,7 +64,7 @@ class HotMonitorTlb: public BaseTlb
 				ordinary_tlb->tlb_hit_time++;
 				ppn = entry->p_page_no; //get physical address(DRAM or PCM)
 				//write through to page table to set dirty bits
-				if( req.type == PUTX && entry->is_dirty()==false && entry->is_in_dram())
+				if( req.type == GETX && entry->is_dirty()==false && entry->is_in_dram())
 				{	
 					entry->set_dirty();
 					MemReq wt_req;
@@ -68,7 +72,7 @@ class HotMonitorTlb: public BaseTlb
 					wt_req.cycle = req.cycle;
 					wt_req.type = SETDIRTY;
 					ordinary_tlb->page_table_walker->write_through(wt_req);
-					Address block_id = dram_addr_to_block_id( (entry->p_page_no)<<(zinfo->page_shift));
+					Address block_id = dram_addr_to_block_id( (entry->get_counter())<<(zinfo->page_shift));
 					ordinary_tlb->page_table_walker->convert_to_dirty( block_id );
 				}
 				if( entry->is_in_dram() )
@@ -79,7 +83,6 @@ class HotMonitorTlb: public BaseTlb
 					pcm_tlb_hit++;
 				debug_printf("hot monitor access %llx,%llx tlb hit",vpn,ppn);
 			}
-			req.childId = origin_child_id;
 			req.cycle += ordinary_tlb->response_latency;
 			return  ((ppn<<zinfo->page_shift)|offset);
 		}
@@ -88,10 +91,7 @@ class HotMonitorTlb: public BaseTlb
 		{
 			return ordinary_tlb->getName();
 		}
-		void clear_counter()
-		{
-			ordinary_tlb->clear_counter();
-		}
+
 		void set_parent( BasePageTableWalker* pg_table_walker)
 		{
 			ordinary_tlb->set_parent(pg_table_walker);
@@ -156,7 +156,6 @@ class HotMonitorTlb: public BaseTlb
 					thres = zinfo->access_threshold[proc_id];
 				else
 					thres = zinfo->access_threshold[0];
-				//std::cout<<"threshold is:"<<thres<<std::endl;
 				over_thres = result_node->incre_counter(is_write ,write_incre_step ,
 														read_incre_step,thres);
 				//decrease life time of all other tlb entries 
@@ -169,41 +168,34 @@ class HotMonitorTlb: public BaseTlb
 			return NULL;
 		}
 
-		T* insert( Address vpage_no ,Address ppn , uint32_t access_counter)
+		T* insert( Address vpage_no ,Address dram_ppn ,  Address ppage_no , uint32_t access_counter)
 		{
 			//DRAM buffer TLB 
-			if( (ppn << zinfo->page_shift) >= zinfo->high_addr )
+			if( dram_ppn != INVALID_PAGE_ADDR)
 			{
-				T entry(vpage_no, ppn , true);
-				entry.remap( ppn,true);
-				if( access_counter == 1)
-				{
-					//std::cout<<"set dirty in tlb"<<std::endl;
-					entry.set_dirty();
-				}
+				T entry(vpage_no,ppage_no , true);
+				entry.remap(dram_ppn,true);
 				dram_tlb_miss++;
 				return ordinary_tlb->insert( vpage_no , entry);
 			}
 			//PCM main memory Tlb
 			else
 			{
-				T entry(vpage_no,ppn , false);
+				T entry(vpage_no,ppage_no , false);
 				if( zinfo->multi_queue)
 					entry.set_counter( access_counter);
 				pcm_tlb_miss++;
 				return ordinary_tlb->insert( vpage_no , entry);
 			}
-			return NULL;
+		   return NULL;
 		}
 
-		bool remap_ppn(Address page_no , T* entry, bool is_dram=true )
+		bool remap_to_dram(Address dram_page_no , T* entry )
 		{
-			debug_printf("remap (%llx , %llx , %llx)",page_no , entry->v_page_no , entry->p_page_no);
+			debug_printf("remap (%llx , %llx , %llx)",dram_page_no , entry->v_page_no , entry->p_page_no);
 			if(entry)
 			{
-				ordinary_tlb->tlb_trie_pa.erase(entry->p_page_no);
-				ordinary_tlb->tlb_trie_pa[page_no]=entry;
-				entry->remap(page_no , is_dram);
+				entry->remap(dram_page_no , true);
 				return true;
 			}
 		  return false;

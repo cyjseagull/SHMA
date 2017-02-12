@@ -34,6 +34,7 @@
 #include "memory_hierarchy.h"
 #include "pad.h"
 #include "stats.h"
+
 //TODO: Now that we have a pure CC interface, the MESI controllers should go on different files.
 
 /* Generic, integrated controller interface */
@@ -53,15 +54,11 @@ class CC : public GlobAlloc {
 
         //Inv methods
         virtual void startInv() = 0;
-        virtual void endInv(){};
-
         virtual uint64_t processInv(Address lineAddr, int32_t lineId, InvType type, bool* reqWriteback, uint64_t startCycle, uint32_t srcId) = 0;
 
         //Repl policy interface
         virtual uint32_t numSharers(uint32_t lineId) = 0;
         virtual bool isValid(uint32_t lineId) = 0;
-		virtual MemObject* getParent(Address lineAddr){ return NULL;}
-
 };
 
 
@@ -87,6 +84,7 @@ class MESIBottomCC : public GlobAlloc {
         g_vector<MemObject*> parents;
         g_vector<uint32_t> parentRTTs;
         uint32_t numLines;
+        uint32_t selfId;
 
         //Profiling counters
         Counter profGETSHit, profGETSMiss, profGETXHit, profGETXMissIM /*from invalid*/, profGETXMissSM /*from S, i.e. upgrade misses*/;
@@ -95,12 +93,13 @@ class MESIBottomCC : public GlobAlloc {
         //Counter profWBIncl, profWBCoh /* writebacks due to inclusion or coherence, received from downstream, does not include PUTS */;
         // TODO: Measuring writebacks is messy, do if needed
         Counter profGETNextLevelLat, profGETNetLat;
-        uint32_t selfId;
+
         bool nonInclusiveHack;
 
         PAD();
         lock_t ccLock;
         PAD();
+
     public:
         MESIBottomCC(uint32_t _numLines, uint32_t _selfId, bool _nonInclusiveHack) : numLines(_numLines), selfId(_selfId), nonInclusiveHack(_nonInclusiveHack) {
             array = gm_calloc<MESIState>(numLines);
@@ -109,11 +108,6 @@ class MESIBottomCC : public GlobAlloc {
             }
             futex_init(&ccLock);
         }
-		
-		MemObject* getParent( Address lineAddr)
-		{
-			return parents[getParentId(lineAddr)];
-		}
 
         void init(const g_vector<MemObject*>& _parents, Network* network, const char* name);
 
@@ -156,7 +150,7 @@ class MESIBottomCC : public GlobAlloc {
 
         void processWritebackOnAccess(Address lineAddr, uint32_t lineId, AccessType type);
 
-        void processInval(Address lineAddr, uint32_t lineId, InvType type, bool* reqWriteback,uint32_t srcId, uint64_t cycle=0);
+        void processInval(Address lineAddr, uint32_t lineId, InvType type, bool* reqWriteback);
 
         uint64_t processNonInclusiveWriteback(Address lineAddr, AccessType type, uint64_t cycle, MESIState* state, uint32_t srcId, uint32_t flags);
 
@@ -175,7 +169,7 @@ class MESIBottomCC : public GlobAlloc {
 
         //Could extend with isExclusive, isDirty, etc, but not needed for now.
 
-    public:
+    private:
         uint32_t getParentId(Address lineAddr);
 };
 
@@ -224,11 +218,6 @@ class MESITopCC : public GlobAlloc {
             futex_init(&ccLock);
         }
 
-		MemObject* getParent( Address lineAddr)
-		{
-			return NULL;
-		}
-
         void init(const g_vector<BaseCache*>& _children, Network* network, const char* name);
 
         uint64_t processEviction(Address wbLineAddr, uint32_t lineId, bool* reqWriteback, uint64_t cycle, uint32_t srcId);
@@ -250,7 +239,8 @@ class MESITopCC : public GlobAlloc {
         inline uint32_t numSharers(uint32_t lineId) {
             return array[lineId].numSharers;
         }
-	private:
+
+    private:
         uint64_t sendInvalidates(Address lineAddr, uint32_t lineId, InvType type, bool* reqWriteback, uint64_t cycle, uint32_t srcId);
 };
 
@@ -285,7 +275,7 @@ static inline bool CheckForMESIRace(AccessType& type, MESIState* state, MESIStat
 
 // Non-terminal CC; accepts GETS/X and PUTS/X accesses
 class MESICC : public CC {
-	private:
+    private:
         MESITopCC* tcc;
         MESIBottomCC* bcc;
         uint32_t numLines;
@@ -323,8 +313,10 @@ class MESICC : public CC {
             if (req.childLock) {
                 futex_unlock(req.childLock);
             }
+
             tcc->lock(); //must lock tcc FIRST
             bcc->lock();
+
             /* The situation is now stable, true race-wise. No one can touch the child state, because we hold
              * both parent's locks. So, we first handle races, which may cause us to skip the access.
              */
@@ -392,29 +384,20 @@ class MESICC : public CC {
             if (req.childLock) {
                 futex_lock(req.childLock);
             }
+
             bcc->unlock();
             tcc->unlock();
         }
-		 
-		//Inv methods
+
+        //Inv methods
         void startInv() {
             bcc->lock(); //note we don't grab tcc; tcc serializes multiple up accesses, down accesses don't see it
         }
 
-		void endInv()
-		{
-			bcc->unlock();
-		}
-		
-		MemObject* getParent( Address lineAddr )
-		{
-			return bcc->getParent(lineAddr);
-		}
-
         uint64_t processInv(Address lineAddr, int32_t lineId, InvType type, bool* reqWriteback, uint64_t startCycle, uint32_t srcId) {
-			//bcc->lock();
             uint64_t respCycle = tcc->processInval(lineAddr, lineId, type, reqWriteback, startCycle, srcId); //send invalidates or downgrades to children
-            bcc->processInval(lineAddr, lineId, type, reqWriteback,srcId, startCycle); //adjust our own state
+            bcc->processInval(lineAddr, lineId, type, reqWriteback); //adjust our own state
+
             bcc->unlock();
             return respCycle;
         }
@@ -461,6 +444,7 @@ class MESITerminalCC : public CC {
             }
 
             bcc->lock();
+
             /* The situation is now stable, true race-wise. No one can touch the child state, because we hold
              * both parent's locks. So, we first handle races, which may cause us to skip the access.
              */
@@ -500,22 +484,11 @@ class MESITerminalCC : public CC {
             bcc->lock();
         }
 
-		void endInv()
-		{
-			bcc->unlock();
-		}
-
-		MemObject* getParent( Address lineAddr)
-		{
-			return bcc->getParent(lineAddr);
-		}
-
-        uint64_t processInv(Address lineAddr, int32_t lineId, InvType type, bool* reqWriteback, uint64_t startCycle, uint32_t srcId) 
-		{
-            bcc->processInval(lineAddr, lineId, type, reqWriteback, srcId, startCycle); //adjust our own state
+        uint64_t processInv(Address lineAddr, int32_t lineId, InvType type, bool* reqWriteback, uint64_t startCycle, uint32_t srcId) {
+            bcc->processInval(lineAddr, lineId, type, reqWriteback); //adjust our own state
             bcc->unlock();
             return startCycle; //no extra delay in terminal caches
-		}
+        }
 
         //Repl policy interface
         uint32_t numSharers(uint32_t lineId) {return 0;} //no sharers

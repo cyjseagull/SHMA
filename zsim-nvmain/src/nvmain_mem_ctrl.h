@@ -145,8 +145,7 @@ class NVMainMemory : public MemObject, public NVM::NVMObject { //one NVMain cont
         NVMainMemory(std::string& nvmainTechIni, std::string& outputFile, std::string& traceName, uint32_t capacityMB, uint64_t _minLatency, uint32_t _domain, const g_string& _name , std::string fetcher_name="BlockFetcher");	
 			
         const char* getName() {return name.c_str();}
-		virtual NVM::NVMain* GetNVMainPtr(){ return nvmainPtr; }
-		
+
         void initStats(AggregateStat* parentStat);
 
         // Record accesses
@@ -178,10 +177,6 @@ class NVMainMemory : public MemObject, public NVM::NVMObject { //one NVMain cont
 		ThresAdAction previous_action;
 		uint64_t prefetch_time;
 		uint64_t adjust_time;
-		unsigned t_fast_read;
-		unsigned t_slow_read;
-		unsigned t_slow_write;
-		std::ofstream out;
 	private:
 		inline void LookupTlb(uint32_t coreId, Address addr , bool isWrite,ExtendTlbEntry* &entry, bool& is_tlb , TLBSearchResult& over_thres);
 		inline bool Prefetch( unsigned coreId , Address vpn , Address cycle);
@@ -192,13 +187,5 @@ class NVMainMemory : public MemObject, public NVM::NVMObject { //one NVMain cont
 		inline void AdjustThreshold( int &delta_thres, uint64_t hit_time,
 						uint64_t clean_miss_time , uint64_t dirty_miss_time,
 						uint64_t caching_cycles);
-
-		inline void filter_based_cache( MemReq& req,
-		NVMainAccEvent* memEv,uint64_t paddr, bool is_write);
-		inline NVMainAccEvent* push_to_main_memory( MemReq& req, uint64_t respCycle);
-	
-		inline void profiling(NVMainAccEvent* memEv, uint32_t core_id);
-		inline void adjust_single_process( uint32_t proc_id ,unsigned &threshold);
-		inline void adjust_threshold();
 };
 #endif  // NVMAIN_MEM_CTRL_H_

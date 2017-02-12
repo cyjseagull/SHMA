@@ -9,8 +9,6 @@ FlatNVMain::FlatNVMain(): fastMemoryConfig(NULL),slowMemoryConfig(NULL),
 	slow_mem_size(0), fast_mem_bits(0)
 {
 	random = false;
-	accessed_fast_pages.clear();
-	accessed_slow_pages.clear();
 	cout<<"create flat nvmain"<<endl;
 }
 
@@ -59,9 +57,9 @@ void FlatNVMain::SetConfig( Config* conf, std::string memoryName,
 	slow_mem_size = slowMemory->GetMemorySize();
 	mem_size = fastMemory->GetMemorySize() + slowMemory->GetMemorySize();
 	
-	fast_mem_bits = NVM::mlog2( fast_mem_size )+1;
+	fast_mem_bits = NVM::mlog2( fast_mem_size );
+	
 	total_channels = fastMemory->GetChannels() + slowMemory->GetChannels();
-	memory_slice = fast_mem_size/total_channels;
 	cout<<"fast memory size:"<<(fast_mem_size/(1024*1024*1024))<<" GB"<<endl;
 	cout<<"slow memory size:"<<(slow_mem_size/(1024*1024*1024))<<" GB"<<endl;
 	cout<<"total memory size:"<<(mem_size/(1024*1024*1024))<<" GB"<<endl;
@@ -79,114 +77,45 @@ inline void FlatNVMain::InitMemory( NVMain* &memory,
 	GetGlobalEventQueue()->AddSystem( memory, conf);
 	memory->SetConfig( conf, mem_name, true);
 	memory->RegisterStats();
-	RegisterStats();
 	AddChild(memory);
 }
 
 bool FlatNVMain::IsIssuable( NVMainRequest* req, FailReason* reason)
 {
 	uint64_t addr = req->address.GetPhysicalAddress();
-	uint64_t page_num = addr >> (uint64_t)12;
-	uint64_t addr_org = addr;
-	uint64_t dram_addr = (addr >> (uint64_t)fast_mem_bits);
-	bool is_issuable = false;
-	req->media = SLOW_MEM;
-	if( !dram_addr )
-	{
-		int unit_num = addr/memory_slice;
-		//access DRAM
-		if( unit_num%2 == 1 )
-		{
-			addr -= (((unit_num-1)/2+1)*memory_slice);
-			req->address.SetPhysicalAddress(addr);
-			uint64_t org = req->address.GetVirtualAddress();
-			req->address.SetVirtualAddress(addr_org);
-			req->media = FAST_MEM;
-			is_issuable = fastMemory->IsIssuable(req);
-			if( is_issuable == false)
-				std::cout<<"fast memory can't issue"<<std::endl;
-			return is_issuable;
-		}
-		//access NVM
+	uint64_t dram_addr = (addr >>(uint64_t)fast_mem_bits);
+	if( !dram_addr)
+	{	
+		if( addr % total_channels == 0)
+			return fastMemory->IsIssuable(req);
 		else
-		{
-			addr -= ((unit_num/2)*memory_slice);
-			req->address.SetPhysicalAddress(addr);
-			uint64_t org = req->address.GetVirtualAddress();
-			req->address.SetVirtualAddress(addr_org);
-			is_issuable= slowMemory->IsIssuable(req);
-			if( is_issuable == false)
-				std::cout<<"slow memory can't issue"<<std::endl;
-			return is_issuable;
-		}
+			return slowMemory->IsIssuable(req);
 	}
-	req->address.SetPhysicalAddress( addr-2*fast_mem_size);
-	req->address.SetVirtualAddress(addr_org);
-	is_issuable = slowMemory->IsIssuable(req);
-	if( is_issuable == false)
-		std::cout<<"slow memory can't issue"<<std::endl;
-	return is_issuable;
+	return slowMemory->IsIssuable(req);
 }
 
 bool FlatNVMain::IssueCommand( NVMainRequest* req)
 {
 	uint64_t addr = req->address.GetPhysicalAddress();
-	uint64_t page_num = addr >> (uint64_t)12;
-	uint64_t addr_org = addr;
 	uint64_t dram_addr = (addr >> (uint64_t)fast_mem_bits);
-	req->media = SLOW_MEM;
+	//access fast memory
 	if( !dram_addr )
 	{
-		int unit_num = addr/memory_slice;
-		//access DRAM
-		if( unit_num%2 == 1 )
+		if( addr % total_channels == 0 )
 		{
-			addr -= (((unit_num-1)/2+1)*memory_slice);
-			req->address.SetPhysicalAddress(addr);
-			uint64_t org = req->address.GetVirtualAddress();
-			req->address.SetVirtualAddress(addr_org);
-			if( !accessed_fast_pages.count(page_num))
-			{
-				accessed_fast_pages.insert(page_num);
-			}
 			if( fastMemory->IsIssuable(req) )
-			{
-				req->media = FAST_MEM;
-				//if( req->is_migrated )
-					//std::cout<<"translate DRAM "<<(addr_org>>6)<<"to "<<(addr>>6)<<std::endl;
 				return fastMemory->IssueCommand(req);
-			}
-			else
-			{
-				std::cout<<"fast memory:can't issue command "<<req->address.GetPhysicalAddress()<<" org:"<<req->address.GetVirtualAddress()<<" oldest:"<<org<<std::endl;
-			}
 		}
-		//access NVM
 		else
 		{
-			if( !accessed_slow_pages.count(page_num))
-			{
-				accessed_slow_pages.insert(page_num);
-			}
-			addr -= ((unit_num/2)*memory_slice);
-			req->address.SetPhysicalAddress(addr);
-			uint64_t org = req->address.GetVirtualAddress();
-			req->address.SetVirtualAddress(addr_org);
-			//std::cout<<"translate NVM "<<(addr_org>>6)<<"to "<<(addr>>6)<<std::endl;
 			if( slowMemory->IsIssuable(req))
 				return slowMemory->IssueCommand(req);
-			else
-				std::cout<<"slow memory: can't issue command "<<req->address.GetPhysicalAddress()<<" org:"<<req->address.GetVirtualAddress()<<"oldest:"<<org<<std::endl;
 		}
 	}
-	req->address.SetPhysicalAddress( addr-2*fast_mem_size);
-	req->address.SetVirtualAddress(addr_org);
 	if( slowMemory->IsIssuable(req) )
 	{
 		return slowMemory->IssueCommand(req);
 	}
-	else
-		std::cout<<"slow memory: can't issuable2 "<<req->address.GetPhysicalAddress()<<" org:"<<req->address.GetVirtualAddress()<<std::endl;
 	return true;
 }
 
@@ -201,17 +130,6 @@ void FlatNVMain::CalculateStats()
 {
 	fastMemory->CalculateStats();
 	slowMemory->CalculateStats();
-	totalReadRequests = fastMemory->totalReadRequests + 
-		slowMemory->totalReadRequests;
-	totalWriteRequests = fastMemory->totalWriteRequests +
-		slowMemory->totalWriteRequests;
-	accessed_dram_pages = accessed_fast_pages.size();
-	accessed_nvm_pages = accessed_slow_pages.size();
-	dram_usage = (double)accessed_dram_pages*1024/(double)fast_mem_size;
-	/*successfulPrefetches = fastMemory->successfulPrefetches
-		+ slowMemory->successfulPrefetches;
-	unsuccessfulPrefetches = fastMemory->unsuccessfulPrefetches
-		+ slowMemory->unsuccessfulPrefetches;*/
 }
 
 inline void FlatNVMain::GetAbsolutePath( Config* conf, string & conf_path)

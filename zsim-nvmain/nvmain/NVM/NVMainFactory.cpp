@@ -19,8 +19,6 @@ NVMain* NVMainFactory::CreateNVMain( std::string nvm_type)
 		main_mem = new RBLA_NVMain();
 	if( nvm_type == "FLATNVMain")
 		main_mem = new FlatNVMain();
-	if( nvm_type == "FlatRBLANVMain")
-		main_mem = new FlatRBLANVMain();
 	return main_mem;
 }
 

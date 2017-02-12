@@ -82,7 +82,6 @@ void MQMigrator::StartMigration( NVMAddress& promotee, NVMAddress& demotee )
      *  the promotion channel as the demotion address' value and similarly
      *  for demotion channel.
      */
-	//std::cout<<"start migration"<<std::endl;
     uint64_t demoChannel, promoChannel;
     demoChannel = promotee.GetChannel( );
     promoChannel = demotee.GetChannel( );
@@ -100,8 +99,6 @@ void MQMigrator::StartMigration( NVMAddress& promotee, NVMAddress& demotee )
      */
     migrationMap[promokey] = promoChannel;
     migrationMap[demokey] = demoChannel;
-	//std::cout<<"key promo:"<<promokey<<" state is:"<<MQ_MIGRATION_READING<<std::endl;
-	//std::cout<<"key demo:"<<demokey<<" state is:"<<MQ_MIGRATION_READING<<std::endl;
     migrationState[promokey] = MQ_MIGRATION_READING;
     migrationState[demokey] = MQ_MIGRATION_READING;
 
@@ -120,7 +117,7 @@ void MQMigrator::SetMigrationState( NVMAddress& address, MQMigratorState newStat
 	
     /* Get the key and set the new state; Ensure the state is really new. */
     uint64_t key = GetAddressKey( address );
-	//std::cout<<"key:"<<key<<" state:"<<migrationState[key]<<std::endl;
+
     assert( migrationState.count( key ) != 0 );
     assert( migrationState[key] != newState );
 

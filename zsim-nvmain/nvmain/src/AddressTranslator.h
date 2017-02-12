@@ -101,10 +101,8 @@ class AddressTranslator
     int burstLength;
     int lowColBits;
 	//added by YuJieChen on 2015,29,JAN
-	//unsigned int *bitWidths;
-	//int *fieldOrder;
-	unsigned int bitWidths[FIELD_NUM];
-	int fieldOrder[FIELD_NUM];
+	unsigned int *bitWidths;
+	int *fieldOrder;
 	bool bitWidthsInited;
 	bool fieldOrderInited;
 	//////////////////////////////////

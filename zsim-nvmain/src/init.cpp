@@ -81,7 +81,6 @@
 #include "DRAM-buffer/AllocatorFac.h"
 #include "page-table/comm_page_table_op.h"
 #include "page-table/page_table.h"
-#include "page-table/reversed_page_table.h"
 #include "memory_hierarchy.h"
 #include "zsim.h"
 extern void EndOfPhaseActions(); //in zsim.cpp
@@ -251,7 +250,7 @@ BaseCache* BuildCacheBank(Config& config, const string& prefix, g_string& name, 
     uint32_t latency = config.get<uint32_t>(prefix + "latency", 10);
     uint32_t accLat = (isTerminal)? 0 : latency; //terminal caches has no access latency b/c it is assumed accLat is hidden by the pipeline
     uint32_t invLat = latency;
-	//std::cout<<"init latency:"<<latency<<std::endl;
+
     //tYPE and inclusion
     string type = config.get<const char*>(prefix + "type", "Simple");
     bool nonInclusiveHack = config.get<bool>(prefix + "nonInclusiveHack", false);
@@ -430,16 +429,6 @@ CacheGroup* BuildCacheGroup(Config& config, const string& name, bool isTerminal)
 
 
 static void InitSystem(Config& config) {
-		(zinfo->reversed_pgt.clear)();	
-		futex_init(&zinfo->reversed_pgt_lock);
-		//default increment step of read/write access of PCM main memory is 1/2 
-		zinfo->read_incre_step = config.get<unsigned>( "sys.DRAMBuffer.read_incre_step",1);
-		zinfo->write_incre_step = config.get<unsigned>( "sys.DRAMBuffer.write_incre_step",2);
-	//default:enable share memory
-	zinfo->enable_shared_memory = config.get<bool>("sys.enable_shared_memory", true);
-	if( 1==zinfo->numProcs)
-		zinfo->enable_shared_memory = false;
-
 	//########parse simpoints file#######
 	//string simpoints_file = config.get<const char*>();	
 	//#######parse simpoints file end####
@@ -709,8 +698,6 @@ static void InitSystem(Config& config) {
 				zinfo->pg_walkers = NULL;
 			string mode_str = config.get<const char*>("sys.pgt_walker.mode" , "Legacy-Normal");
 			std::cout<<"mode_str:"<<mode_str<<std::endl;
-			bool reversed_pgt = config.get<bool>("sys.pgt_walker.reversed_pgt", false);
-			std::cout<<"reversed page table:"<<reversed_pgt<<std::endl;
 			PagingStyle mode = string_to_pagingmode(mode_str.c_str());
 			zinfo->paging_mode = mode;
 			zinfo->paging_array = NULL;
@@ -721,7 +708,6 @@ static void InitSystem(Config& config) {
 				   NormalPaging* normal_paging;
 				   PAEPaging* pae_paging;
 				   LongModePaging* longmode_paging;
-				   ReversedPaging* reversed_paging;
 				};
 				//zinfo->paging_array = new BasePaging*[zinfo->numProcs]; 
 				zinfo->paging_array = gm_memalign<BasePaging*>(CACHE_LINE_BYTES , zinfo->numProcs);
@@ -732,26 +718,16 @@ static void InitSystem(Config& config) {
 					pae_paging = gm_memalign<PAEPaging>(CACHE_LINE_BYTES, zinfo->numProcs);
 				if( mode_str == "LongMode")
 					longmode_paging = gm_memalign<LongModePaging>(CACHE_LINE_BYTES, zinfo->numProcs);
-				if( reversed_pgt || zinfo->enable_shared_memory )
-					reversed_paging = gm_memalign<ReversedPaging>(CACHE_LINE_BYTES, zinfo->numProcs);
 				for( unsigned i=0; i<zinfo->numProcs; i++)
 				{
-					if( !reversed_pgt && !zinfo->enable_shared_memory)
+					if( mode_str == "Legacy")
+						zinfo->paging_array[i] = new (&normal_paging[i])NormalPaging(zinfo->paging_mode);
+					if( mode_str == "PAE")
+						zinfo->paging_array[i] = new (&pae_paging[i])PAEPaging(zinfo->paging_mode);
+					if( mode_str == "LongMode")
 					{
-						if( mode_str == "Legacy")
-							zinfo->paging_array[i] = new (&normal_paging[i])NormalPaging(zinfo->paging_mode);
-						if( mode_str == "PAE")
-							zinfo->paging_array[i] = new (&pae_paging[i])PAEPaging(zinfo->paging_mode);
-						if( mode_str == "LongMode")
-						{
-							std::cout<<"create long mode"<<std::endl;
-							zinfo->paging_array[i] = new (&longmode_paging[i])LongModePaging(zinfo->paging_mode);
-						}
-					}
-					else if( reversed_pgt || zinfo->enable_shared_memory)
-					{
-						std::cout<<"create reversed paging"<<std::endl;
-						zinfo->paging_array[i] = new (&reversed_paging[i]) ReversedPaging(mode_str, zinfo->paging_mode);	
+						std::cout<<"create long mode"<<std::endl;
+						zinfo->paging_array[i] = new (&longmode_paging[i])LongModePaging(zinfo->paging_mode);
 					}
 				}
 			}
@@ -1013,14 +989,14 @@ static void InitSystem(Config& config) {
 		//get counter len , default is 1Byte
 		zinfo->prefetch_set = config.get<bool>(prefix+"SetPrefetch", false);
 		//default increment step of read/write access of PCM main memory is 1/2 
-		//zinfo->read_incre_step = config.get<unsigned>( prefix + "read_incre_step",1);
-		//zinfo->write_incre_step = config.get<unsigned>( prefix + "write_incre_step",2);
+		zinfo->read_incre_step = config.get<unsigned>( prefix + "read_incre_step",1);
+		zinfo->write_incre_step = config.get<unsigned>( prefix + "write_incre_ste",2);
 		//default 4 queue
 		std::string buffer_type = config.get<const char*>(prefix + "buffer_type","FairnessAllocator" );
 		//ExtendTlbEntry::set_counter_len(zinfo->counter_len);
 		std::cout<<"dram buffer manager creating"<<std::endl;
 		zinfo->dram_manager = AllocatorFac::CreateAllocator( zinfo->buffer_size , zinfo->numProcs , buffer_type);
-		int threshold = config.get<unsigned>("sys.init_access_threshold",10);
+		int threshold = config.get<unsigned>("sys.init_access_threshold",0);
 		zinfo->access_threshold.resize(zinfo->numProcs, threshold);
 
 		std::cout<<"access_threshold:"<<std::dec<<zinfo->access_threshold[0]<<std::endl;
@@ -1038,9 +1014,9 @@ static void InitSystem(Config& config) {
 		/**********************************/
 	}
 	//default:enable share memory
-	/*zinfo->enable_shared_memory = config.get<bool>("sys.enable_shared_memory", true);
+	zinfo->enable_shared_memory = config.get<bool>("sys.enable_shared_memory", true);
 	if( 1==zinfo->numProcs)
-		zinfo->enable_shared_memory = false;*/
+		zinfo->enable_shared_memory = false;
 }
 
 static void PreInitStats() {
@@ -1243,8 +1219,6 @@ void SimInit(const char* configFile, const char* outputDir, uint32_t shmid) {
 
     //Caches,Tlbs, cores, memory controllers
     InitSystem(config);
-	zinfo->lineNum = zinfo->page_size/zinfo->lineSize;
-	std::cout<<"line num:"<<zinfo->lineNum<<std::endl;
 	debug_printf("init hardware system done");
 		
     //Sched stats (deferred because of circular deps)

@@ -42,12 +42,13 @@ class Network;
  * controllers, since for now we only have MESI controllers
  */
 class Cache : public BaseCache {
-    public:
+    protected:
         CC* cc;
         CacheArray* array;
         ReplPolicy* rp;
-		uint32_t numLines;
-	protected:
+
+        uint32_t numLines;
+
         //Latencies
         uint32_t accLat; //latency of a normal access (could split in get/put, probably not needed)
         uint32_t invLat; //latency of an invalidation
@@ -66,8 +67,6 @@ class Cache : public BaseCache {
 
         //NOTE: reqWriteback is pulled up to true, but not pulled down to false.
         virtual uint64_t invalidate(Address lineAddr, InvType type, bool* reqWriteback, uint64_t reqCycle, uint32_t srcId);
-		//clflush lineAddr in every level of cache
-		virtual uint64_t clflush_all( Address lineAddr, InvType type, bool* reqWriteback, uint64_t reqCycle, uint32_t srcId);
 
 		virtual void calculate_stats(){}
     protected:

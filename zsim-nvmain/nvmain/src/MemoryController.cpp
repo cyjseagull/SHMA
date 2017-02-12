@@ -220,7 +220,6 @@ void MemoryController::Enqueue( ncounter_t queueNum, NVMainRequest *request )
     /* Enqueue the request. */
     assert( queueNum < transactionQueueCount );
     transactionQueues[queueNum].push_back( request );
-	//std::cout<<"#push_back:"<<std::hex<<request->address.GetPhysicalAddress()<<std::endl;
     if( p->EventDriven )
     {
 		//std::cout<<"FineNVMain: EventDriven"<<std::endl;
@@ -397,7 +396,7 @@ void MemoryController::SetConfig( Config *conf, bool createChildren )
     SetParams( params );
    //hit time : CAS
 	t_hit = conf->GetValue("tCAS");
-    t_clean_miss = conf->GetValue("tRCD")
+    t_clean_miss = conf->GetValue("tRP") + conf->GetValue("tRCD")
 					+ conf->GetValue("tCAS") + conf->GetValue("tRTP");
 	if( conf->KeyExists("tWP"))
 		t_miss = t_clean_miss + conf->GetValue("tWP");
@@ -697,7 +696,7 @@ void MemoryController::ResetRefreshQueued( const ncounter_t bank, const ncounter
     {
 		if( !refreshQueued[rank][bankHead+i])
 		{
-			//std::cout<<"rank:"<<rank<<" , bankhead+i:"<<bankHead+i<<" is NULL"<<std::endl; 
+			std::cout<<"rank:"<<rank<<" , bankhead+i:"<<bankHead+i<<" is NULL"<<std::endl; 
 		}
         //assert( refreshQueued[rank][bankHead + i] );
         refreshQueued[rank][bankHead + i] = false;
@@ -765,7 +764,6 @@ bool MemoryController::HandleRefresh( )
                             NVMainRequest *cmdRefPre = MakePrechargeAllRequest( 0, 0, refBank, i, 0 );
 
                             commandQueues[queueId].push_back( cmdRefPre );
-							//std::cout<<"refresh request:"<<std::hex<<cmdRefPre->address.GetPhysicalAddress()<<std::endl;
 
                             /* clear all active subarrays */
                             for( ncounter_t sa = 0; sa < subArrayNum; sa++ )
@@ -785,7 +783,7 @@ bool MemoryController::HandleRefresh( )
                 /* send the refresh command to the rank */
                 cmdRefresh->issueCycle = GetEventQueue()->GetCurrentCycle();
                 commandQueues[queueId].push_back( cmdRefresh );
-				//std::cout<<"refresh request:"<<std::hex<<cmdRefPre->address.GetPhysicalAddress()<<std::endl;
+
                 for( ncounter_t tmpBank = 0; tmpBank < p->BanksPerRefresh; tmpBank++ )
                 {
                     ncounter_t refBank = (tmpBank + j) % p->BANKS;
@@ -1820,8 +1818,6 @@ void MemoryController::CycleCommandQueues( )
                          << queueHead->type << " for address 0x" << std::hex 
                          << queueHead->address.GetPhysicalAddress()
                          << std::dec << " for queue " << queueId << std::endl;
-
-			//std::cout<<"#schedule:"<<std::hex<<queueHead->address.GetPhysicalAddress()<<std::endl;
             GetChild( )->IssueCommand( queueHead );
 
             queueHead->flags |= NVMainRequest::FLAG_ISSUED;

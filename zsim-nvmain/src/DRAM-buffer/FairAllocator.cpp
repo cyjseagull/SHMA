@@ -81,7 +81,6 @@ unsigned FairAllocator::Release( unsigned process_id, unsigned evict_size )
 	}
 	if( clean_evict_size < evict_size)
 	{
-		//std::cout<<"evict dirty pages"<<std::endl;
 		//evict dirty pages
 		for( unsigned i = 0 ; i < (evict_size-clean_evict_size); i++ )
 		{
@@ -100,22 +99,6 @@ unsigned FairAllocator::Release( unsigned process_id, unsigned evict_size )
 double FairAllocator::get_memory_usage() 
 {
 	return (double)busy_pages/(double)total_page_count;
-}
-
-DRAMBufferBlock* FairAllocator::get_page_ptr( uint64_t entry_id )
-{
-	bool check = false;
-	for( uint32_t i = 0; i < zinfo->numProcs; i++)
-	{
-		if( clean_pools[i].count(entry_id) || dirty_pools[i].count(entry_id))
-		{
-			check = true;
-			break;
-		}
-	}
-	if( check )
-		return buffer_array[entry_id];
-	return NULL;
 }
 
 DRAMBufferBlock* FairAllocator::allocate_one_page( unsigned process_id )

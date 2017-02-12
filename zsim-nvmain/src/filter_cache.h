@@ -30,7 +30,7 @@
 #include "cache.h"
 #include "galloc.h"
 #include "zsim.h"
-#include "coherence_ctrls.h"
+
 /* Extends Cache with an L0 direct-mapped cache, optimized to hell for hits
  *
  * L1 lookups are dominated by several kinds of overhead (grab the cache locks,
@@ -105,8 +105,8 @@ class FilterCache : public Cache {
         inline uint64_t load(Address vAddr, uint64_t curCycle) {
 			cache_load++;
             Address vLineAddr = vAddr >> lineBits;
+			//std::cout<<"load( "<<std::hex<<vLineAddr<<" , "<<srcId<<" )"<<std::endl;
             uint32_t idx = vLineAddr & setMask;
-			//std::cout<<"load( "<<std::hex<<vLineAddr<<" , "<<idx<<" ) ,"<<srcId<<std::endl;
             uint64_t availCycle = filterArray[idx].availCycle; //read before, careful with ordering to avoid timing races
             if (vLineAddr == filterArray[idx].rdAddr) {
                 fGETSHit++;
@@ -120,8 +120,8 @@ class FilterCache : public Cache {
         inline uint64_t store(Address vAddr, uint64_t curCycle) {
 			cache_store++;
             Address vLineAddr = vAddr >> lineBits;
+			//std::cout<<"store( "<<std::hex<<vLineAddr<<" , "<<srcId<<" )"<<std::endl;
             uint32_t idx = vLineAddr & setMask;
-			//std::cout<<"store( "<<std::hex<<vLineAddr<<" , "<<idx<<" ) src:"<<srcId<<std::endl;
             uint64_t availCycle = filterArray[idx].availCycle; //read before, careful with ordering to avoid timing races
             if (vLineAddr == filterArray[idx].wrAddr) {
                 fGETXHit++;
@@ -130,53 +130,11 @@ class FilterCache : public Cache {
                 return MAX(curCycle, availCycle);
             } else {
 			//std::cout<<"store miss:0x"<<std::hex<<(vAddr>>12)<<" , "<<"vLineAddr:"<<std::hex<<vLineAddr<<srcId<<std::endl;
-				/*int32_t line_id = array->lookup(vLineAddr, NULL, false);
-				if( line_id == -1)
-				{
-					std::cout<<"fetch again, curCYcle:"<<curCycle<<std::endl;
-					 replace(vLineAddr, idx, true, curCycle);
-					std::cout<<"fetch after, curCycle:"<<curCycle<<std::endl;
-				}*/
                 return replace(vLineAddr, idx, false, curCycle);
             }
         }
 
-		inline uint64_t clflush( Address lineAddr, uint64_t curCycle, bool flush_all, bool &is_dirty)
-		{
-			uint64_t respCycle = curCycle;
-			bool req_write_back = true;				
-			is_dirty = false;
-			uint32_t idx = lineAddr & setMask;
-			if( !flush_all )
-			{
-				if( lineAddr == filterArray[idx].wrAddr)
-				{
-					is_dirty = true;
-				}
-				
-				int32_t line_id = array->lookup(lineAddr, NULL, false);
-				//if( lineAddr == filterArray[idx].rdAddr || lineAddr == filterArray[idx].wrAddr)
-				if( line_id !=-1)
-				{
-					//std::cout<<"clflush"<<lineAddr<<std::endl;
-					respCycle = clflush_all(lineAddr, INV, &req_write_back, respCycle, srcId);
-					//std::cout<<"clflush latency:"<<std::dec<<(respCycle-curCycle)<<std::endl;
-					//std::cout<<"###"<<std::endl;
-				}
-			}
-			else if( lineAddr == filterArray[idx].rdAddr || lineAddr == filterArray[idx].wrAddr)
-			{
-				if( lineAddr == filterArray[idx].wrAddr)
-					is_dirty = true;
-				respCycle = clflush_all(lineAddr, INV, &req_write_back, curCycle, srcId);
-				//std::cout<<"clflush latency:"<<std::dec<<(respCycle-curCycle)<<std::endl;
-			}
-			return respCycle;
-		}
-
-
-        uint64_t replace(Address vLineAddr, uint32_t idx, bool isLoad, uint64_t curCycle) 
-		{
+        uint64_t replace(Address vLineAddr, uint32_t idx, bool isLoad, uint64_t curCycle) {
             futex_lock(&filterLock);
             //Address pLineAddr = procMask | vLineAddr;
             Address pLineAddr =  vLineAddr;
@@ -191,8 +149,7 @@ class FilterCache : public Cache {
             Address oldAddr = filterArray[idx].rdAddr;
             filterArray[idx].wrAddr = isLoad? -1L : vLineAddr;
             filterArray[idx].rdAddr = vLineAddr;
-			//std::cout<<"install:"<<oldAddr<<"->"<<filterArray[idx].rdAddr<<" idx:"<<idx<<std::endl;
-			//std::cout<<"set address after replace:"<<filterArray[idx].rdAddr;
+
             //For LSU simulation purposes, loads bypass stores even to the same line if there is no conflict,
             //(e.g., st to x, ld from x+8) and we implement store-load forwarding at the core.
             //So if this is a load, it always sets availCycle; if it is a store hit, it doesn't
@@ -202,9 +159,8 @@ class FilterCache : public Cache {
             return respCycle;
         }
 
-
         //NOTE: reqWriteback is pulled up to true, but not pulled down to false.
-        uint64_t invalidate(Address lineAddr, InvType type, bool* reqWriteback, uint64_t cycle, uint32_t srcId)	{
+        uint64_t invalidate(Address lineAddr, InvType type, bool* reqWriteback, uint64_t cycle, uint32_t srcId) {
             futex_lock(&filterLock);
             uint32_t idx = lineAddr & setMask; //works because of how virtual<->physical is done...
             //if ((filterArray[idx].rdAddr | procMask) == lineAddr) { //FIXME: If another process calls invalidate(), procMask will not match even though we may be doing a capacity-induced invalidation!
@@ -227,4 +183,5 @@ class FilterCache : public Cache {
 			//info("%s cache load: %lu, store: %lu",name,cache_load , cache_load);
 		}
 };
+
 #endif  // FILTER_CACHE_H_

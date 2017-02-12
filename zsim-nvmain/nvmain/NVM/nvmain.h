@@ -91,13 +91,12 @@ class NVMain : public NVMObject
 	uint64_t memory_size;
     ncounter_t totalReadRequests;
     ncounter_t totalWriteRequests;
-    MemoryController **memoryControllers;
   protected:
 	double GetSyncValue( );
 	void CycleMemCtl( MemoryController** &mem_ctl , uint64_t num_channels);
     Config *config;
     Config **channelConfig;
-    //MemoryController **memoryControllers;
+    MemoryController **memoryControllers;
     AddressTranslator *translator;
     SimInterface *simInterface;
     ncounter_t successfulPrefetches;

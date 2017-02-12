@@ -6,6 +6,7 @@
 #ifndef TLB_ENTRY_H_
 #define TLB_ENTRY_H_
 #include "common/global_const.h"
+#include "common/trie.h"
 #include "zsim.h"
 #include "galloc.h"
 /*---------------TLB entry related-------------*/
@@ -80,13 +81,10 @@ class BaseTlbEntry: public GlobAlloc
 		{
 			flag |= VALID;
 		}
-		void set_clean()
-		{
-			flag &=(~DIRTY);
-		}
+
 		void set_invalid()
 		{
-			flag = 0;
+			flag &=(!VALID);
 		}
 
 		virtual void map( Address vpn , Address ppn )
@@ -97,15 +95,13 @@ class BaseTlbEntry: public GlobAlloc
 
 	   virtual Address get_counter()
 	   {	return INVALID_PAGE_ADDR;	}
-		
-	   virtual bool is_in_dram()
-	   {	return false;	}	
 
 	   virtual void clear_counter(){}
 };
 
 //forward declaration
 class TlbEntry;
+typedef Trie<Address , TlbEntry> TlbEntryTrie;
 class TlbEntry: public BaseTlbEntry
 {
 	public:
@@ -117,7 +113,7 @@ class TlbEntry: public BaseTlbEntry
 	void update_vpn( Address new_vpn)
 	{	v_page_no = new_vpn;	}
 
-	virtual bool is_in_dram()
+	bool is_in_dram()
 	{
 		return false;
 	}
@@ -131,6 +127,7 @@ class TlbEntry: public BaseTlbEntry
 
 
 class ExtendTlbEntry;
+typedef Trie<Address, ExtendTlbEntry> ExtendTlbEntryTrie;
 class ExtendTlbEntry: public BaseTlbEntry
 {
 	public:
@@ -156,9 +153,8 @@ class ExtendTlbEntry: public BaseTlbEntry
 
 		void remap( Address ppn , bool is_dram)
 		{
-			p_page_no = ppn;
-			access_counter = 0;
-			set_in_dram(is_dram);	
+			access_counter = ppn;
+			set_in_dram(is_dram);		
 		}
 
 		bool is_in_dram()
@@ -181,7 +177,6 @@ class ExtendTlbEntry: public BaseTlbEntry
 					access_counter += write_incre_step;
 				else
 				   	access_counter += read_incre_step;
-				//std::cout<<"access_counter:"<<access_counter<<std::endl;
 				 if( access_counter >= access_threshold)
 					return OverThres;
 				 else 
@@ -209,7 +204,6 @@ class ExtendTlbEntry: public BaseTlbEntry
 
 	   void set_counter( Address counter)
 	   {
-		   //std::cout<<"set counter:"<<counter<<std::endl;
 			access_counter = counter;
 	   }
 
@@ -231,7 +225,6 @@ class ExtendTlbEntry: public BaseTlbEntry
 				flag |= DRAMVALID;
 			else
 				flag &= (~DRAMVALID);
-			set_clean();
 		}
 };
 #endif

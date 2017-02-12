@@ -31,7 +31,7 @@
 #include "g_std/g_list.h"
 #include "log.h"
 #include "pad.h"
-#include <iostream>
+
 class PhaseSlabAlloc {
     private:
         struct Slab {
@@ -196,7 +196,7 @@ class PhaseSlabAlloc {
 					std::cout<<"slab_alloc_num:"<<std::dec<<slab_alloc_num<<std::endl;
 					panic("create slab obj failed: Out of global heap memory, use a larger GM segment");
 				}
-				if( slab_alloc_num - last_num>=200)
+				if( slab_alloc_num - last_num>=1000)
 				{
 					std::cout<<"now slab_alloc_num:"<<std::dec<<slab_alloc_num<<std::endl;
 					last_num = slab_alloc_num;

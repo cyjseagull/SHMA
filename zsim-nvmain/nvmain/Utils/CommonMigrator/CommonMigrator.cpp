@@ -38,7 +38,7 @@
 #include "src/SubArray.h"
 #include "src/EventQueue.h"
 #include "include/NVMHelpers.h"
-#include "core.h"
+
 using namespace NVM;
 
 uint64_t CommonMigrator::migration_cycles_ = 0;
@@ -304,6 +304,7 @@ bool CommonMigrator::TryMigration( NVMainRequest *request, bool atomic )
             ChooseVictim( migratorTranslator, promotee, demotee );
             assert( migratorTranslator->IsMigrated( demotee ) == false );
             assert( migratorTranslator->IsMigrated( promotee ) == false );
+
              if( atomic )
              {
                     migratorTranslator->StartMigration( request->address, demotee );
@@ -314,7 +315,6 @@ bool CommonMigrator::TryMigration( NVMainRequest *request, bool atomic )
              else if( CheckIssuable( promotee, READ ) &&
                          CheckIssuable( demotee, READ ) )
              {
-
                     migratorTranslator->StartMigration( request->address, demotee );
 
                     promoRequest = new NVMainRequest( ); 
@@ -329,6 +329,7 @@ bool CommonMigrator::TryMigration( NVMainRequest *request, bool atomic )
                     demoRequest->type = READ;
                     demoRequest->tag = MIG_READ_TAG;
                     demoRequest->burstCount = numCols;
+                    
 					promoRequest->owner = savedParent;
                     demoRequest->owner = savedParent;
                     savedParent->IssueCommand( promoRequest );
@@ -340,6 +341,7 @@ bool CommonMigrator::TryMigration( NVMainRequest *request, bool atomic )
             }
         }
 	 }
+
     return rv;
 }
 

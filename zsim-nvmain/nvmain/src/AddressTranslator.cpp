@@ -40,8 +40,6 @@
 #include "src/AddressTranslator.h"
 #include "include/NVMHelpers.h"
 
-#include "galloc.h"
-#include "pad.h"
 
 using namespace NVM;
 
@@ -56,12 +54,9 @@ AddressTranslator::AddressTranslator( )
     burstLength = 8; 
 
     lowColBits = 0;
-	//bitWidths = new unsigned int[FIELD_NUM];
-	//fieldOrder = new int[FIELD_NUM];
-	//int* orders = gm_memalign<int>(CACHE_LINE_BYTES,1);
-	//unsigned int* widths = gm_memalign<unsigned int>(CACHE_LINE_BYTES,1);
-	//fieldOrder = new (orders) int[FIELD_NUM];
-	//bitWidths = new (widths) unsigned int[FIELD_NUM];
+	bitWidths = new unsigned int[FIELD_NUM];
+	fieldOrder = new int[FIELD_NUM];
+	
 	bitWidthsInited = false;
 	fieldOrderInited = false;
 }
@@ -69,6 +64,10 @@ AddressTranslator::AddressTranslator( )
 
 AddressTranslator::~AddressTranslator( )
 {
+	if(!bitWidths)
+		delete bitWidths;
+	if(!fieldOrder)
+		delete fieldOrder;
 }
 
 
@@ -133,19 +132,13 @@ uint64_t AddressTranslator::ReverseTranslate( const uint64_t& row,
          //                 &rankBits, &channelBits, &subarrayBits );
 	if(!bitWidthsInited)
 	{
-		for( int i=0; i<FIELD_NUM; i++)
-		{
-			bitWidths[i]= method->bitWidths[i];
-		}
+		bitWidths = method->GetBitWidths();
 		bitWidthsInited = true;
 	}
 	
 	if(!fieldOrderInited)
 	{
-		for( int i=0; i<FIELD_NUM; i++)
-		{
-			fieldOrder[i] = method->order[i];
-		}
+		fieldOrder = method->GetOrder();
 		fieldOrderInited = true;
 	}
 
@@ -259,19 +252,13 @@ void AddressTranslator::Translate( uint64_t address, uint64_t *row, uint64_t *co
     //get order and bitWidths 
 	if(!fieldOrderInited)
 	{
-		for( int i=0; i<FIELD_NUM; i++)
-		{
-			fieldOrder[i] = method->order[i];
-		}
+		fieldOrder =  method->GetOrder();
 		fieldOrderInited = true;
 	}
 	
 	if(!bitWidthsInited)
 	{
-		for( int i=0; i<FIELD_NUM; i++)
-		{
-			bitWidths[i] = method->bitWidths[i];
-		}
+		bitWidths = method->GetBitWidths();
 		bitWidthsInited = true;
 	}
 

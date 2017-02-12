@@ -60,9 +60,7 @@ void BufferDecoder::Translate( NVMainRequest *request, uint64_t *row, uint64_t *
 {
 	uint64_t addr = request->address.GetPhysicalAddress();
 	addr &= buffer_mask_;
-	//std::cout<<"addr is:"<<addr<<std::endl;
 	AddressTranslator::Translate( request , row , col , bank, rank , channel , subarray);
-	//std::cout<<"translated address, row:"<<*row<<" channel:"<<*channel<<std::endl;
 }
 
 

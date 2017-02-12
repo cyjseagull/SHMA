@@ -400,7 +400,6 @@ bool SubArray::Read( NVMainRequest *request )
     /* Update timing constraints */
     if( request->type == READ_PRECHARGE )
     {
-		//std::cout<<"trp for nextActive:"<<nextActivate<<std::endl;
         nextActivate = MAX( nextActivate, 
                             GetEventQueue()->GetCurrentCycle()
                                 + MAX( p->tBURST, p->tCCD ) * (request->burstCount - 1)
@@ -745,10 +744,8 @@ bool SubArray::Precharge( NVMainRequest *request )
 
     /* Update timing constraints */
     writeTimer = MAX( 1, p->tRP ); // Assume write-through. Needs to be at least one due to event callback.
-	//std::cout<<"WRITE MODE:"<<writeMode<<" writeCycle:"<<writeCycle<<std::endl;
     if( writeMode == WRITE_BACK && writeCycle )
     {
-		//std::cout<<"write back precharge"<<std::endl;
         writeTimer = MAX( 1, p->tRP + WriteCellData( request ) );
 
         ncycle_t encLat = 0;
@@ -1249,7 +1246,6 @@ bool SubArray::IssueCommand( NVMainRequest *req )
         rv = true;
         switch( req->type )
         {
-			//std::cout<<"type of req:"<<req->type<<std::endl;
             case ACTIVATE:
                 rv = this->Activate( req );
                 break;

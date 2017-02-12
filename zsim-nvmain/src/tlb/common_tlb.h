@@ -107,7 +107,7 @@ class CommonTlb: public BaseTlb
 		*/
 		T* look_up(Address vpage_no , bool update_lru=true)
 		{
-			//debug_printf("look up tlb vpage_no: %llx",vpage_no);
+			debug_printf("look up tlb vpage_no: %llx",vpage_no);
 			//TLB hit,update lru_seq of tlb entry to the newest lru_seq
 			T* result_node = NULL;
 			futex_lock( &tlb_lock);
@@ -144,7 +144,6 @@ class CommonTlb: public BaseTlb
 				new_entry->lru_seq = ++lru_seq;
 				tlb_trie[vpage_no] = new_entry;
 				tlb_trie_pa[new_entry->p_page_no] = new_entry;
-				//std::cout<<"insert "<<new_entry->p_page_no<<" to pa"<<std::endl;
 				futex_unlock(&tlb_lock);
 				return new_entry;
 			}	
@@ -194,7 +193,7 @@ class CommonTlb: public BaseTlb
 			assert(tlb_trie.count(tlb_entry->v_page_no));
 			tlb_trie.erase(tlb_entry->v_page_no);
 			tlb_trie_pa.erase(tlb_entry->p_page_no);
-			//std::cout<<"tlb evict, vpn:"<<tlb_entry->v_page_no<<" ppn:"<<tlb_entry->p_page_no<<std::endl;
+
 			tlb_entry->set_invalid();
 			free_entry_list.push_back(tlb_entry);
 			return tlb_entry;//return physical address recorded in this tlb entry
@@ -273,18 +272,11 @@ class CommonTlb: public BaseTlb
 			info("%s access time:%lu \t hit time: %lu \t miss time: %lu \t evict time:%lu \t hit rate:%.3f",tlb_name_.c_str() , tlb_access_time, tlb_hit_time, (tlb_access_time - tlb_hit_time),tlb_evict_time, tlb_hit_rate);
 			return tlb_access_time;
 		}
-		void clear_counter()
-		{
-			futex_lock( &tlb_lock );
-			for( unsigned i=0; i< tlb_entry_num; i++)
-			{
-				tlb[i]->clear_counter();				
-			}
-			futex_unlock( &tlb_lock );
-		}
+
 		//lock_t tlb_access_lock;
 		//lock_t tlb_lookup_lock;
 		//static lock_t pa_insert_lock;
+		typedef Trie<Address , T> CommonTlbEntryTrie;
 			
 		//number of tlb entries 
 		unsigned tlb_entry_num;

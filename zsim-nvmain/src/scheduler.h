@@ -382,49 +382,41 @@ class Scheduler : public GlobAlloc, public Callee {
         }
 
         uint32_t sync(uint32_t pid, uint32_t tid, uint32_t cid) {
-            ThreadInfo* th = NULL;
-			if( cid < contexts.size())
-				th= contexts[cid].curThread;
-			else
-				std::cout<<"now cid is, over contexts size:"<<cid<<std::endl;
-			if( th )
-			{
-				futex_lock(&schedLock);
-				assert(!th->markedForSleep);
-				bar.sync(cid, &schedLock); //releases lock, may trigger end of phase, may block us
-				//No locks at this point; we need to check whether we need to hand off our context
-				if (th->handoffThread) {
-					futex_lock(&schedLock);  // this can be made lock-free, but it's not worth the effort
-					ThreadInfo* dst = const_cast<ThreadInfo*>(th->handoffThread);  // de-volatilize
-					th->handoffThread = NULL;
-					ContextInfo* ctx = &contexts[th->cid];
-					deschedule(th, ctx, QUEUED);
-					schedule(dst, ctx);
-					wakeup(dst, false /*no join needed*/);
-					handoffEvents.inc();
-					//info("%d starting handoff cid %d to gid %d", th->gid, ctx->cid, dst->gid);
+            futex_lock(&schedLock);
+            ThreadInfo* th = contexts[cid].curThread;
+            assert(!th->markedForSleep);
+            bar.sync(cid, &schedLock); //releases lock, may trigger end of phase, may block us
 
-					//We're descheduled and have completed the handoff. Now we need to see if we can be scheduled somewhere else.
-					ctx = schedThread(th);
-					if (ctx) {
-						//TODO: This should only arise in very weird cases (e.g., partially overlapping process masks), and has not been tested
-						warn("Sched: untested code path, check with Daniel if you see this");
-						schedule(th, ctx);
-						//We need to do a join, because dst will not join
-						zinfo->cores[ctx->cid]->join();
-						bar.join(ctx->cid, &schedLock); //releases lock
-					}
-					else
-					{
-						runQueue.push_back(th);
-						waitForContext(th); //releases lock, might join
-					}
-				}
-				assert(th->state == RUNNING);
-				return th->cid;
-			}
-			return (uint32_t)(-1);
-		}
+            //No locks at this point; we need to check whether we need to hand off our context
+            if (th->handoffThread) {
+                futex_lock(&schedLock);  // this can be made lock-free, but it's not worth the effort
+                ThreadInfo* dst = const_cast<ThreadInfo*>(th->handoffThread);  // de-volatilize
+                th->handoffThread = NULL;
+                ContextInfo* ctx = &contexts[th->cid];
+                deschedule(th, ctx, QUEUED);
+                schedule(dst, ctx);
+                wakeup(dst, false /*no join needed*/);
+                handoffEvents.inc();
+                //info("%d starting handoff cid %d to gid %d", th->gid, ctx->cid, dst->gid);
+
+                //We're descheduled and have completed the handoff. Now we need to see if we can be scheduled somewhere else.
+                ctx = schedThread(th);
+                if (ctx) {
+                    //TODO: This should only arise in very weird cases (e.g., partially overlapping process masks), and has not been tested
+                    warn("Sched: untested code path, check with Daniel if you see this");
+                    schedule(th, ctx);
+                    //We need to do a join, because dst will not join
+                    zinfo->cores[ctx->cid]->join();
+                    bar.join(ctx->cid, &schedLock); //releases lock
+                } else {
+                    runQueue.push_back(th);
+                    waitForContext(th); //releases lock, might join
+                }
+            }
+
+            assert(th->state == RUNNING);
+            return th->cid;
+        }
 
         // This is called with schedLock held, and must not release it!
         virtual void callback() {
@@ -570,6 +562,7 @@ class Scheduler : public GlobAlloc, public Callee {
             scheduleEvents.inc();
             scheduledThreads++;
             //info("Scheduled %d <-> %d", th->gid, ctx->cid);
+			//(zinfo->cores[ctx->cid])->SetPaging(zinfo->paging_array[0]);
             zinfo->cores[ctx->cid]->contextSwitch(th->gid);
         }
 
@@ -585,6 +578,7 @@ class Scheduler : public GlobAlloc, public Callee {
             scheduledThreads--;
             //Notify core of context-switch eagerly.
             //TODO: we may need more callbacks in the cores, e.g. in schedule(). Revise interface as needed...
+		   //(zinfo->cores[ctx->cid])->SetPaging(zinfo->paging_array[0]);
             zinfo->cores[ctx->cid]->contextSwitch(-1);
             zinfo->processStats->notifyDeschedule(ctx->cid, getPid(th->gid));
             //info("Descheduled %d <-> %d", th->gid, ctx->cid);
@@ -701,7 +695,7 @@ class Scheduler : public GlobAlloc, public Callee {
                 }
             }
 
-            info("schedContext done, cid %d, success %d (gid %d)", ctx->cid, th != NULL, th? th->gid : 0);
+            //info("schedContext done, cid %d, success %d (gid %d)", ctx->cid, th != NULL, th? th->gid : 0);
             //printState();
             return th;
         }

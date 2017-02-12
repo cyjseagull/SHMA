@@ -41,9 +41,6 @@
 
 #include <sstream>
 #include <cassert>
-
-#include "galloc.h"
-#include "pad.h"
 using namespace std;
 using namespace NVM;
 
@@ -88,11 +85,6 @@ FineNVMain::FineNVMain( )
 	dram_access_time = 0;
 	pcm_access_time = 0;
 	total_access_time = 0;
-	t_fast_read = 0;
-	t_slow_read = 0;
-	t_slow_write = 0;
-	clflush_wb_overhead = 0;
-	futex_init( &issue_lock );
 }
 
 
@@ -166,17 +158,9 @@ void FineNVMain::SetConfig( Config *conf, std::string memoryName, bool createChi
     if( createChildren )
     {
 		if( conf->KeyExists( "Decoder" ) )
-		{
-		    translator = DecoderFactory::CreateNewDecoder( conf->GetString("Decoder"));
-			//BufferDecoder* decoder = gm_memalign<NVM::BufferDecoder>(CACHE_LINE_BYTES, 1);
-		   //translator = new (decoder) BufferDecoder();	
-		}
+			translator = DecoderFactory::CreateNewDecoder( conf->GetString("Decoder"));
 		else
-		{
-			std::cout<<"create address translator"<<std::endl;
-			AddressTranslator* decoder = gm_memalign<NVM::AddressTranslator>(CACHE_LINE_BYTES, 1);
-			translator = new (decoder) AddressTranslator();
-		}
+			translator = new AddressTranslator();
 		SetDecoder( translator);
         uint64_t channels = static_cast<int>(p->CHANNELS);
 		reserved_channels = static_cast<int>( p->ReservedChannels);
@@ -189,9 +173,6 @@ void FineNVMain::SetConfig( Config *conf, std::string memoryName, bool createChi
 		SetMemoryControllers( memoryControllers ,channelConfig,
 							  conf , channels ,
 							  "CONFIG_CHANNEL" ,"MainMemoryController" );
-		p->SetParams(channelConfig[0]);
-		t_slow_read = GetReadLatency(p);
-		t_slow_write = GetWriteLatency(p);
 		SetTranslators( channelConfig[0] ,translator , p , mem_width ,mem_word_size, mem_size);
 
 		if( reserved_channels )
@@ -200,10 +181,7 @@ void FineNVMain::SetConfig( Config *conf, std::string memoryName, bool createChi
 			if( conf->KeyExists("DRAMBufferDecoder"))
 			{
 				buffer_decoder = conf->GetString("DRAMBufferDecoder");
-				//cacheTranslator = DecoderFactory::CreateNewDecoder( buffer_decoder);
-				std::cout<<"create buffer decoder"<<std::endl;
-				BufferDecoder* decoder = gm_memalign<NVM::BufferDecoder>(CACHE_LINE_BYTES, 1);
-				cacheTranslator = new (decoder) BufferDecoder();	
+				cacheTranslator = DecoderFactory::CreateNewDecoder( buffer_decoder);
 				SetBufferDecoder(cacheTranslator);
 			}
 			reservedControllers = new MemoryController* [reserved_channels];
@@ -214,8 +192,6 @@ void FineNVMain::SetConfig( Config *conf, std::string memoryName, bool createChi
 								 "CONFIG_DRAM_CHANNEL" , "DRAMBufferControllers");
 
 			reserve_region_param->SetParams(reservedConfig[0]);	//set reserve region param
-			t_fast_read = GetReadLatency( reserve_region_param);
-
 			for( unsigned i=0; i<reserved_channels;i++)
 				reservedControllers[i]->SetParams(reserve_region_param);
 			SetTranslators(	reservedConfig[0] ,cacheTranslator , 
@@ -288,26 +264,6 @@ void FineNVMain::SetConfig( Config *conf, std::string memoryName, bool createChi
 	is_configed = true;
 }
 
-inline unsigned FineNVMain::GetReadLatency( Params* p)
-{
-	//tAL: append latency
-	//tCAS: col activate
-	//tRAS: row activate
-	//tRDPDEN: wait for read to complete
-	std::cout<<"AL:"<<(p->tAL)<<" CAS:"<<(p->tCAS)<<
-		" tRDPDEN:"<<(p->tRDPDEN)<<std::endl;
-
-	return (p->tAL + p->tRDPDEN);
-}
-
-inline unsigned FineNVMain::GetWriteLatency( Params* p)
-{
-	std::cout<<"get write latency, AL:"<<p->tAL<<" CAS:"
-			 <<p->tCAS<<" WRPDEN:"<<
-			 p->tWRPDEN<<std::endl;
-	return (p->tAL + p->tCAS + p->tWRPDEN);
-}
-
 void FineNVMain::SetTranslators( Config* conf , AddressTranslator* &translator,
 								 Params* param , unsigned &bit_width ,
 								 unsigned &word_size , uint64_t &mem_size )
@@ -356,8 +312,7 @@ void FineNVMain::SetTranslators( Config* conf , AddressTranslator* &translator,
 	rank_bits = NVM::mlog2(ranks);
 	channel_bits = NVM::mlog2(channels);
 	subarray_bits = NVM::mlog2(subarrays);
-	TranslationMethod* tmp_method = gm_memalign<TranslationMethod>(CACHE_LINE_BYTES,1);
-	TranslationMethod *method = new (tmp_method) TranslationMethod();
+	TranslationMethod *method = new TranslationMethod();
 	bit_width = static_cast<uint64_t>(col_bits + row_bits + bank_bits
 									  + rank_bits + channel_bits + subarray_bits );
 	method->SetBitWidths( row_bits , col_bits ,
@@ -438,13 +393,11 @@ bool FineNVMain::IsIssuable( NVMainRequest *request, FailReason *reason )
 
 bool FineNVMain::IssueCommand( NVMainRequest *request )
 {
-	futex_lock(&issue_lock);
 	access_time++;
     ncounter_t channel, rank, bank, row, col, subarray;
 	uint64_t pa = request->address.GetPhysicalAddress();
     bool mc_rv;
 	bool access_cache = false;
-	//std::cout<<"nvmain access"<<std::endl;
 	if( !config )
     {
         std::cout << "NVMain: Received request before configuration!\n";
@@ -492,7 +445,6 @@ bool FineNVMain::IssueCommand( NVMainRequest *request )
 			//when process evnet , call this->RequestComplete
 	        GetEventQueue()->InsertEvent( EventResponse, this, request, 
                                       GetEventQueue()->GetCurrentCycle() + 1 );
-			futex_unlock(&issue_lock);
 		    return true;
 	    }
 
@@ -514,7 +466,6 @@ bool FineNVMain::IssueCommand( NVMainRequest *request )
 				totalWriteRequests++;
 		    PrintPreTrace( request );
 		}
-	futex_unlock(&issue_lock);
     return mc_rv;
 }
 
@@ -603,7 +554,6 @@ void FineNVMain::RegisterStats( )
 	AddStat(hit_rate);
 	AddStat( drc_read_hit_rate);
 	AddStat( drc_write_hit_rate );
-	AddStat( clflush_wb_overhead );
 }
 
 void FineNVMain::CalculateStats( )
@@ -710,13 +660,6 @@ bool FineNVMain::RequestComplete( NVMainRequest *request )
 			block_fetcher->RequestComplete(request);
             rv = true;
         }
-		else if( request->isClflush)
-		{
-			//std::cout<<"curCycle:"<<GetEventQueue()->GetCurrentCycle()<<" arrival cycle:"<<request->arrivalCycle<<std::endl;
-			clflush_wb_overhead += GetEventQueue()->GetCurrentCycle()-(request->arrivalCycle);
-			delete request;
-			rv = true;
-		}
 		else
 		{
 			delete request;

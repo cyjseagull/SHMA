@@ -38,7 +38,6 @@
 #include "src/NVMObject.h"
 #include "src/Params.h"
 #include "include/NVMainRequest.h"
-#include "zsim.h"
 
 namespace NVM {
 #define MIG_READ_TAG GetTagGenerator( )->CreateTag("MIGREAD")
@@ -66,8 +65,6 @@ class CommonMigrator : public NVMObject
     virtual void ChooseVictim( Migrator *at, NVMAddress& promo, NVMAddress& victim );
 
   private:
-	//unsigned page_shift; //default is 12
-
     bool promoBuffered, demoBuffered;
     NVMAddress demotee, promotee; 
     NVMainRequest *promoRequest;

@@ -123,8 +123,6 @@ class MemoryNode
 	
 	Page* get_page_ptr( uint64_t page_id )
 	{
-		if( page_id >= node_page_num)
-			std::cout<<"page_id:"<<page_id<<" page_num:"<<node_page_num<<std::endl;
 		assert(page_id<node_page_num);
 		if( node_mem_map.count(page_id) )
 			return node_mem_map[page_id];
@@ -137,6 +135,7 @@ class MemoryNode
 	}
 
 	private:
+		void allocate_node_mem_map(uint64_t start_entry , uint64_t totalpage_num);
 		uint64_t calculate_total_pages();
 		void init_zones();
 		void setup_per_zone_wmarks();

@@ -122,8 +122,8 @@ bool FRFCFS::IsIssuable( NVMainRequest * /*request*/, FailReason * /*fail*/ )
     if( memQueue->size( ) >= queueSize )
     {
         rv = false;
-		//std::cout<<"FlatNVMain can't issuable"<<std::endl;
     }
+	//std::cout<<"FineNVMain:FRFCFS: is issuable ? "<<(rv?"true":"false")<<std::endl;
     return rv;
 }
 
@@ -148,7 +148,6 @@ bool FRFCFS::IssueCommand( NVMainRequest *req )
      *  here and attempt to remove them later.
      */
 	//std::cout<<"nvmain: memory controller enqueue request , cycle is"<<req->arrivalCycle<<std::endl;
-   //std::cout<<"#enqueue:"<<std::hex<<req->address.GetPhysicalAddress()<<std::endl;
     Enqueue( 0, req );
     if( req->type == READ || req->type==READ_PRECHARGE )
         mem_reads++;

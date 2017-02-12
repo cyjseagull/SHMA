@@ -561,9 +561,9 @@ ADDRINT OOOCore::TlbTranslate( ADDRINT virtual_addr , bool is_inst, bool is_writ
 	req.lineAddr = virtual_addr;
 	req.cycle = curCycle;
 	if(is_write)
-		req.type = PUTX;
+		req.type = GETX;
 	else
-		req.type = PUTS;
+		req.type = GETS;
 	Address addr = tlb->access(req);
 	curCycle = req.cycle;	//get updated cycle
 	//std::cout<<name<<" (va: 0x"<<std::hex<<req.lineAddr<<" , pa: 0x"<<std::hex<<line_addr<<" )"<<std::endl;

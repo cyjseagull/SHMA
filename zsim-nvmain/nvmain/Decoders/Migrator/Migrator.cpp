@@ -44,6 +44,9 @@ Migrator::Migrator( )
     migrating = false;
     inputPage = 0;
     outputPage = 0;
+    
+    migratedAccesses = 0;
+
     migrationMap.clear( );
     migrationState.clear( );
 }
@@ -71,6 +74,7 @@ void Migrator::SetConfig( Config *config, bool /*createChildren*/ )
 
 void Migrator::RegisterStats( )
 {
+    AddStat(migratedAccesses);
 }
 
 
@@ -234,6 +238,7 @@ void Migrator::Translate( uint64_t address, uint64_t *row, uint64_t *col, uint64
         if( migrationState[key] == MIGRATION_DONE )
         {
             *channel = migrationMap[key];
+            migratedAccesses++;
 			//std::cout<<"request "<<address<< "bank: "<< *bank<<" access migrated channel "<< *channel<<std::endl;
         }
     }
