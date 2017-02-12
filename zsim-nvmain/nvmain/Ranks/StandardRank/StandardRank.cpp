@@ -1018,7 +1018,11 @@ void StandardRank::CalculateStats( )
 
     totalEnergy = activateEnergy + burstEnergy + refreshEnergy + backgroundEnergy;
     totalPower = activatePower + burstPower + refreshPower + backgroundPower;
-
+	/*std::cout<<std::endl;
+	if( p->EnergyModel == "current")
+		std::cout<<"#**totalEnergy is:"<<totalEnergy<<" mA*t"<<std::endl;
+	else
+		std::cout<<"#**totalEnergy is:"<<totalEnergy<<" nj"<<std::endl;*/
     actWaitAverage = static_cast<double>(actWaitTotal) / static_cast<double>(actWaits);
     rrdWaitAverage = static_cast<double>(rrdWaitTotal) / static_cast<double>(rrdWaits);
     fawWaitAverage = static_cast<double>(fawWaitTotal) / static_cast<double>(fawWaits);

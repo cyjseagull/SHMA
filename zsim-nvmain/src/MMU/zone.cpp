@@ -168,11 +168,6 @@ uint64_t MemoryNode::calculate_total_pages()
 }
 
 
-void MemoryNode::allocate_node_mem_map( uint64_t start_entry ,
-									  uint64_t totalpage_num)
-{
-}
-
 //init zones
 void MemoryNode::init_zones()
 {

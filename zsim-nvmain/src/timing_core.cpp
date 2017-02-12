@@ -28,6 +28,8 @@
 #include "tlb/common_tlb.h"
 #include "zsim.h"
 
+#include "nvmain_mem_ctrl.h"
+#include "include/NVMainRequest.h"
 #define DEBUG_MSG(args...)
 //#define DEBUG_MSG(args...) info(args)
 
@@ -125,6 +127,59 @@ void TimingCore::bblAndRecord(Address bblAddr, BblInfo* bblInfo) {
     }
 }
 
+uint64_t TimingCore::clflush( Address startAddr, uint64_t startCycle, uint64_t &write_backs )
+{
+	//std::cout<<"clflush page"<<(startAddr>>6)<<std::endl;
+	Address endAddr = startAddr + zinfo->lineNum;
+	uint64_t max_cycle = startCycle;
+	bool dirty = false;
+	write_backs = 0;
+	for( Address fetchAddr = startAddr; fetchAddr < endAddr;fetchAddr++)
+	{
+		
+		curCycle = l1i->clflush( fetchAddr, startCycle, true, dirty);
+		max_cycle = (max_cycle > curCycle)? max_cycle:curCycle;
+		curCycle = l1d->clflush( fetchAddr, startCycle, true , dirty);
+		max_cycle = (max_cycle > curCycle)? max_cycle:curCycle;
+		if( dirty )
+		{
+			if( !zinfo->enable_shared_memory)
+			{
+				NVM::NVMainRequest* req = new NVM::NVMainRequest();
+				req->address.SetPhysicalAddress( fetchAddr<<lineBits );
+				req->burstCount = 8;
+				req->type = NVM::WRITE;
+				req->arrivalCycle = curCycle;
+				req->isClflush = true;
+				NVM::NVMain* parent = dynamic_cast<NVMainMemory*>(zinfo->memoryControllers[0])->GetNVMainPtr();
+				req->owner = parent;
+				if( parent->IsIssuable(req) )
+					parent->IssueCommand(req);
+				else
+					max_cycle += zinfo->mem_access_time;
+			}
+			write_backs++;
+		}
+	}
+	if( zinfo->enable_shared_memory && write_backs)
+	{
+		max_cycle += 60*write_backs;
+	}
+	curCycle = max_cycle;
+	return max_cycle;
+}
+
+uint64_t TimingCore::clflush_cacheline( Address startAddr, uint64_t startCycle)
+{
+	uint64_t max_cycle = startCycle;
+	bool is_dirty = false;
+	uint64_t cycle = l1i->clflush(startAddr, startCycle, false, is_dirty);
+	max_cycle = ( max_cycle > cycle)? max_cycle:cycle;
+
+	cycle = l1d->clflush(startAddr, startCycle, false, is_dirty);
+	max_cycle = ( max_cycle > cycle)? max_cycle:cycle;
+	return max_cycle;
+}
 
 InstrFuncPtrs TimingCore::GetFuncPtrs() {
     return {LoadAndRecordFunc, StoreAndRecordFunc, BblAndRecordFunc, BranchFunc, PredLoadAndRecordFunc, PredStoreAndRecordFunc, FPTR_ANALYSIS, {0}};
@@ -145,6 +200,8 @@ void TimingCore::BblAndRecordFunc(THREADID tid, ADDRINT bblAddr, BblInfo* bblInf
     while (core->curCycle > core->phaseEndCycle) {
         core->phaseEndCycle += zinfo->phaseLength;
         uint32_t cid = getCid(tid);
+		if( cid >= zinfo->numCores)
+			std::cout<<"error: cid"<<cid<<std::endl;
         uint32_t newCid = TakeBarrier(tid, cid);
         if (newCid != cid) break; /*context-switch*/
     }
@@ -179,13 +236,13 @@ ADDRINT TimingCore::TlbTranslate( ADDRINT virtual_addr , bool is_inst,bool is_wr
 	  req.lineAddr = virtual_addr;
 	  req.cycle = curCycle;
 	  if(is_write)
-		req.type = GETX;
+		req.type = PUTX;
 	  else
-		req.type = GETS;
+		req.type = PUTS;
 	  debug_printf("access vaddr:%llx",virtual_addr);
 	  Address addr = tlb->access(req);
-	//Address line_addr= (addr>>zinfo->page_shift);
-	//std::cout<<name<<"(va:0x"<<std::hex<<virtual_addr<<","<<std::hex<<addr<<")"<<" (vpn: 0x"<<std::hex<<(virtual_addr>>zinfo->page_shift)<<" , ppn: 0x"<<std::hex<<line_addr<<" )"<<std::endl;
+	//Address line_addr= (addr>>6);
+	//std::cout<<"process:"<<GetProcIdx()<<" (va:0x"<<std::hex<<virtual_addr<<","<<std::hex<<addr<<")"<<" (vpn: 0x"<<std::hex<<(virtual_addr>>zinfo->page_shift)<<" , lineAddr: 0x"<<std::hex<<line_addr<<" )"<<std::endl;
 	  curCycle = req.cycle;	//get updated cycle
 	//debug_printf("tlb translate: vaddr:%llx , paddr:%llx",virtual_addr,addr);
 	futex_unlock(&tlb_lock);

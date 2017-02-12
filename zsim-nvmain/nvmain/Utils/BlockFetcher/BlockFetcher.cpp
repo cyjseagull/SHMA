@@ -6,7 +6,9 @@
 #include "src/MemoryController.h"
 
 using namespace NVM;
-BlockFetcher::BlockFetcher():srcReq(NULL),dstReq(NULL),offset_shift(0),succeed_cache_time(0),caching_cycles(0)
+BlockFetcher::BlockFetcher():srcReq(NULL),dstReq(NULL),
+					offset_shift(0),succeed_cache_time(0),
+					drc_evicts(0),caching_cycles(0)
 {
 }
 
@@ -52,6 +54,8 @@ bool BlockFetcher::IssueCommand( NVMainRequest *req)
 	bool dst_is_buffer = req->address.DestAddrIsBuffer();
 	if( req->tag != BUFFER_FETCH)
 		req->arrivalCycle = GetEventQueue()->GetCurrentCycle();
+	if( req->type == FETCH && req->tag != BUFFER_FETCH)
+		drc_evicts++;
 	//std::cout<<"begin buffer data block"<<std::endl;
 	if( !buffer_translator->isCaching() )
 	{
@@ -61,7 +65,6 @@ bool BlockFetcher::IssueCommand( NVMainRequest *req)
 	{
 		req->tag = DELAYED_BUFFER;
 		GetEventQueue()->InsertEvent(EventResponse, this,req,GetEventQueue()->GetCurrentCycle()+500);
-		//return false;
 	}
 	return true;
 }
@@ -163,19 +166,7 @@ bool BlockFetcher::Fetch( NVMainRequest* request , uint64_t data_size , bool src
 		delete request;
 		ret = true;
 	}
-//}
-//
-/*
-else
-{
-	//NVMainRequest *memReq = new NVMainRequest();
-	//memReq = *request;
-	//memReq->owner = this;
-	request->tag = DELAYED_BUFFER;
-	GetEventQueue()->InsertEvent(EventResponse, this,request,GetEventQueue()->GetCurrentCycle()+500);
-}*/
 	return ret;
-	//return true;
 }
 
 /**
@@ -205,8 +196,13 @@ bool BlockFetcher::RequestComplete( NVMainRequest* req)
 	return true;
 }
 
+void BlockFetcher::CalculateStats( )
+{
+	//succeed_cache_time -= drc_evicts;
+}
 void BlockFetcher::RegisterStats()
 {
 	AddStat(succeed_cache_time);
+	AddStat(drc_evicts);
 	AddStat(caching_cycles);
 }

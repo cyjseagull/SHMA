@@ -65,18 +65,22 @@ uint64_t MESIBottomCC::processEviction(Address wbLineAddr, uint32_t lineId, bool
         case I:
             break; //Nothing to do
         case S:
-        case E:
+        case E: //exclusive and clean
             {
                 MemReq req = {wbLineAddr, PUTS, selfId, state, cycle, &ccLock, *state, srcId, 0 /*no flags*/};
 				//std::cout<<"access:("<<std::hex<<addr<<","<<wbLineAddr<<"PUTS)"<<std::endl;
                 respCycle = parents[getParentId(wbLineAddr)]->access(req);
+				//std::cout<<"exclusive and clean:"<<respCycle<<","<<cycle<<std::endl;
             }
             break;
-        case M:
+        case M:	//exclusive and dirty
             {
                 MemReq req = {wbLineAddr, PUTX, selfId, state, cycle, &ccLock, *state, srcId, 0 /*no flags*/};
 				//std::cout<<"dirty eviction "<<std::hex<<(wbLineAddr)<<","<<srcId<<std::endl;
 				//std::cout<<parents[getParentId(wbLineAddr)]->getName()<<std::endl;
+				//std::cout<<"exclusive and dirty:"<<req.lineAddr<<","<<cycle<<std::endl;
+				//std::cout<<"parent id:"<<getParentId(wbLineAddr)<<std::endl;
+				//std::cout<<"parent:"<<parents[getParentId(wbLineAddr)]<<std::endl;
                 respCycle = parents[getParentId(wbLineAddr)]->access(req);
             }
             break;
@@ -116,7 +120,8 @@ uint64_t MESIBottomCC::processAccess(Address lineAddr, uint32_t lineId, AccessTy
                 profGETNetLat.inc(netLat);
                 respCycle += nextLevelLat + netLat;
                 profGETSMiss.inc();
-                assert(*state == S || *state == E);
+				//*state = req.is(MemReq::NOEXCL)? S : E;
+               //assert(*state == S || *state == E);
             } else {
                 profGETSHit.inc();
             }
@@ -128,12 +133,15 @@ uint64_t MESIBottomCC::processAccess(Address lineAddr, uint32_t lineId, AccessTy
                 else profGETXMissSM.inc();
                 uint32_t parentId = getParentId(lineAddr);
                 MemReq req = {lineAddr, GETX, selfId, state, cycle, &ccLock, *state, srcId, flags};
+				//std::cout<<"before invalid or shared, state:"<<(*state)<<std::endl;	
                 uint32_t nextLevelLat = parents[parentId]->access(req) - cycle;
 				//std::cout<<"GETX access "<<std::hex<<(lineAddr)<<","<<srcId<<std::endl;
                 uint32_t netLat = parentRTTs[parentId];
                 profGETNextLevelLat.inc(nextLevelLat);
                 profGETNetLat.inc(netLat);
                 respCycle += nextLevelLat + netLat;
+				*state = M;
+				//std::cout<<"invalid or shared, state:"<<(*state)<<std::endl;	
             } else {
                 if (*state == E) {
                     // Silent transition
@@ -165,9 +173,11 @@ void MESIBottomCC::processWritebackOnAccess(Address lineAddr, uint32_t lineId, A
     }
 }
 
-void MESIBottomCC::processInval(Address lineAddr, uint32_t lineId, InvType type, bool* reqWriteback) {
+void MESIBottomCC::processInval(Address lineAddr, uint32_t lineId, InvType type, bool* reqWriteback, uint32_t srcId, uint64_t cycle) {
     MESIState* state = &array[lineId];
-    assert(*state != I);
+    //assert(*state != I);
+	if( *state != I)
+	{
     switch (type) {
         case INVX: //lose exclusivity
             //Hmmm, do we have to propagate loss of exclusivity down the tree? (nah, topcc will do this automatically -- it knows the final state, always!)
@@ -178,7 +188,12 @@ void MESIBottomCC::processInval(Address lineAddr, uint32_t lineId, InvType type,
             break;
         case INV: //invalidate
             assert(*state != I);
-            if (*state == M) *reqWriteback = true;
+            if (*state == M)
+			{
+				*reqWriteback = true;
+				//MemReq req = {lineAddr, PUTX, selfId, state, cycle, NULL, *state, srcId,0 /*no flags*/};
+			    //zinfo->memoryControllers[0]->access(req);
+			}
             *state = I;
             profINV.inc();
             break;
@@ -187,7 +202,8 @@ void MESIBottomCC::processInval(Address lineAddr, uint32_t lineId, InvType type,
             profFWD.inc();
             break;
         default: panic("!?");
-    }
+		}	
+	}
     //NOTE: BottomCC never calls up on an invalidate, so it adds no extra latency
 }
 
@@ -219,23 +235,28 @@ void MESITopCC::init(const g_vector<BaseCache*>& _children, Network* network, co
 uint64_t MESITopCC::sendInvalidates(Address lineAddr, uint32_t lineId, InvType type, bool* reqWriteback, uint64_t cycle, uint32_t srcId) {
     //Send down downgrades/invalidates
     Entry* e = &array[lineId];
-
+	
     //Don't propagate downgrades if sharers are not exclusive.
     if (type == INVX && !e->isExclusive()) {
         return cycle;
     }
-
     uint64_t maxCycle = cycle; //keep maximum cycle only, we assume all invals are sent in parallel
     if (!e->isEmpty()) {
         uint32_t numChildren = children.size();
         uint32_t sentInvs = 0;
         for (uint32_t c = 0; c < numChildren; c++) {
             if (e->sharers[c]) {
+				//std::cout<<"child "<<c<<":"<<children[c]<<std::endl;
+				Cache* tmp_cache = dynamic_cast<Cache*>(children[c]);
+				int64_t line_id = tmp_cache->array->lookup(lineAddr, NULL, false);
+				if( line_id != -1)
+				{
                 uint64_t respCycle = children[c]->invalidate(lineAddr, type, reqWriteback, cycle, srcId);
                 respCycle += childrenRTTs[c];
                 maxCycle = MAX(respCycle, maxCycle);
                 if (type == INV) e->sharers[c] = false;
                 sentInvs++;
+				}
             }
         }
         assert(sentInvs == e->numSharers);
@@ -308,9 +329,7 @@ uint64_t MESITopCC::processAccess(Address lineAddr, uint32_t lineId, AccessType 
             }
             break;
         case GETX:
-            assert(haveExclusive); //the current cache better have exclusive access to this line
-
-            // If child is in sharers list (this is an upgrade miss), take it out
+            assert(haveExclusive); //the current cache better have exclusive access to this line            // If child is in sharers list (this is an upgrade miss), take it out
             if (e->sharers[childId]) {
                 assert_msg(!e->isExclusive(), "Spurious GETX, childId=%d numSharers=%d isExcl=%d excl=%d", childId, e->numSharers, e->isExclusive(), e->exclusive);
                 e->sharers[childId] = false;

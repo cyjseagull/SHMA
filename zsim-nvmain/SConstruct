@@ -102,6 +102,8 @@ def buildSim(cppFlags, dir, type, pgo=None):
     # Non-pintool libraries
     env["LIBPATH"] = []
     env["LIBS"] = ["config++"]
+    env["LIBS"] += ["glog"]
+	#env["LIBS"] += ["gflags"]
 
     env["LINKFLAGS"] = ""
 
@@ -154,6 +156,7 @@ def buildSim(cppFlags, dir, type, pgo=None):
         env["LINKFLAGS"] += " -Wl,-R" + joinpath(HDF5PATH, "lib")
         env["LIBPATH"] += [joinpath(HDF5PATH, "lib")]
         env["CPPPATH"] += [joinpath(HDF5PATH, "include")]
+
     env["CPPPATH"] += ["."]
 
     # HDF5
@@ -161,7 +164,11 @@ def buildSim(cppFlags, dir, type, pgo=None):
 
     # Harness needs these defined
     env["CPPFLAGS"] += ' -DPIN_PATH="' + joinpath(PINPATH, "intel64/bin/pinbin") + '" '
-    env["CPPFLAGS"] += ' -DZSIM_PATH="' + joinpath(ROOT, joinpath(buildDir, "libzsim.so")) + '" '
+    if "LIBZSIMPATH" in os.environ:
+        env["CPPFLAGS"] += ' -DZSIM_PATH="' + os.environ["LIBZSIMPATH"] + '" '
+    else:
+        #env["CPPFLAGS"] += ' -DZSIM_PATH="' + joinpath(ROOT, joinpath(buildDir, "libzsim.so")) + '" '
+        env["CPPFLAGS"] += ' -DZSIM_PATH="' + joinpath(ROOT,"bin/libzsim.so") + '" '
 
     # Boost regex
     BOOST = os.environ["BOOST"]

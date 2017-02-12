@@ -23,14 +23,8 @@ libEnv["LINKFLAGS"] += libEnv["PINLINKFLAGS"]
 #env["LINKFLAGS"] += " -fPIC "
 libEnv["LIBPATH"] += libEnv["PINLIBPATH"]
 libEnv["LIBS"] += libEnv["PINLIBS"]
-libEnv.SharedLibrary("zsim.so", libSrcs)
-
-# Build harness (static to make it easier to run across environments)
-#env["LINKFLAGS"] += " --static "
-#env["LINKFLAGS"] += " -fPIC "
-#env["CPPFLAGS"] += " -fPIC "
-env["LIBS"] += ["pthread"]
-env.Program("zsim", harnessSrcs + commonSrcs)
+libEnv.SharedLibrary("../../bin/zsim.so", libSrcs)
+env.Program("../../bin/zsim", harnessSrcs + commonSrcs)
 
 # Build additional utilities below
 env.Program("fftoggle", ["fftoggle.cpp"] + commonSrcs)

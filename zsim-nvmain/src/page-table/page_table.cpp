@@ -14,6 +14,8 @@
 #include "zsim.h"
 #include "galloc.h"
 #include "pad.h"
+#include "core.h"
+#include "timing_core.h"
 /*-------------legacy paging------------*/
 lock_t NormalPaging::table_lock;
 NormalPaging::NormalPaging(PagingStyle select): mode(select),cur_page_table_num(0)
@@ -44,14 +46,22 @@ NormalPaging::~NormalPaging()
 }
 
 /*****-----functional interface of Legacy-Paging----*****/
-int NormalPaging::map_page_table(Address addr ,void* pg_ptr , bool is_buffer)
+int NormalPaging::map_page_table( Address addr, void* pg_ptr, bool is_buffer )
 {
+	BasePDTEntry* entry;
+	return map_page_table(addr, pg_ptr, is_buffer, entry);
+}
+
+int NormalPaging::map_page_table(Address addr ,void* pg_ptr , bool is_buffer, 
+		BasePDTEntry*& mapped_entry)
+{
+	mapped_entry = NULL;
 	int latency = 0;
 	if( is_buffer )
 		debug_printf("map address:(%x,%x)",addr);
 	//update page table
 	unsigned pd_entry_id = get_page_directory_off( addr , mode );
-	unsigned buffer_entry_id = get_buffer_table_off(addr,buffer_table_shift,mode);
+	//unsigned buffer_entry_id = get_buffer_table_off(addr,buffer_table_shift,mode);
 	int allocate_time = 0;
 	//4KB small pages
 	if( mode == Legacy_Normal )
@@ -62,30 +72,44 @@ int NormalPaging::map_page_table(Address addr ,void* pg_ptr , bool is_buffer)
 		{
 			return false;
 		}
+		if( !is_valid(table, pt_entry_id) )
+			mapped_entry = (*table)[pt_entry_id];
+		validate_entry(table , pt_entry_id , pg_ptr , is_buffer);
+		/*
 		if( is_buffer)
 		{
 			//main memory block size is equal to buffer block size
-			extend_one_buffer_map(addr,table,pg_ptr , pt_entry_id ,buffer_entry_id, buffer_table_entry_num);
+			//extend_one_buffer_map(addr,table,pg_ptr , pt_entry_id ,buffer_entry_id, buffer_table_entry_num, mapped_entry);
+			validate_entry(table , pt_entry_id , pg_ptr , true);
 		}
 		else
 		{
 			//debug_printf("validate entry %d",pt_entry_id);
+			//if( !is_valid(table, pt_entry_id) )
+			//	mapped_entry = (*table)[pt_entry_id];
 			validate_entry(table , pt_entry_id , pg_ptr , false);
-		}
+		}*/
 	}
 	//4MB Huge pages
 	else if( mode == Legacy_Huge)
 	{
+		if( !is_valid(page_directory, pd_entry_id) )
+			mapped_entry = (*page_directory)[pd_entry_id];
+		validate_entry(page_directory,pd_entry_id, pg_ptr, is_buffer);
+		/*
 		if( is_buffer)
 		{
-			extend_one_buffer_map(addr ,page_directory,pg_ptr,pd_entry_id ,buffer_entry_id, buffer_table_entry_num);
+			//extend_one_buffer_map(addr ,page_directory,pg_ptr,pd_entry_id ,buffer_entry_id, buffer_table_entry_num, mapped_entry);
+			validate_entry(page_directory,pd_entry_id, pg_ptr, true);	
 		}
 		else
 		{
+			//if( !is_valid(page_directory, pd_entry_id) )
+			//	mapped_entry = (*page_directory)[pd_entry_id];
 			//std::cout<<"validate "<<pd_entry_id<<std::endl;
 			validate_entry(page_directory,pd_entry_id, pg_ptr, false);	
 			//std::cout<<"validate "<<pd_entry_id<<" end"<<std::endl;
-		}
+		}*/
 	}
 	latency = zinfo->mem_access_time*(1+allocate_time);	//allocate overhead
 	return latency;
@@ -126,52 +150,38 @@ Address NormalPaging::access(MemReq &req )
 	Address addr = req.lineAddr;
 	bool pbuffer = false;
 	unsigned pg_dir_off = get_page_directory_off(addr,mode);
+	unsigned pg_id;
 	//first access memory get page directory address
 	void* ptr = (void*)page_directory;
-	//if( page_directory )
-	//{
-	  //point to page table
-	  //ptr = page_directory->get_next_level_address(pg_dir_off);
-	//}
-	//if( !ptr )
-	//{
-	//	return PAGE_FAULT_SIG;
-	//}
-	//else
-	//{
-		if( mode== Legacy_Normal )
-		{
-			ptr = page_directory->get_next_level_address(pg_dir_off);
-			if( !ptr )
-			{
-				return PAGE_FAULT_SIG;
-			}
-			unsigned pg_off = get_pagetable_off(addr,mode);
-			//second access memory get page directory address
-			pbuffer = point_to_buffer_table( (PageTable*)ptr,pg_off);
-			//point to buffer table or page 
-			ptr = get_next_level_address<PageTable>((PageTable*)ptr,pg_off);
-			req.cycle += (zinfo->mem_access_time*2);	//assume memory accessing cycle is 117 cycles
-			if( !ptr )
-			{
-				return PAGE_FAULT_SIG;
-			}
-		}
-		else if( mode==Legacy_Huge)
-		{
-			pbuffer = point_to_buffer_table((PageTable*)ptr,pg_dir_off);
-			ptr = get_next_level_address<PageTable>((PageTable*)ptr,pg_dir_off);
-			req.cycle += (zinfo->mem_access_time*3);
-			if( !ptr )
-			{
-				return PAGE_FAULT_SIG;
-			}
-		}
-	//}
-	bool set_dirty = false;
+	PageTable* pgt = NULL;
+	if( mode== Legacy_Normal )
+	{
+		ptr = page_directory->get_next_level_address(pg_dir_off);
+		if( !ptr )
+			return PAGE_FAULT_SIG;
+		unsigned pg_off = get_pagetable_off(addr,mode);
+		//second access memory get page directory address
+		pbuffer = point_to_buffer_table( (PageTable*)ptr,pg_off);
+		pgt = (PageTable*)ptr;
+		//point to buffer table or page 
+		ptr = get_next_level_address<PageTable>((PageTable*)ptr,pg_off);
+		pg_id = pg_off;
+		req.cycle += (zinfo->mem_access_time*2);	//assume memory accessing cycle is 117 cycles
+		if( !ptr )
+			return PAGE_FAULT_SIG;
+	}
+	else if( mode==Legacy_Huge)
+	{
+		pgt = (PageTable*)ptr;
+		pbuffer = point_to_buffer_table((PageTable*)ptr,pg_dir_off);
+		ptr = get_next_level_address<PageTable>((PageTable*)ptr,pg_dir_off);
+		pg_id = pg_dir_off;
+
+		req.cycle += (zinfo->mem_access_time*3);
+		if( !ptr )
+			return PAGE_FAULT_SIG;
+	}
 	bool write_back = false;  
-	if(req.type == SETDIRTY)
-		set_dirty = true;
 	if( req.type == WRITEBACK)
 		write_back = true;
 	uint32_t access_counter = 0;
@@ -179,13 +189,17 @@ Address NormalPaging::access(MemReq &req )
 	{
 		access_counter = req.childId;
 	}
-	Address result = get_block_id( req ,addr, ptr,buffer_table_shift,
-								mode, pbuffer , set_dirty, 
+	bool set_dirty = false;
+	if(req.type == SETDIRTY)
+	{
+		set_dirty = true;
+	}
+	Address result = get_block_id( req ,pgt,ptr,pg_id , mode, pbuffer , set_dirty, 
 								write_back,access_counter );
 	return result;
 }
 
-PageTable* NormalPaging::allocate_one_pagetable(unsigned pd_entry_id, int& allocate_time )
+PageTable* NormalPaging::allocate_one_pagetable(unsigned pd_entry_id, int& allocate_time)
 {
 	PageTable* table = get_next_level_address<PageTable>(page_directory,pd_entry_id);
 	allocate_time = 0;
@@ -339,14 +353,21 @@ PAEPaging::~PAEPaging()
 }
 
 /*****-----functional interface of paging----*****/
-int PAEPaging::map_page_table(Address addr, void* pg_ptr , bool pbuffer)
+int PAEPaging::map_page_table(Address addr, void* pg_ptr, bool pbuffer)
 {
+	BasePDTEntry* entry;
+	return map_page_table(addr, pg_ptr, pbuffer, entry);
+}
+
+int PAEPaging::map_page_table(Address addr, void* pg_ptr , bool pbuffer, BasePDTEntry*& mapped_entry)
+{
+	mapped_entry = NULL;
 	int latency = 0;
 	//page directory pointer offset
 	unsigned pdp_id = get_page_directory_pointer_off( addr , mode);
 	//page directory offset
 	unsigned pd_id = get_page_directory_off(addr,mode);
-	unsigned buffer_entry_id = get_buffer_table_off(addr,buffer_table_shift,mode);
+	//unsigned buffer_entry_id = get_buffer_table_off(addr,buffer_table_shift,mode);
 	PageTable* table;
 	int allocate_time = 0;
 	if( mode == PAE_Normal)
@@ -358,14 +379,22 @@ int PAEPaging::map_page_table(Address addr, void* pg_ptr , bool pbuffer)
 			debug_printf("allocate page table failed");
 			return false;
 		}
-		if( pbuffer )
-		{
-			extend_one_buffer_map(addr , table , pg_ptr , pt_id , buffer_entry_id , buffer_table_entry_num);			
-		}
-		else
-		{
+		if( !is_valid(table, pt_id) )
+			mapped_entry = (*table)[pt_id];
+		validate_entry(table , pt_id ,pg_ptr, pbuffer);	
+		/*
+		//if( pbuffer )
+		//{
+			//extend_one_buffer_map(addr , table , pg_ptr , pt_id , buffer_entry_id , buffer_table_entry_num, mapped_entry);			
+			validate_entry(table , pt_id ,pg_ptr, pbuffer);	
+		//}
+		//else
+		//{
+		//	if( !is_valid(table, pt_id) )
+		//		mapped_entry = (*table)[pt_id];
+
 			validate_entry(table , pt_id ,pg_ptr);	
-		}
+		}*/
 	}
 	else if( mode == PAE_Huge)
 	{
@@ -375,10 +404,20 @@ int PAEPaging::map_page_table(Address addr, void* pg_ptr , bool pbuffer)
 			debug_printf("allocate page directory failed !");
 			return false;
 		}
+		if( !is_valid(table, pd_id) )
+			mapped_entry = (*table)[pd_id];
+
+		validate_entry( table , pd_id , pg_ptr, pbuffer);
+		/*
 		if( pbuffer)
-			extend_one_buffer_map(addr,table, pg_ptr , pd_id, buffer_entry_id , buffer_table_entry_num);
+			extend_one_buffer_map(addr,table, pg_ptr , pd_id, buffer_entry_id , buffer_table_entry_num, mapped_entry);
 		else
+		{
+			if( !is_valid(table, pd_id) )
+				mapped_entry = (*table)[pd_id];
+
 			validate_entry( table , pd_id , pg_ptr);
+		}*/
 	}
 	latency = zinfo->mem_access_time*(1+allocate_time);
 	return latency;
@@ -416,22 +455,26 @@ Address PAEPaging::access(MemReq &req)
 	bool pbuffer = false;
 	unsigned pdp_id = get_page_directory_pointer_off(addr , mode);
 	unsigned pd_id = get_page_directory_off(addr,mode);
+	unsigned pg_id;
 	//first memory access,get page directory address
 	void* ptr = get_next_level_address<void>(page_directory_pointer,pdp_id);
+	PageTable* pgt = NULL;
 	if( !ptr )
 		return PAGE_FAULT_SIG;
 	if( mode==PAE_Huge )
 	{
+		pgt = (PageTable*)page_directory_pointer;
 		pbuffer = point_to_buffer_table((PageTable*)ptr,pd_id);
+		pg_id = pd_id;
 		req.cycle += (zinfo->mem_access_time*3);
 	}
 	//second memory access,get page table address  
 	ptr = get_next_level_address<void>((PageTable*)ptr,pd_id);
 	if(!ptr)
 		return PAGE_FAULT_SIG;
-
 	if( mode == PAE_Normal )
 	{
+		pgt = (PageTable*)ptr;
 		unsigned pg_id = get_pagetable_off(addr,mode);
 		pbuffer = point_to_buffer_table( (PageTable*)ptr,pg_id);
 		//page or buffer table
@@ -448,7 +491,7 @@ Address PAEPaging::access(MemReq &req)
 		write_back = true;
 		access_counter = req.childId;
 	}
-	return get_block_id(req, addr,ptr , buffer_table_shift , mode,pbuffer , 
+	return get_block_id(req, pgt, ptr , pg_id, mode,pbuffer , 
 						set_dirty, write_back, access_counter);
 }
 
@@ -502,7 +545,7 @@ PageTable* PAEPaging::allocate_page_table( unsigned pdpt_entry_id , unsigned pd_
 bool PAEPaging::allocate_page_table(pair_list pdt_entry)
 {
 	bool succeed = true;
-	int time;
+	int time = 0;
 	for( pair_list_ptr it= pdt_entry.begin();
 		it!=pdt_entry.end();it++)
 	{
@@ -809,13 +852,21 @@ LongModePaging::~LongModePaging()
 }
 
 /*****-----functional interface of LongMode-Paging----*****/
-int LongModePaging::map_page_table( Address addr, void* pg_ptr , bool pbuffer)
+int LongModePaging::map_page_table(Address addr, void* pg_ptr, bool pbuffer)
 {
+	BasePDTEntry* entry;
+	return map_page_table(addr, pg_ptr, pbuffer, entry);
+}
+
+
+int LongModePaging::map_page_table( Address addr, void* pg_ptr , bool pbuffer, BasePDTEntry*& mapped_entry)
+{
+	mapped_entry = NULL;
 	int latency = 0;
 	//std::cout<<"map:"<<std::hex<<addr<<std::endl;
 	unsigned pml4,pdp,pd,pt;
 	get_domains(addr , pml4 , pdp , pd , pt , mode);
-	unsigned buffer_entry_id = get_buffer_table_off(addr,buffer_table_shift,mode);
+	//unsigned buffer_entry_id = get_buffer_table_off(addr,buffer_table_shift,mode);
 	assert( (pml4!=(unsigned)(-1)) && (pdp!=(unsigned)(-1)));
 	PageTable* table;
 	int alloc_time = 0;
@@ -828,15 +879,22 @@ int LongModePaging::map_page_table( Address addr, void* pg_ptr , bool pbuffer)
 			debug_printf("allocate page table for LongMode_Normal failed!");
 			return false;
 		}
+		if( !is_valid(table, pt) )	
+			mapped_entry = (*table)[pt];
+		validate_entry(table , pt , pg_ptr, pbuffer);
+		/*
 		if( pbuffer)
 		{
 			//std::cout<<"extend one buffer map"<<std::endl;
-			extend_one_buffer_map(addr,table,pg_ptr , pt, buffer_entry_id, buffer_table_entry_num);
+			//extend_one_buffer_map(addr,table,pg_ptr , pt, buffer_entry_id, buffer_table_entry_num, mapped_entry);
+			validate_entry(table , pt , pg_ptr, true);
 		}
 		else
 		{
+			//if( !is_valid(table, pt) )	
+			//	mapped_entry = (*table)[pt];
 			validate_entry(table , pt , pg_ptr);
-		}
+		}*/
 	}
 	else if( mode == LongMode_Middle )
 	{
@@ -846,10 +904,17 @@ int LongModePaging::map_page_table( Address addr, void* pg_ptr , bool pbuffer)
 			debug_printf("allocate page directory for LongMode_Middle failed!");
 			return false;
 		}
-		if( pbuffer )
-			extend_one_buffer_map(addr , table , pg_ptr , pd , buffer_entry_id , buffer_table_entry_num);
+		if( !is_valid(table, pd) )
+			mapped_entry = (*table)[pd];
+		validate_entry( table,pd, pg_ptr, pbuffer);
+		/*if( pbuffer )
+			extend_one_buffer_map(addr , table , pg_ptr , pd , buffer_entry_id , buffer_table_entry_num, mapped_entry);
 		else
+		{
+			if( !is_valid(table, pd) )
+				mapped_entry = (*table)[pd];
 			validate_entry( table,pd, pg_ptr);
+		}*/
 	}
 	else if( mode == LongMode_Huge )
 	{
@@ -859,10 +924,19 @@ int LongModePaging::map_page_table( Address addr, void* pg_ptr , bool pbuffer)
 			debug_printf("allocate page directory pointer for LongMode_Huge failed!");
 			return false;
 		}
-		if(pbuffer)
-			extend_one_buffer_map(addr , table ,pg_ptr, pdp,buffer_entry_id , buffer_table_entry_num);
+		if( !is_valid(table, pdp) )
+			mapped_entry = (*table)[pdp];
+
+		validate_entry(table,pdp,pg_ptr, pbuffer);
+		/*if(pbuffer)
+			extend_one_buffer_map(addr , table ,pg_ptr, pdp,buffer_entry_id , buffer_table_entry_num, mapped_entry);
 		else
+		{
+			if( !is_valid(table, pdp) )
+				mapped_entry = (*table)[pdp];
+
 			validate_entry(table,pdp,pg_ptr);
+		}*/
 	}
 	latency = zinfo->mem_access_time*(1+alloc_time);
 	return latency;
@@ -941,13 +1015,17 @@ Address LongModePaging::access(MemReq &req)
 	get_domains(addr,pml4_id,pdp_id,pd_id,pt_id,mode);
 	//point to page table pointer table 
 	PageTable* pdp_ptr = get_next_level_address<PageTable>( pml4,pml4_id );
+	PageTable* pgt = NULL;
 	if( !pdp_ptr)
 	{
 		return PAGE_FAULT_SIG;
 	}
 	if( mode == LongMode_Huge)
 	{
+	    pgt = (PageTable*)pdp_ptr;
 		pbuffer = point_to_buffer_table( (PageTable*)pdp_ptr,pdp_id);
+		pt_id = pdp_id;
+		//std::cout<<req.lineAddr<<"point to dram buffer:"<<pbuffer<<std::endl;
 		req.cycle += (zinfo->mem_access_time*4);
 	}
 	//point to page or page directory
@@ -958,11 +1036,14 @@ Address LongModePaging::access(MemReq &req)
 	}
 	if( mode == LongMode_Middle)
 	{
+		pgt = (PageTable*)ptr;
 		assert( pd_id != (unsigned)(-1) );
 		pbuffer = point_to_buffer_table((PageTable*)ptr,pd_id);
+		//std::cout<<req.lineAddr<<"point to dram buffer:"<<pbuffer<<std::endl;
 		debug_printf("point to dram buffer: %d",pbuffer);
 		//point to page
 		ptr = get_next_level_address<void>( (PageTable*)ptr,pd_id);
+		pt_id = pd_id;
 		req.cycle += (zinfo->mem_access_time*5);
 		if( !ptr )
 		{
@@ -977,11 +1058,15 @@ Address LongModePaging::access(MemReq &req)
 		ptr = get_next_level_address<void>((PageTable*)ptr,pd_id);
 		req.cycle += (zinfo->mem_access_time*6);
 		if( ptr )
+		{
 			pbuffer = point_to_buffer_table((PageTable*)ptr,pt_id);
+			//std::cout<<req.lineAddr<<" point to dram buffer:"<<pbuffer<<std::endl;
+		}
 		if( !ptr )
 		{
 			return PAGE_FAULT_SIG;
 		}
+		pgt = (PageTable*)ptr;
 		//point to page or buffer table 
 		ptr = get_next_level_address<void>((PageTable*)ptr,pt_id);
 		if( !ptr )
@@ -989,18 +1074,18 @@ Address LongModePaging::access(MemReq &req)
 			return PAGE_FAULT_SIG;
 		}
 	}
+	bool write_back = false;
+	uint32_t access_counter = 0;
 	bool set_dirty = false;
 	if( req.type == SETDIRTY)
 		set_dirty = true;
-	bool write_back = false;
-	uint32_t access_counter = 0;
 	if( req.type==WRITEBACK)
 	{
 		access_counter = req.childId;
 		write_back = true;
 	}
-	return get_block_id(req , addr , ptr, buffer_table_shift,mode,
-						pbuffer ,set_dirty, write_back ,access_counter);
+	return get_block_id(req ,pgt,ptr, pt_id,mode,pbuffer ,
+				set_dirty, write_back ,access_counter);
 }
 
 

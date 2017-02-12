@@ -39,6 +39,7 @@
 #include "src/NVMObject.h"
 #include "src/Prefetcher.h"
 #include "include/NVMainRequest.h"
+#include "include/global_vars.h"
 #include "traceWriter/GenericTraceWriter.h"
 #include "MemControl/DRAMCache/DRAMCache.h"
 #include "NVM/RBLA_NVMain/StatsStore.hh"
@@ -49,12 +50,12 @@
 
 namespace NVM {
 //action
-enum Action
+/*enum Action
 {
 	INIT,
 	DECREMENT,
 	INCREMENT
-};
+};*/
 
 
 class RBLA_NVMain : public NVMain

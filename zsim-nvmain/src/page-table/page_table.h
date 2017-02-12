@@ -13,24 +13,6 @@
 #include "page-table/page_table_entry.h"
 #include "memory_hierarchy.h"
 #include "locks.h"
-/*#-----------base class of paging--------------#*/
-class BasePaging: public MemObject
-{
-	public:
-		virtual ~BasePaging(){};
-		virtual PagingStyle get_paging_style()=0;
-		virtual PageTable* get_root_directory()=0;
-		//virtual Address access(MemReq& req )=0;
-		virtual bool unmap_page_table(Address addr)=0;
-		virtual int map_page_table(Address addr, void* pg_ptr , bool pbuffer = false) = 0;
-		virtual bool allocate_page_table(Address addr , Address size)=0;
-		virtual void remove_root_directory()=0;
-		virtual bool remove_page_table( Address addr , Address size)
-		{ return true; }
-		
-		virtual void calculate_stats(){}
-};
-
 /*#------legacy paging(supports 4KB&&4MB)--------#*/
 class NormalPaging: public BasePaging
 {
@@ -38,7 +20,8 @@ class NormalPaging: public BasePaging
 		NormalPaging(PagingStyle select);
 		~NormalPaging();
 
-		int map_page_table( Address addr , void* pg_ptr , bool pbuffer=false );
+		int map_page_table( Address addr , void* pg_ptr , bool pbuffer,BasePDTEntry*& mapped_entry);
+		int map_page_table( Address addr , void* pg_ptr , bool pbuffer=false);
 		bool unmap_page_table( Address addr );	
 		//access
 		Address access( MemReq& req );
@@ -90,6 +73,7 @@ class PAEPaging: public BasePaging
 		~PAEPaging();
 		//access
 		Address access(MemReq& req );
+		int map_page_table( Address addr , void* pg_ptr , bool pbuffer, BasePDTEntry*&  mapped_entry);
 		int map_page_table( Address addr , void* pg_ptr , bool pbuffer = false);
 		bool unmap_page_table( Address addr );		
 
@@ -157,6 +141,7 @@ class LongModePaging: public BasePaging
 	public:
 		LongModePaging(PagingStyle selection);
 		~LongModePaging();
+		int map_page_table( Address addr , void* pg_ptr , bool pbuffer, BasePDTEntry*& mapped_entry);
 		int map_page_table( Address addr , void* pg_ptr , bool pbuffer=false);
 		bool unmap_page_table( Address addr );		
 		//access

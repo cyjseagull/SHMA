@@ -79,6 +79,12 @@ enum NVMAccessType
     USER_ACCESS         /* User access right */
 };
 
+enum AccessType
+{
+	FAST_MEM, //DRAM
+	SLOW_MEM
+};
+
 enum BulkCommand 
 { 
     /* TODO: do we still need this */
@@ -121,7 +127,7 @@ class NVMainRequest
     { 
         type = NOP;
         bulkCmd = CMD_NOP; 
-        threadId = 0; 
+        threadId = 0;
         tag = 0; 
         reqInfo = NULL; 
         flags = 0;
@@ -132,6 +138,8 @@ class NVMainRequest
         completionCycle = 0; 
         isPrefetch = false; 
 		isFetch = false;
+		isMigration = false;
+		isClflush = false;
         programCounter = 0; 
         burstCount = 1;
         writeProgress = 0;
@@ -141,14 +149,15 @@ class NVMainRequest
 		is_migrated = false;
 		rbHit = false;
 		dirty_miss = false;
-		//taccess_before = 0;
-		//taccess_after = 0;
+
+		media = SLOW_MEM;
     };
 
     ~NVMainRequest( )
     { 
     };
-
+	
+	AccessType media;
 	bool rbHit;						//request row buffer hit?	
 	bool dirty_miss;
     NVMAddress address;            //< pythical address ,Address of request
@@ -167,6 +176,8 @@ class NVMainRequest
     uint64_t flags;                //< Flags for NVMain (backend only)
     bool isPrefetch;               //< Whether request is a prefetch or not
 	bool isFetch;
+	bool isMigration;
+	bool isClflush;
     NVMAddress pfTrigger;          //< Address that triggered this prefetch
     uint64_t programCounter;       //< Program counter of CPU issuing request
     ncounter_t burstCount;         //< Number of bursts (used for variable-size requests.
@@ -214,6 +225,8 @@ const NVMainRequest& NVMainRequest::operator=( const NVMainRequest& m )
     reqInfo = m.reqInfo;
     isPrefetch = m.isPrefetch;
 	isFetch = m.isFetch;
+	isMigration=m.isMigration;
+	isClflush = m.isClflush;
     pfTrigger = m.pfTrigger;
     programCounter = m.programCounter;
     owner = m.owner;
@@ -225,6 +238,7 @@ const NVMainRequest& NVMainRequest::operator=( const NVMainRequest& m )
     completionCycle = m.completionCycle;
 	
 	rbHit = m.rbHit;
+	media = m.media;
 	is_migrated = m.is_migrated;
 	dirty_miss = m.dirty_miss;
     return *this; 

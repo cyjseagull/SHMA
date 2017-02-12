@@ -393,7 +393,6 @@ int main(int argc, char *argv[]) {
     for (uint32_t procIdx = 0; procIdx < numProcs; procIdx++) {
         LaunchProcess(procIdx);
     }
-
     if (numProcs == 0) panic("No process config found. Config file needs at least a process0 entry");
 
     //Wait for all processes to finish
@@ -441,10 +440,11 @@ int main(int argc, char *argv[]) {
                     lastNumPhases = numPhases;
                     secsStalled = 0;
                 }
-            } else if (activeProcs) {
+            } 
+			/*else if (activeProcs) {
                 if (numPhases == lastNumPhases) info("Some fast-forwarding is going on, not doing deadlock detection (a: %d, ff: %d, sff: %d)", activeProcs, ffProcs, sffProcs);
                 lastNumPhases = numPhases;
-            } //otherwise, activeProcs == 0; we're done
+            }*/ //otherwise, activeProcs == 0; we're done
         }
 
         printHeartbeat(zinfo);
@@ -455,8 +455,8 @@ int main(int argc, char *argv[]) {
             eraseChild(cpid);
             info("Child %d done (in-loop catch)", cpid);
         }
-
-        if (secsStalled > 700) {
+		//detected as deadlock when process has been stalled over 300 seconds
+        if (secsStalled > 2000) {
             warn("Deadlock detected, killing children");
             sigHandler(SIGINT);
             exit(42);

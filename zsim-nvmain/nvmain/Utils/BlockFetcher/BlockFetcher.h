@@ -56,6 +56,7 @@ class BlockFetcher : public NVMObject
     bool IssueCommand( NVMainRequest *req );
     bool RequestComplete( NVMainRequest *req );
 	void RegisterStats( );
+	void CalculateStats( );
     void Cycle( ncycle_t steps );
   private:
     bool CheckIssuable( NVMAddress &address, OpType type );
@@ -67,6 +68,7 @@ class BlockFetcher : public NVMObject
 	NVMainRequest *dstReq;  //write
 	unsigned offset_shift;
 	uint64_t succeed_cache_time;
+	uint64_t drc_evicts;
 	uint64_t caching_cycles;
 	BufferDecoder* buffer_translator;
 	unsigned mem_col_size;
