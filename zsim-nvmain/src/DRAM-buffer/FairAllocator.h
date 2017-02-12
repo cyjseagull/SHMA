@@ -25,6 +25,7 @@ class FairAllocator: public BaseDRAMBufferManager
 		void evict( DRAMEVICTSTYLE policy);
 		bool should_cherish();
 		bool should_more_cherish();
+		virtual DRAMBufferBlock* get_page_ptr( uint64_t entry_id );
 	private:
 		void fairness_evict();
 		void equal_evict();

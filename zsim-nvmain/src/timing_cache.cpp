@@ -160,7 +160,6 @@ uint64_t TimingCache::access(MemReq& req) {
             hasAccessRecord = true;
             evRec->popRecord();
         }
-
         // At this point we have all the info we need to hammer out the timing record
         TimingRecord tr = {req.lineAddr << lineBits, req.cycle, respCycle, req.type, NULL, NULL}; //note the end event is the response, not the wback
 
@@ -318,6 +317,7 @@ void TimingCache::simulateHit(HitEvent* ev, uint64_t cycle) {
         pendingQueue.push_back(ev);
     }
 }
+
 
 void TimingCache::simulateMissStart(MissStartEvent* ev, uint64_t cycle) {
     if (activeMisses < numMSHRs) {

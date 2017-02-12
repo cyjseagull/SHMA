@@ -32,6 +32,8 @@
 #include "memory_hierarchy.h"
 #include "pad.h"
 #include "locks.h"
+#include "g_std/g_unordered_set.h"
+#include <iterator>
 //forward declaration
 class FilterCache;
 
@@ -88,7 +90,10 @@ class TimingCore : public Core {
 		{
 			return (BaseCache*)(l1d);
 		}
+
     private:
+		uint64_t clflush( Address startAddr, uint64_t startCycle, uint64_t &write_backs );
+		uint64_t clflush_cacheline( Address startAddr, uint64_t startCycle);
         inline void loadAndRecord(Address addr);
 		ADDRINT TlbTranslate( ADDRINT virtual_addr , bool is_inst , bool is_write = false);
         inline void storeAndRecord(Address addr);

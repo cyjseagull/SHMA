@@ -38,9 +38,9 @@ zsim was also modified and enhanced while Daniel Sanchez was an intern at Google
 Additionally, if you use this software in your research, we request that you reference the zsim paper ("ZSim: Fast and Accurate Microarchitectural Simulation of Thousand-Core Systems", Sanchez and Kozyrakis, ISCA-40, June 2013) as the source of the simulator in any publications that use this software, and that you send us a citation of your work.
 
 
-License & Copyright of SHMA (CGCL & SCTS Lab of HUST)
+License & Copyright of SHMA ([HUST SCTS & CGCL Lab](http://grid.hust.edu.cn/))
 -------------------------
-SHMA was extended by Yujie Chen, Dong Liu at Cluster and Grid Computing Lab & Services Computing Technology and System Lab(CGCL & SCTS Lab) of Huazhong University of Science and Technology, the copyright of this SHMA remains with CGCL & SCTS Lab of Huazhong University of Science and Technology.
+SHMA was extended by Yujie Chen, Dong Liu at Cluster and Grid Computing Lab & Services Computing Technology and System Lab of Huazhong University of Science and Technology([HUST SCTS & CGCL Lab](http://grid.hust.edu.cn/)), the copyright of this SHMA remains with CGCL & SCTS Lab of Huazhong University of Science and Technology.
 
 
 Setup,Compiling and Configuration

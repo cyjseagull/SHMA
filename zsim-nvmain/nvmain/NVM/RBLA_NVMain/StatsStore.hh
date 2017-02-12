@@ -92,7 +92,6 @@ namespace NVM{
 				void Clear()
 				{
 					//std::cout<<"clear stats store"<<std::endl;
-
 					for(uint64_t i=0;i<entry_num;i++)
 					{
 					  stats_table->cacheSet[i]->miss_time=0; 

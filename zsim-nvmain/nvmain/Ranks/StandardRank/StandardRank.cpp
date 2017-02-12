@@ -1018,7 +1018,6 @@ void StandardRank::CalculateStats( )
 
     totalEnergy = activateEnergy + burstEnergy + refreshEnergy + backgroundEnergy;
     totalPower = activatePower + burstPower + refreshPower + backgroundPower;
-
     actWaitAverage = static_cast<double>(actWaitTotal) / static_cast<double>(actWaits);
     rrdWaitAverage = static_cast<double>(rrdWaitTotal) / static_cast<double>(rrdWaits);
     fawWaitAverage = static_cast<double>(fawWaitTotal) / static_cast<double>(fawWaits);

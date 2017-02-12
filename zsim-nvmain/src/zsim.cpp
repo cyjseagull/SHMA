@@ -68,7 +68,7 @@
 #include "page-table/page_table.h"
 #include "memory_hierarchy.h"
 #include "ooo_core.h"
-
+#include "glog/logging.h"
 
 /* Command-line switches (used to pass info from harness that cannot be passed through the config file, most config is file-based) */
 //proces id
@@ -107,6 +107,7 @@ GlobSimInfo* zinfo;
 
 uint32_t procIdx;
 bool trace_using = false;
+uint64_t last_total_instr=0;
 uint32_t lineBits; //process-local for performance, but logically global
 Address procMask;
 
@@ -123,7 +124,7 @@ Core* cores[MAX_THREADS];
 
 static inline void clearCid(uint32_t tid) {
     assert(tid < MAX_THREADS);
-    assert(cids[tid] != INVALID_CID);
+    //assert(cids[tid] != INVALID_CID);
     cids[tid] = INVALID_CID;
     cores[tid] = NULL;
 }
@@ -131,22 +132,27 @@ static inline void clearCid(uint32_t tid) {
 static inline void setCid(uint32_t tid, uint32_t cid) {
     assert(tid < MAX_THREADS);
     assert(cids[tid] == INVALID_CID);
-    assert(cid < zinfo->numCores);
-    cids[tid] = cid;
-    cores[tid] = zinfo->cores[cid];
-	//std::cout<<"set "<<cid<<" with "<<procIdx<<std::endl;
-	cores[tid]->SetProcIdx(procIdx);
-	//initialize paging
-	if( zinfo->paging_array && zinfo->pg_walkers)
+	if( cid >= zinfo->numCores)
+		std::cout<<"cid:"<<cid<<" tid:"<<tid<<" over core num "<<zinfo->numCores<<std::endl;
+    //assert(cid < zinfo->numCores);
+	if( cid < zinfo->numCores )
 	{
-		//std::cout<<"set core "<<cid<<" run proc "<<procIdx<<std::endl;
-		if( zinfo->pg_walkers[cid])
-			zinfo->pg_walkers[cid]->SetPaging(procIdx, zinfo->paging_array[procIdx]);
+		cids[tid] = cid;
+		cores[tid] = zinfo->cores[cid];
+		//std::cout<<"set "<<cid<<" with "<<procIdx<<std::endl;
+		cores[tid]->SetProcIdx(procIdx);
+		//initialize paging
+		if( zinfo->paging_array && zinfo->pg_walkers)
+		{
+			//std::cout<<"set core "<<cid<<" run proc "<<procIdx<<std::endl;
+			if( zinfo->pg_walkers[cid])
+				zinfo->pg_walkers[cid]->SetPaging(procIdx, zinfo->paging_array[procIdx]);
+		}
 	}
 }
 
 uint32_t getCid(uint32_t tid) {
-    //assert(tid < MAX_THREADS); //these assertions are fine, but getCid is called everywhere, so they are expensive!
+    assert(tid < MAX_THREADS); //these assertions are fine, but getCid is called everywhere, so they are expensive!
     uint32_t cid = cids[tid];
     //assert(cid != INVALID_CID);
     return cid;
@@ -350,13 +356,13 @@ VOID FFIAdvance() {
     const g_vector<uint64_t>& ffiPoints = procTreeNode->getFFIPoints();
     ffiPoint++;
     if (ffiPoint >= ffiPoints.size()) {
-		std::cout<<std::dec<<ffiPoint<<"th, last ffiPoint reached, limit:"<<std::dec<<ffiInstrsLimit<<std::endl;
+		std::cout<<"process "<<procIdx<<" "<<std::dec<<ffiPoint<<"th, last ffiPoint reached, limit:"<<std::dec<<ffiInstrsLimit<<std::endl;
         info("Last ffiPoint reached, %ld instrs, limit %ld", ffiInstrsDone, ffiInstrsLimit);
         SimEnd();
     } else {
         info("ffiPoint reached, %ld instrs, limit %ld", ffiInstrsDone, ffiInstrsLimit);
         ffiInstrsLimit += ffiPoints[ffiPoint];
-		std::cout<<std::dec<<ffiPoint<<"th, ffiPoint reached, limit:"<<std::dec<<ffiInstrsLimit<<std::endl;
+		std::cout<<"process "<<procIdx<<" "<<std::dec<<ffiPoint<<"th, ffiPoint reached, limit:"<<std::dec<<ffiInstrsLimit<<std::endl;
     }
 }
 
@@ -368,7 +374,6 @@ VOID FFIBasicBlock(THREADID tid, ADDRINT bblAddr, BblInfo* bblInfo) {
 		//std::cout<<"enter none-fast-forward:"<<std::dec<<ffiInstrsDone<<std::endl;
 		//std::cout<<"fast-forward:"<<std::dec<<*ffiFFStartInstrs
 		//<<" prev instr:"<<std::dec<<*ffiPrevFFStartInstrs<<std::endl;
-
         FFIAdvance();
         assert(procTreeNode->isInFastForward());
         futex_lock(&zinfo->ffLock);
@@ -484,8 +489,7 @@ VOID CheckForTermination() {
             info("Max total (aggregate) instructions reached (%ld)", totalInstrs);
             return;
         }
-    }
-
+	}
     if (zinfo->maxSimTimeNs) {
         uint64_t simNs = zinfo->profSimTime->count(PROF_BOUND) + zinfo->profSimTime->count(PROF_WEAVE);
         if (simNs >= zinfo->maxSimTimeNs) {
@@ -536,21 +540,23 @@ uint32_t TakeBarrier(uint32_t tid, uint32_t cid) {
 	//std::cout<<"take barrier"<<std::endl;
     uint32_t newCid = zinfo->sched->sync(procIdx, tid, cid);
     clearCid(tid); //this is after the sync for a hack needed to make EndOfPhase reliable
-	//std::cout<<"take barrier1"<<std::endl;
-    setCid(tid, newCid);
-
-	//std::cout<<"take barrier2"<<std::endl;
-    if (procTreeNode->isInFastForward()) {
-        info("Thread %d entering fast-forward", tid);
-        clearCid(tid);
-        zinfo->sched->leave(procIdx, tid, newCid);
-        SimThreadFini(tid);
-        fPtrs[tid] = GetFFPtrs();
-    } else if (zinfo->terminationConditionMet) {
-        info("Termination condition met, exiting");
-        zinfo->sched->leave(procIdx, tid, newCid);
-        SimEnd(); //need to call this on a per-process basis...
-    }
+	if( newCid != (uint32_t)(-1))
+	{
+		setCid(tid, newCid);
+		if (procTreeNode->isInFastForward()) {
+			info("Thread %d entering fast-forward", tid);
+			clearCid(tid);
+			zinfo->sched->leave(procIdx, tid, newCid);
+			SimThreadFini(tid);
+			fPtrs[tid] = GetFFPtrs();
+		} else if (zinfo->terminationConditionMet) {
+			info("Termination condition met, exiting");
+			zinfo->sched->leave(procIdx, tid, newCid);
+			SimEnd(); //need to call this on a per-process basis...
+		}
+	}
+	else
+		std::cout<<"cid of tid is already invalid, ignore"<<std::endl;
 	//std::cout<<"return newCid"<<std::endl;
     return newCid;
 }
@@ -940,6 +946,7 @@ void ParseFile( g_vector<Section>& libs_to_region,
  */
 void GetSharedMemory( THREADID tid, THREADID procIdx )
 {
+	std::cout<<"tid is:"<<tid<<std::endl;
 	info("Get shared memory of thread %d", tid);
 	std::cout<<"get shared memory of process "<<procIdx<<std::endl;
 	std::stringstream ss;
@@ -973,10 +980,11 @@ void SimThreadStart(THREADID tid) {
 		if( !zinfo->shared_mem_inited[procIdx] )
 		{
 			zinfo->shared_mem_inited[procIdx] = true;
+			futex_lock(&zinfo->enter_lock);
 			GetSharedMemory( syscall(SYS_gettid), procIdx);
+			futex_unlock(&zinfo->enter_lock);
 		}
 	}
-
     zinfo->sched->start(procIdx, tid, procTreeNode->getMask());
 		
     activeThreads[tid] = true;
@@ -1375,7 +1383,7 @@ VOID SimEnd() {
 				}
 				if( i_core->getDataTlb() )
 				{
-				total_access_time += i_core->getDataTlb()->calculate_stats();
+					total_access_time += i_core->getDataTlb()->calculate_stats();
 				}
 			}
 		}
@@ -1395,10 +1403,6 @@ VOID SimEnd() {
 		}	
         zinfo->sched->notifyTermination();
     }
-	//if( zinfo->paging_array && zinfo->paging_array[procIdx])
-	//	delete (zinfo->paging_array[procIdx]);
-	//(zinfo->numProcs)--;
-	//std::cout<<"termination, proc number:"<<zinfo->numProcs<<std::endl;
     //Uncomment when debugging termination races, which can be rare because they are triggered by threads of a dying process
     //sleep(5);
     exit(0);
@@ -1714,10 +1718,9 @@ static EXCEPT_HANDLING_RESULT InternalExceptionHandler(THREADID tid, EXCEPTION_I
 /* ===================================================================== */
 
 int main(int argc, char *argv[]) {
+	google::InitGoogleLogging("zsim.log");
     PIN_InitSymbols();
     if (PIN_Init(argc, argv)) return Usage();
-	
-
     //Register an internal exception handler (ASAP, to catch segfaults in init)
     PIN_AddInternalExceptionHandler(InternalExceptionHandler, NULL);
 	//get process idx

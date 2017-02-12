@@ -38,6 +38,11 @@ inline void validate_entry(PageTable* table , unsigned entry_id , T* next_level_
 		(*table)[entry_id]->set_buffer(false);
 }
 
+inline bool is_valid(PageTable* table , unsigned entry_id )
+{
+	return (*table)[entry_id]->is_present();
+}
+
 inline void invalidate_page( PageTable* table , unsigned entry_id)
 {
 	if( is_present(table,entry_id) )
@@ -143,23 +148,74 @@ inline void get_domains( Address addr , unsigned &pml4 , unsigned &pdp , unsigne
 }
 
 
-inline void extend_one_buffer_map(Address addr , PageTable* table ,void* block_ptr, unsigned pt_entry_id , unsigned buffer_entry_id, unsigned buffer_table_entry_num)
+inline void extend_one_buffer_map(Address addr , PageTable* table ,void* block_ptr, unsigned pt_entry_id , unsigned buffer_entry_id, unsigned buffer_table_entry_num , BasePDTEntry*& mapped_entry)
 {
-	 void* next_level_addr = get_next_level_address<void>(table ,pt_entry_id);
-	 PageTable* buffer_table = NULL;
+	void* next_level_addr = get_next_level_address<void>(table ,pt_entry_id);
+	PageTable* buffer_table = NULL;
+	mapped_entry = NULL;
 	if( !point_to_buffer_table( table , pt_entry_id ) )
 	{
 		buffer_table = new PageTable( buffer_table_entry_num);
 		validate_entry(table , pt_entry_id , buffer_table, true);
+		if( !is_valid(buffer_table, buffer_entry_id))		
+			mapped_entry = (*buffer_table)[buffer_entry_id];
+
 		validate_entry( buffer_table,buffer_entry_id,block_ptr,true);
 	}
 	else
 	{
+		if( !is_valid((PageTable*)next_level_addr, buffer_entry_id) )
+			mapped_entry = (*(PageTable*)next_level_addr)[buffer_entry_id];
 		validate_entry((PageTable*)next_level_addr ,buffer_entry_id,block_ptr,true);
 	}
 }
 
 
+inline Address get_block_id(MemReq& req ,PageTable* pgt, void* pblock , unsigned pg_id,
+							PagingStyle mode ,bool pbuffer ,  bool set_dirty, 
+							bool write_back, uint32_t  access_counter)
+{
+	if(!pblock)
+		return INVALID_PAGE_ADDR;
+	else
+	{
+		if( pbuffer)
+		{
+			//unsigned buffer_off = get_buffer_table_off(addr, buffer_table_shift,mode);
+			//point to DRAM buffer block
+			//DRAMBufferBlock* buffer_block = get_next_level_address<DRAMBufferBlock>
+			//								( (PageTable*)pblock , buffer_off);
+			DRAMBufferBlock* buffer_block = (DRAMBufferBlock*)pblock;
+			if( set_dirty )
+			{
+				//((PageTable*)pblock)->entry_array[buffer_off]->set_dirty();
+				//set buffer block to dirty
+				//std::cout<<"set dirty"<<std::endl;
+				assert(pgt);
+				pgt->entry_array[pg_id]->set_dirty();
+				buffer_block->set_dirty();
+			}
+			//req.lineAddr = block_id_to_addr(buffer_block->block_id)>>(zinfo->page_shift);
+			//return buffer_block->get_src_addr();
+			//std::cout<<"ppn:"<<std::hex<<(block_id_to_addr(buffer_block->block_id)>>(zinfo->page_shift))<<std::endl;
+			req.childId = buffer_block->is_dirty();
+			return block_id_to_addr(buffer_block->block_id)>>(zinfo->page_shift);
+		}
+		else
+		{
+			if( write_back)
+			{
+				//overlap field
+				((Page*)pblock)->set_overlap(access_counter );
+			}
+			req.childId = ((Page*)pblock)->get_overlap();
+			//std::cout<<"ppn2:"<<(((Page*)pblock)->pageNo)<<std::endl;
+			return ((Page*)pblock)->pageNo;
+		}
+	}
+}
+
+/*
 inline Address get_block_id(MemReq& req , Address addr , void* pblock ,
 							unsigned buffer_table_shift, PagingStyle mode ,
 							bool pbuffer ,  bool set_dirty , 
@@ -171,18 +227,21 @@ inline Address get_block_id(MemReq& req , Address addr , void* pblock ,
 	{
 		if( pbuffer)
 		{
-			unsigned buffer_off = get_buffer_table_off(addr, buffer_table_shift,mode);
+			//unsigned buffer_off = get_buffer_table_off(addr, buffer_table_shift,mode);
 			//point to DRAM buffer block
-			DRAMBufferBlock* buffer_block = get_next_level_address<DRAMBufferBlock>
-											( (PageTable*)pblock , buffer_off);
+			//DRAMBufferBlock* buffer_block = get_next_level_address<DRAMBufferBlock>
+			//								( (PageTable*)pblock , buffer_off);
+			DRAMBufferBlock* buffer_block = (DRAMBufferBlock*)pblock;
 			if( set_dirty )
 			{
-				((PageTable*)pblock)->entry_array[buffer_off]->set_dirty();
+				//((PageTable*)pblock)->entry_array[buffer_off]->set_dirty();
 				//set buffer block to dirty
 				buffer_block->set_dirty();
 			}
-			req.lineAddr = block_id_to_addr(buffer_block->block_id)>>(zinfo->page_shift);
-			return buffer_block->get_src_addr(); 
+			//req.lineAddr = block_id_to_addr(buffer_block->block_id)>>(zinfo->page_shift);
+			//return buffer_block->get_src_addr();
+			std::cout<<"ppn:"<<std::hex<<(block_id_to_addr(buffer_block->block_id)>>(zinfo->page_shift))<<std::endl;
+			return block_id_to_addr(buffer_block->block_id)>>(zinfo->page_shift);
 		}
 		else
 		{
@@ -191,10 +250,11 @@ inline Address get_block_id(MemReq& req , Address addr , void* pblock ,
 				//overlap field
 				((Page*)pblock)->set_overlap(access_counter );
 			}
-			req.childId = ((Page*)pblock)->get_overlap(); 
+			req.childId = ((Page*)pblock)->get_overlap();
+			std::cout<<"ppn2:"<<(((Page*)pblock)->pageNo)<<std::endl;
 			return ((Page*)pblock)->pageNo;
 		}
 	}
 }
-
+*/
 #endif

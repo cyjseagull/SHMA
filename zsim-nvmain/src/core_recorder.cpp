@@ -155,7 +155,6 @@ void CoreRecorder::recordAccess(uint64_t startCycle) {
         prevRespEvent = tr.endEvent;
         prevRespCycle = tr.respCycle;
     }
-
     origPrevResp->produceCrossings(&eventRecorder);
     eventRecorder.getCrossingStack().clear();
     eventRecorder.clearRecords();

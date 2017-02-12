@@ -72,7 +72,7 @@ void MultiQueueMigrator::Init( Config *config )
     /* Specifies with channel is the "fast" memory. */
     promotionChannel = 0;
     config->GetValueUL( "PromotionChannel", promotionChannel );
-	std::cout<<"promotion channel is"<< promotionChannel<<std::endl;
+	//std::cout<<"promotion channel is"<< promotionChannel<<std::endl;
     /* If we want to simulate additional latency serving buffered requests. */
     bufferReadLatency = 4;
     config->GetValueUL( "MigrationBufferReadLatency", bufferReadLatency );
@@ -116,7 +116,8 @@ bool MultiQueueMigrator::IssueCommand( NVMainRequest *request )
      *  In cycle-accurate mode, we must read each page, buffer it, enqueue a
      *  write request, and wait for write completion.
      */
-    return TryMigration( request, false );
+	//std::cout<<"try migration now"<<std::endl;
+	return TryMigration( request, false );
 }
 
 
@@ -134,6 +135,7 @@ bool MultiQueueMigrator::RequestComplete( NVMainRequest *request )
         if( request->owner == parent->GetTrampoline( ) && request->tag == MIG_READ_TAG )
         {
             /* A migration read completed, update state. */
+			//std::cout<<"set migration state to MQ_MIGRATION_BUFFERED"<<std::endl;
             migratorTranslator->SetMigrationState( request->address, MQ_MIGRATION_BUFFERED ); 
 
             /* If both requests are buffered, we can attempt to write. */
@@ -193,12 +195,14 @@ bool MultiQueueMigrator::RequestComplete( NVMainRequest *request )
 
                 if( demoIssued )
                 {
+					//std::cout<<"set migration state to MQ_MIGRATION_WRITING"<<std::endl;
                     migratorTranslator->SetMigrationState( demoRequest->address, MQ_MIGRATION_WRITING );
                 }
                 if( promoIssued )
                 {
 				//	std::cout<<"\npromo_Mig_Write Issued: "<<std::hex
                 //                   <<promoRequest->address.GetPhysicalAddress()<<"\n"<<std::endl;
+					//std::cout<<"set migration state to MQ_MIGRATION_WRITING"<<std::endl;
                     migratorTranslator->SetMigrationState( promoRequest->address, MQ_MIGRATION_WRITING );
                 }
 
@@ -210,6 +214,7 @@ bool MultiQueueMigrator::RequestComplete( NVMainRequest *request )
         else if( request->owner == parent->GetTrampoline( ) && request->tag == MIG_WRITE_TAG )
         {
             // Note: request should be deleted by parent
+			//std::cout<<"set migration state to MQ_MIGRATION_DONE"<<std::endl;
             migratorTranslator->SetMigrationState( request->address, MQ_MIGRATION_DONE );
 
             if( request == promoRequest )
@@ -369,12 +374,12 @@ bool MultiQueueMigrator::TryMigration( NVMainRequest *request, bool atomic )
 		//std::cout<<"migration possible:"<<migrationPossible<<std::endl;
         if( migrationPossible )
         {
-	//		std::cout<<"\n Possible?   ----    Yes!\n"<<std::endl;
+			//std::cout<<"\n Possible?   ----    Yes!\n"<<std::endl;
             assert( !demoBuffered && !promoBuffered );
-
+			//std::cout<<"location is:"<<location<<std::endl;
             if( location == THRESHOLD_QUEUE && !migratorTranslator->IsMigrated( request->address ))
             {
-	//			std::cout<<"\n Migrate?   ----    Yes!\n"<<std::endl;
+				//std::cout<<"\n Migrate?   ----    Yes!\n"<<std::endl;
                 /* 
                  *  Note: once IssueCommand is called, this hook may receive
                  *  a different parent, but fail the NVMTypeMatch check. As a

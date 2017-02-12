@@ -146,13 +146,17 @@ g_vector<g_string> PinCmd::getFullCmdArgs(uint32_t procIdx, const char** inputFi
 
     //Parse command -- use glibc's wordexp to parse things like quotes, handle argument expansion, etc correctly
     wordexp_t p;
-	std::cout<<"cmd:"<<cmd<<std::endl;
     wordexp(cmd.c_str(), &p, 0);
     for (uint32_t i = 0; i < p.we_wordc; i++) {
 		std::cout<<"cmd:"<<g_string(p.we_wordv[i])<<std::endl;
         res.push_back(g_string(p.we_wordv[i]));
     }
     wordfree(&p);
+	if( procInfo[procIdx].input != "")
+	{
+		wordexp(procInfo[procIdx].input.c_str(),&p,0);
+		procInfo[procIdx].input = p.we_wordv[0];
+	}
 
     for( unsigned int i=0; i<res.size();i++)
 		std::cout<<res[i]<<" ";

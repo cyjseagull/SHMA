@@ -56,7 +56,8 @@ void Cache::initCacheStats(AggregateStat* cacheStat) {
 
 uint64_t Cache::access(MemReq& req) {
     uint64_t respCycle = req.cycle;
-    bool skipAccess = cc->startAccess(req); //may need to skip access due to races (NOTE: may change req.type!)
+
+    bool skipAccess = cc->startAccess(req); //may need to skip access due to races (NOTE: may change req.type!);
 	if( skipAccess)
 		std::cout<<"skip access"<<std::endl;
     if (likely(!skipAccess)) {
@@ -73,27 +74,62 @@ uint64_t Cache::access(MemReq& req) {
             //Evictions are not in the critical path in any sane implementation -- we do not include their delays
             //NOTE: We might be "evicting" an invalid line for all we know. Coherence controllers will know what to do
             cc->processEviction(req, wbLineAddr, lineId, respCycle); //1. if needed, send invalidates/downgrades to lower level
-
             array->postinsert(req.lineAddr, &req, lineId); //do the actual insertion. NOTE: Now we must split insert into a 2-phase thing because cc unlocks us.
+			//std::cout<<"install "<<req.lineAddr<<" id:"<<lineId<<std::endl;
         }
         respCycle = cc->processAccess(req, lineId, respCycle);
     }
     cc->endAccess(req);
+	//std::cout<<"access**:"<<req.lineAddr<<" done"<<std::endl;
     assert_msg(respCycle >= req.cycle, "[%s] resp < req? 0x%lx type %s childState %s, respCycle %ld reqCycle %ld",
             name.c_str(), req.lineAddr, AccessTypeName(req.type), MESIStateName(*req.state), respCycle, req.cycle);
     return respCycle;
 }
 
+
+uint64_t Cache::clflush_all( Address lineAddr, InvType type, bool* reqWriteback, uint64_t reqCycle, uint32_t srcId)
+{
+	int32_t lineId = array->lookup(lineAddr, NULL, false);
+	//std::cout<<"lineId:"<<lineId<<" addr:"<<lineAddr<<std::endl;
+	uint64_t respCycle = reqCycle;
+	if( -1 != lineId)
+	{
+		MemObject* obj= cc->getParent(lineAddr);
+		MemObject* pre = obj;
+		//std::cout<<"parent:"<<obj<<" of:"<<this<<" srcId:"<<srcId<<" addr:"<<lineAddr<<std::endl;
+		//std::cout<<"invalidate parent:"<<obj<<" srcId:"<<srcId<<std::endl;
+		while( dynamic_cast<BaseCache*>(obj) )
+		{
+			pre=obj;
+			obj=dynamic_cast<Cache*>(obj)->cc->getParent(lineAddr);
+			//std::cout<<"parent:"<<obj<<" of:"<<pre<<" srcId:"<<srcId<<" addr:"<<lineAddr<<std::endl;
+		}
+		if( pre )
+		{
+			//std::cout<<"invalidate inner:"<<lineAddr<<" srcId:"<<srcId<<" objaddr:"<<obj<<" reqCycle:"<<reqCycle<<" respCycle:"<<respCycle<<std::endl;
+		 	dynamic_cast<Cache*>(pre)->cc->endInv(); //in case deadlock
+		 	//dynamic_cast<Cache*>(pre)->cc->startInval(); //in case deadlock
+
+			respCycle = dynamic_cast<Cache*>(pre)->invalidate(lineAddr,type, reqWriteback, respCycle, srcId);
+		 	//dynamic_cast<Cache*>(pre)->cc->endInval2(); //in case deadlock	
+		}
+	}
+	return respCycle;
+}
+
 uint64_t Cache::invalidate(Address lineAddr, InvType type, bool* reqWriteback, uint64_t reqCycle, uint32_t srcId) {
-    cc->startInv(); //note we don't grab tcc; tcc serializes multiple up accesses, down accesses don't see it
-
     int32_t lineId = array->lookup(lineAddr, NULL, false);
-    assert_msg(lineId != -1, "[%s] Invalidate on non-existing address 0x%lx type %s lineId %d, reqWriteback %d", name.c_str(), lineAddr, InvTypeName(type), lineId, *reqWriteback);
-    uint64_t respCycle = reqCycle + invLat;
-    trace(Cache, "[%s] Invalidate start 0x%lx type %s lineId %d, reqWriteback %d", name.c_str(), lineAddr, InvTypeName(type), lineId, *reqWriteback);
-    respCycle = cc->processInv(lineAddr, lineId, type, reqWriteback, respCycle, srcId); //send invalidates or downgrades to children, and adjust our own state
-    trace(Cache, "[%s] Invalidate end 0x%lx type %s lineId %d, reqWriteback %d, latency %ld", name.c_str(), lineAddr, InvTypeName(type), lineId, *reqWriteback, respCycle - reqCycle);
-
-    return respCycle;
+    //assert_msg(lineId != -1, "[%s] Invalidate on non-existing address 0x%lx type %s lineId %d, reqWriteback %d", name.c_str(), lineAddr, InvTypeName(type), lineId, *reqWriteback);
+	if( lineId != -1)
+	{
+		//std::cout<<lineAddr<<" is in cache"<<std::endl;
+		cc->startInv(); //note we don't grab tcc; tcc serializes multiple up accesses, down accesses don't see it		
+		uint64_t respCycle = reqCycle + invLat;
+		//std::cout<<"process Inv:"<<lineAddr<<" "<<invLat<<std::endl;
+		trace(Cache, "[%s] Invalidate start 0x%lx type %s lineId %d, reqWriteback %d", name.c_str(), lineAddr, InvTypeName(type), lineId, *reqWriteback);
+		respCycle = cc->processInv(lineAddr, lineId, type, reqWriteback, respCycle, srcId); //send invalidates or downgrades to children, and adjust our own state		trace(Cache, "[%s] Invalidate end 0x%lx type %s lineId %d, reqWriteback %d, latency %ld", name.c_str(), lineAddr, InvTypeName(type), lineId, *reqWriteback, respCycle - reqCycle);
+		return respCycle;
+	}
+	return reqCycle;
 }
 

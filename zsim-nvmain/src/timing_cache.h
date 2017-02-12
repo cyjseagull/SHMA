@@ -34,6 +34,7 @@ class MissStartEvent;
 class MissResponseEvent;
 class MissWritebackEvent;
 class ReplAccessEvent;
+class ClflushEvent;
 class TimingEvent;
 
 class TimingCache : public Cache {
@@ -67,7 +68,8 @@ class TimingCache : public Cache {
         void simulateMissResponse(MissResponseEvent* ev, uint64_t cycle, MissStartEvent* mse);
         void simulateMissWriteback(MissWritebackEvent* ev, uint64_t cycle, MissStartEvent* mse);
         void simulateReplAccess(ReplAccessEvent* ev, uint64_t cycle);
-
+		
+		void simulateClflush( ClflushEvent* env, uint64_t cycle );
     private:
         uint64_t highPrioAccess(uint64_t cycle);
         uint64_t tryLowPrioAccess(uint64_t cycle);

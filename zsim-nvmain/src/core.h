@@ -31,7 +31,7 @@
 #include "g_std/g_string.h"
 #include "stats.h"
 #include "memory_hierarchy.h"
-//#include "cache.h"
+
 class BasePaging;
 struct BblInfo {
     uint32_t instrs; 
@@ -107,6 +107,9 @@ class Core : public GlobAlloc {
 		virtual BaseTlb* getDataTlb(){ return NULL;}
 		virtual BaseCache* getInsCache() { return NULL;}
 		virtual BaseCache* getDataCache() { return NULL;}
+		virtual uint64_t clflush( Address startAddr, uint64_t startCycle, uint64_t& is_dirty){ return startCycle; }
+		virtual uint64_t clflush_cacheline( Address startAddr, uint64_t startCycle)
+		{ return startCycle; }
 };
 
 #endif  // CORE_H_

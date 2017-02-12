@@ -343,7 +343,7 @@ bool HierDRAMCache::IssueCommand( NVMainRequest *req )
 					evict_req->type = WRITE;
 					evict_req->burstCount = burst_count;
 					evict_req->owner = this;
-					drc_dirty_evicts++;	
+					drc_dirty_evicts++;
 					assert(outstandingEvicts.count(req)==0);
 					outstandingEvicts[evict_req] = req;
 					//issue evict request to main memory
@@ -407,6 +407,9 @@ bool HierDRAMCache::RequestComplete( NVMainRequest *req )
 		if( req->tag == HierDRC_MEMREAD)
 		{
 			drc_fetches++;
+			/*if( drc_fetches%100 == 0)
+			{
+			}*/
 			//erase request from fill queues
 			assert(outstandingMemReads.count(req));
 			NVMainRequest* origin_req = outstandingMemReads[req];
