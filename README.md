@@ -234,4 +234,6 @@ Implementations of RBLA and MultiQueue Policies
 
 Happy hacking and hope you find SHMA useful for hybrid memory architecture research.
 
+@Support or Contact
 
+SHMA is developed in the HUST SCTS&CGCL Lab by Yujie Chen, Haikun Liu and Xiaofei Liao. If you have any questions, please contact Yujie Chen(yujiechen_hust@163.com), Haikun Liu (hkliu@hust.edu.cn) and Xiaofei Liao (xfliao@hust.edu.cn). We welcome you to commit your modification to support our project.
